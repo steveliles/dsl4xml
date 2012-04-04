@@ -11,46 +11,55 @@ import org.junit.Test;
 
 import com.sjl.dsl4xml.*;
 
-public class Example1Test {
+public class SimpleXmlNoAttributesTest {
 
 	@Test
 	public void mapsTitleCorrectlyFromXml()
 	throws Exception {
-		Example1Parser _p = new Example1Parser();
-		Description _d = _p.parse(getClass().getResourceAsStream("example1.xml"));
+		Parser _p = new Parser().init();
+		Description _d = _p.parse(getTestInput());
 		Assert.assertEquals("First Example", _d.getTitle());
 	}
-	
+
 	@Test
 	public void returnsNonNullSummary()
 	throws Exception {
-		Example1Parser _p = new Example1Parser();
-		Description _d = _p.parse(getClass().getResourceAsStream("example1.xml"));
+		Parser _p = new Parser().init();
+		Description _d = _p.parse(getTestInput());
 		Assert.assertNotNull(_d.getParagraphs());
 	}
 	
 	@Test
 	public void mapsCorrectNumberOfParagraphsToSummary()
 	throws Exception {
-		Example1Parser _p = new Example1Parser();
-		Description _d = _p.parse(getClass().getResourceAsStream("example1.xml"));
+		Parser _p = new Parser().init();
+		Description _d = _p.parse(getTestInput());
 		Assert.assertEquals(2, _d.getParagraphs().size());
 	}
 	
 	@Test
 	public void mapsCorrectParagraphOrderToSummary()
 	throws Exception {
-		Example1Parser _p = new Example1Parser();
-		Description _d = _p.parse(getClass().getResourceAsStream("example1.xml"));
+		Parser _p = new Parser().init();
+		Description _d = _p.parse(getTestInput());
 		Assert.assertEquals("First paragraph.", _d.getParagraphs().get(0));
 		Assert.assertEquals("Second paragraph.", _d.getParagraphs().get(1));
 	}
+
+	private InputStream getTestInput() {
+		return getClass().getResourceAsStream("example1.xml");
+	}
 	
-	private static class Example1Parser {
-		private DocumentMapper<Description> mapper;
+	private static class Parser extends AbstractParser<Description> {
 		
-		public Example1Parser() {
-			mapper = xmlMappingTo(Description.class).with(
+		@Override
+		protected Description newResultObject() {
+			return new Description();
+		}
+
+		@Override
+		protected DocumentMapper<Description> defineMapper() {
+			return xmlMappingTo(Description.class).with(
 				tag("description").with(
 					tag("title").mappingCDataTo(title()), 
 					tag("summary").with(
@@ -77,26 +86,9 @@ public class Example1Test {
 				}
 			};
 		}
-		
-		public Description parse(InputStream anInputStream) {
-			final Description _result = new Description();
-			mapper.map(
-				newUTF8Reader(anInputStream), 
-				new MappingContext(_result)
-			);
-			return _result;
-		}
-		
-		private Reader newUTF8Reader(InputStream anInputStream) {
-			try {
-				return new InputStreamReader(anInputStream, "utf-8");
-			} catch (UnsupportedEncodingException anExc) {
-				throw new RuntimeException(anExc);
-			}
-		}
 	}
 	
-	private static class Description {
+	static class Description {
 		private String title;
 		private List<String> paragraphs;
 		
@@ -119,5 +111,4 @@ public class Example1Test {
 			paragraphs.add(aParagraph);
 		}
 	}
-	
 }
