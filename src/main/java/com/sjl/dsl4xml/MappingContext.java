@@ -1,26 +1,35 @@
 package com.sjl.dsl4xml;
 
+import java.util.*;
+
 import org.xmlpull.v1.*;
 
 public class MappingContext {
 
 	private XmlPullParser parser;
-	private Object result;
+	private Stack<Object> stack;
 	
-	public MappingContext(Object aResult) {
-		result = aResult;
+	public MappingContext(XmlPullParser aParser) {
+		stack = new Stack<Object>();
+		parser = aParser;
 	}
 	
-	public Object getResult() {
-		return result;
+	@SuppressWarnings("unchecked")
+	public <T> T peek() {
+		return (T) stack.peek();
+	}
+	
+	public void push(Object aContext) {
+		stack.push(aContext);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T pop() {
+		return (T) stack.pop();
 	}
 	
 	public XmlPullParser getParser() {
 		return parser;
-	}
-	
-	public void setParser(XmlPullParser aParser) {
-		parser = aParser;
 	}
 	
 	public boolean hasMoreTags() {
@@ -60,6 +69,10 @@ public class MappingContext {
 		} catch (XmlPullParserException anExc) {
 			throw new XmlParseException(anExc);
 		}
+	}
+	
+	public String getAttributeValue(String anAttributeName) {
+		return parser.getAttributeValue(null, anAttributeName);
 	}
 	
 	public boolean isTextNode() {

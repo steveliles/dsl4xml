@@ -1,6 +1,6 @@
 <example>
-  <person firstname="frodo" surname="baggins" age="50"/>
-  <person firstname="samwise" surname="gamgee" age="35"/>
-  <person firstname="peregrine" surname="took"/>
-  <person firstname="meriadoc" age="32"/>
+  <hobbit firstname="frodo" surname="baggins" age="50"/>
+  <hobbit firstname="samwise" surname="gamgee" age="35"/>
+  <hobbit firstname="peregrine" surname="took"/>
+  <hobbit firstname="meriadoc" age="32"/>
 </example>
