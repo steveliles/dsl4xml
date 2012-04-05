@@ -7,7 +7,7 @@ DOM parsing tends to make for code that is easy to read and write, but very slow
 1. To make _readable_ declarative code that marshalls XML documents to Java objects.
 2. To make marshalling XML documents to Java objects very fast (pull parsing speeds).
 3. To avoid polluting model classes with metadata about xml parsing (no annotations).
-4. To avoid additional build-time steps ()
+4. To avoid additional build-time steps (code generators, etc).
 
 It works by providing a thin DSL wrapper around a Pull-Parser to declaratively construct a state-machine that marshalls XML documents into Java objects. 
 
