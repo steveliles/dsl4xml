@@ -1,8 +1,10 @@
 # Easy and fast marshalling of XML to Java
 
-DOM parsing tends to make for code that is easy to read and write, but very slow and memory intensive. SAX and "pull" parsing lead to complex code, tortuously nested `if` statements, or developers writing state-machines to parse even simple documents.
+DOM parsing tends to make for code that is easy to read and write, but is very slow, memory intensive, and generates heaps of garbage. 
 
-`dsl4xml` is my free-time thought-experiment, with the following aims:
+SAX and "pull" parsing can lead to complex code and tortuously nested `if` statements, or lots of boiler-plate code to create state-machines.
+
+Inspired by some recent work speeding up XML parsing in a slow Android application, `dsl4xml` is my free-time thought-experiment with the following aims:
 
 1. To make _readable_ declarative code that marshalls XML documents to Java objects.
 2. To make marshalling XML documents to Java objects very fast (pull parsing speeds).
