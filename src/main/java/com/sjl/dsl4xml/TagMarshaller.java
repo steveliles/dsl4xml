@@ -5,29 +5,29 @@ import java.util.*;
 
 import com.sjl.dsl4xml.support.*;
 
-public class TagMapper<T> implements Mapper {
+public class TagMarshaller<T> implements Marshaller {
 
 	private String tagName;
 	private Class<T> type;
 	private ContextMutator mutator;
-	private List<Mapper> mappers;
+	private List<Marshaller> mappers;
 	
-	public TagMapper(String aTagName) {
+	public TagMarshaller(String aTagName) {
 		tagName = aTagName;
 	}
 	
-	public TagMapper(String aTagName, Class<T> aType) {
+	public TagMarshaller(String aTagName, Class<T> aType) {
 		tagName = aTagName;
 		type = aType;
 	}
 	
-	public TagMapper<T> withCData() {
+	public TagMarshaller<T> withCData() {
 		return withCDataMappedTo(tagName);
 	}
 	
-	public TagMapper<T> withCDataMappedTo(final String aFieldName) {
+	public TagMarshaller<T> withCDataMappedTo(final String aFieldName) {
 		if (mappers == null) {
-			mappers = new ArrayList<Mapper>();
+			mappers = new ArrayList<Marshaller>();
 		}
 		
 		mappers.add(new CDataMapper() {
@@ -54,18 +54,18 @@ public class TagMapper<T> implements Mapper {
 		return this;
 	}
 	
-	public TagMapper<T> mappingCDataTo(Mapper aMapper) {
+	public TagMarshaller<T> mappingCDataTo(Marshaller aMapper) {
 		if (mappers == null) {
-			mappers = new ArrayList<Mapper>();
+			mappers = new ArrayList<Marshaller>();
 		} 
 		mappers.add(aMapper);
 		
 		return this;
 	}
 	
-	public TagMapper<T> with(Mapper... aMappers) {
+	public TagMarshaller<T> with(Marshaller... aMappers) {
 		if (mappers == null) {
-			mappers = new ArrayList<Mapper>();
+			mappers = new ArrayList<Marshaller>();
 		} 
 		mappers.addAll(0, Arrays.asList(aMappers));
 		
@@ -91,7 +91,7 @@ public class TagMapper<T> implements Mapper {
 	        {
 	            while (aContext.isNotEndTag(tagName))
 	            {	            	
-	                for (Mapper _m : mappers)
+	                for (Marshaller _m : mappers)
 	                {          	
 	                    if (_m.map(aContext))
 	                    {                            

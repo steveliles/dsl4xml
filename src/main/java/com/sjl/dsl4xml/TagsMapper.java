@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml;
 
-public class TagsMapper implements Mapper {
+public class TagsMapper implements Marshaller {
 
 	private String tagName;
 	

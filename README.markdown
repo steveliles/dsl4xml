@@ -63,15 +63,15 @@ And some simple model objects we want to marshall to that look like this:
     	}
     }
 
-We can marshall the XML to those model objects using the following simple declarative Java code:
+We can marshall the XML to those model objects using the following simple Java code:
 
     import static com.sjl.dsl4xml.DocumentMapper.*;
 
     class BooksMarshaller {
-	    private DocumentMapper<Books> mapper;
+	    private DocumentMarshaller<Books> marshaller;
 
 	    public BooksMarshaller() {
-	        mapper = mappingOf(Books.class).with(
+	        marshaller = mappingOf(Books.class).to(
 		        tag("book", Book.class).with(
 	               tag("title").withCData(),
 	               tag("synopsis").withCData()
@@ -80,7 +80,7 @@ We can marshall the XML to those model objects using the following simple declar
 	    }
 
         public Books marshall(Reader aReader) {
-            return mapper.map(aReader);
+            return marshaller.marshall(aReader);
 	    }
 	}
 	

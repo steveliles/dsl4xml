@@ -4,22 +4,22 @@ import java.io.*;
 
 import org.xmlpull.v1.*;
 
-public class DocumentMapper<T> {
+public class DocumentMarshaller<T> {
 
-	public static <R> DocumentMapper<R> mappingOf(Class<R> aClass) {
-		return new DocumentMapper<R>(aClass);
+	public static <R> DocumentMarshaller<R> mappingOf(Class<R> aClass) {
+		return new DocumentMarshaller<R>(aClass);
 	}
 	
-	public static <R> TagMapper<R> tag(String aTagName) {
-		return new TagMapper<R>(aTagName);
+	public static <R> TagMarshaller<R> tag(String aTagName) {
+		return new TagMarshaller<R>(aTagName);
 	}
 	
-	public static <R> TagMapper<R> tag(String aTagName, Class<R> aContextType) {
-		return new TagMapper<R>(aTagName, aContextType);
+	public static <R> TagMarshaller<R> tag(String aTagName, Class<R> aContextType) {
+		return new TagMarshaller<R>(aTagName, aContextType);
 	}
 	
-	public static AttributesMapper attributes(String... anAttributeNames) {
-		return new AttributesMapper(anAttributeNames);
+	public static AttributesMarshaller attributes(String... anAttributeNames) {
+		return new AttributesMarshaller(anAttributeNames);
 	}
 	
 	public static TagsMapper tags(String aTagName) {
@@ -27,10 +27,10 @@ public class DocumentMapper<T> {
 	}
 
 	private XmlPullParserFactory factory;
-	private Mapper[] mappers;
+	private Marshaller[] mappers;
 	private Class<T> resultType;
 	
-	public DocumentMapper(Class<T> aClass) {
+	public DocumentMarshaller(Class<T> aClass) {
 		resultType = aClass;
 		try {
 			factory = XmlPullParserFactory.newInstance();
@@ -39,7 +39,7 @@ public class DocumentMapper<T> {
 		}
 	}
 
-	public DocumentMapper<T> with(Mapper... aMappers) {
+	public DocumentMarshaller<T> to(Marshaller... aMappers) {
 		mappers = aMappers;
 		return this;
 	}
@@ -60,7 +60,7 @@ public class DocumentMapper<T> {
 	        {
 	            while (_ctx.hasMoreTags())
 	            {                   
-	                for (Mapper _m : mappers)
+	                for (Marshaller _m : mappers)
 	                {                 
 	                    if (_m.map(_ctx))
 	                    {                            

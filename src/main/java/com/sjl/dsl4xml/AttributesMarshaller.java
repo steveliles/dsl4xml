@@ -4,11 +4,11 @@ import java.lang.reflect.*;
 
 import com.sjl.dsl4xml.support.*;
 
-public class AttributesMapper implements Mapper {
+public class AttributesMarshaller implements Marshaller {
 
 	private AttributeMutator[] mutators;
 	
-	public AttributesMapper(String... anAttributeNames) {
+	public AttributesMarshaller(String... anAttributeNames) {
 		mutators = new AttributeMutator[anAttributeNames.length];
 		for (int i=0; i<anAttributeNames.length; i++) {
 			mutators[i] = new AttributeMutator(anAttributeNames[i]);

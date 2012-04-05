@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml;
 
-public interface Mapper {
+public interface Marshaller {
 
 	public boolean map(MappingContext aContext);
 	

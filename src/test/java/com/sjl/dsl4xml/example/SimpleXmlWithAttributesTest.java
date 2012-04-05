@@ -7,14 +7,14 @@ import org.junit.*;
 
 import com.sjl.dsl4xml.*;
 
-import static com.sjl.dsl4xml.DocumentMapper.*;
+import static com.sjl.dsl4xml.DocumentMarshaller.*;
 
 public class SimpleXmlWithAttributesTest {
 
 	@Test
 	public void mapsHobbitTagToHobbitObject()
 	throws Exception {
-		DocumentMapper<Hobbits> _p = newParser();
+		DocumentMarshaller<Hobbits> _p = newMarshaller();
 		Hobbits _h = _p.map(getTestInput(), "utf-8");
 		Assert.assertEquals(4, _h.size());
 	}
@@ -23,8 +23,8 @@ public class SimpleXmlWithAttributesTest {
 		return getClass().getResourceAsStream("example2.xml");
 	}
 	
-	private DocumentMapper<Hobbits> newParser() {
-		return mappingOf(Hobbits.class).with(
+	private DocumentMarshaller<Hobbits> newMarshaller() {
+		return mappingOf(Hobbits.class).to(
 			tag("hobbit", Hobbit.class).with(
 				attributes("firstname", "surname", "age")
 			)

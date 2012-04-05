@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.DocumentMapper.*;
+import static com.sjl.dsl4xml.DocumentMarshaller.*;
 
 import java.io.*;
 import java.util.*;
@@ -16,34 +16,34 @@ public class SimpleXmlNoAttributesTest {
 	@Test
 	public void mapsTitleCorrectlyFromXml()
 	throws Exception {
-		Description _d = mapTestDocumentToDescription();
+		Description _d = marshallTestDocumentToDescription();
 		Assert.assertEquals("First Example", _d.getTitle());
 	}
 
 	@Test
 	public void returnsNonNullSummary()
 	throws Exception {
-		Description _d = mapTestDocumentToDescription();
+		Description _d = marshallTestDocumentToDescription();
 		Assert.assertNotNull(_d.getParagraphs());
 	}
 	
 	@Test
 	public void mapsCorrectNumberOfParagraphsToSummary()
 	throws Exception {
-		Description _d = mapTestDocumentToDescription();
+		Description _d = marshallTestDocumentToDescription();
 		Assert.assertEquals(2, _d.getParagraphs().size());
 	}
 	
 	@Test
 	public void mapsCorrectParagraphOrderToSummary()
 	throws Exception {
-		Description _d = mapTestDocumentToDescription();
+		Description _d = marshallTestDocumentToDescription();
 		Assert.assertEquals("First paragraph.", _d.getParagraphs().get(0));
 		Assert.assertEquals("Second paragraph.", _d.getParagraphs().get(1));
 	}
 
-	private Description mapTestDocumentToDescription() {
-		DocumentMapper<Description> _p = newParser();
+	private Description marshallTestDocumentToDescription() {
+		DocumentMarshaller<Description> _p = newMarshaller();
 		return _p.map(getTestInput(), "utf-8");
 	}
 
@@ -52,11 +52,11 @@ public class SimpleXmlNoAttributesTest {
 	}
 	
 	/**
-	 * @return a DocumentMapper that can map documents like example1.xml
+	 * @return a DocumentMarshaller that can map documents like example1.xml
 	 * to the Description class declared below.
 	 */
-	private static DocumentMapper<Description> newParser() {
-		return mappingOf(Description.class).with(
+	private static DocumentMarshaller<Description> newMarshaller() {
+		return mappingOf(Description.class).to(
 			tag("description").with(
 				tag("title").withCData(),
 				tag("summary").with(

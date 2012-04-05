@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml;
 
-public abstract class CDataMapper implements Mapper {
+public abstract class CDataMapper implements Marshaller {
 
 	@Override
 	public boolean map(MappingContext aContext) {
