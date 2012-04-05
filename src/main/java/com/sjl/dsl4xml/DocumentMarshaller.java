@@ -22,10 +22,6 @@ public class DocumentMarshaller<T> {
 		return new AttributesMarshaller(anAttributeNames);
 	}
 	
-	public static TagsMapper tags(String aTagName) {
-		return new TagsMapper(aTagName);
-	}
-
 	private XmlPullParserFactory factory;
 	private Marshaller[] mappers;
 	private Class<T> resultType;
@@ -35,7 +31,7 @@ public class DocumentMarshaller<T> {
 		try {
 			factory = XmlPullParserFactory.newInstance();
 		} catch (XmlPullParserException anExc) {
-			throw new XmlParseException(anExc);
+			throw new XmlMarshallingException(anExc);
 		}
 	}
 
@@ -49,11 +45,11 @@ public class DocumentMarshaller<T> {
 	}
 	
 	public T map(Reader aReader)
-	throws XmlParseException {
+	throws XmlMarshallingException {
 		try {
 			XmlPullParser _p = factory.newPullParser();
 			_p.setInput(aReader);
-		    MappingContext _ctx = new MappingContext(_p);
+		    MarshallingContext _ctx = new MarshallingContext(_p);
 		    _ctx.push(resultType.newInstance());
 		    
 		    try
@@ -73,18 +69,18 @@ public class DocumentMarshaller<T> {
 	            }
 	            return _ctx.peek();
 	        }
-	        catch (XmlParseException anExc)
+	        catch (XmlMarshallingException anExc)
 	        {
 	            throw anExc;
 	        }
 	        catch (Exception anExc)
 	        {
-	            throw new XmlParseException(anExc);
+	            throw new XmlMarshallingException(anExc);
 	        }
-		} catch (XmlParseException anExc) {
+		} catch (XmlMarshallingException anExc) {
 			throw anExc;
 		} catch (Exception anExc) {
-			throw new XmlParseException(anExc);
+			throw new XmlMarshallingException(anExc);
 		}
 	}
 

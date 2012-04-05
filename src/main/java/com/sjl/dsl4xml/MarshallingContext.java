@@ -4,12 +4,12 @@ import java.util.*;
 
 import org.xmlpull.v1.*;
 
-public class MappingContext {
+public final class MarshallingContext {
 
 	private XmlPullParser parser;
 	private Stack<Object> stack;
 	
-	public MappingContext(XmlPullParser aParser) {
+	public MarshallingContext(XmlPullParser aParser) {
 		stack = new Stack<Object>();
 		parser = aParser;
 	}
@@ -36,7 +36,7 @@ public class MappingContext {
 		try {
 			return parser.getEventType() != XmlPullParser.END_DOCUMENT;
 		} catch (XmlPullParserException anExc) {
-			throw new XmlParseException(anExc);
+			throw new XmlMarshallingException(anExc);
 		}
 	}
 	
@@ -44,7 +44,7 @@ public class MappingContext {
 		try {
 			return parser.next();
 		} catch (Exception anExc) {
-			throw new XmlParseException(anExc);
+			throw new XmlMarshallingException(anExc);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class MappingContext {
 				(aTagName.equals(parser.getName()))
 			);
 		} catch (XmlPullParserException anExc) {
-			throw new XmlParseException(anExc);
+			throw new XmlMarshallingException(anExc);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class MappingContext {
 		try {
 			return parser.getEventType() == XmlPullParser.START_TAG;
 		} catch (XmlPullParserException anExc) {
-			throw new XmlParseException(anExc);
+			throw new XmlMarshallingException(anExc);
 		}
 	}
 	
@@ -79,7 +79,18 @@ public class MappingContext {
 		try {
 			return parser.getEventType() == XmlPullParser.TEXT;
 		} catch (XmlPullParserException anExc) {
-			throw new XmlParseException(anExc);
+			throw new XmlMarshallingException(anExc);
+		}
+	}
+
+	public boolean isStartTagNamed(String aTagName) {
+		try {
+			return (
+				(parser.getEventType() == XmlPullParser.START_TAG) && 
+				(aTagName.equals(parser.getName()))
+			);
+		} catch (Exception anExc) {
+			throw new XmlMarshallingException(anExc);
 		}
 	}
 }

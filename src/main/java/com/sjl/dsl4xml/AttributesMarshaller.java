@@ -16,7 +16,7 @@ public class AttributesMarshaller implements Marshaller {
 	}
 	
 	@Override
-	public boolean map(MappingContext aContext) {
+	public boolean map(MarshallingContext aContext) {
 		for (AttributeMutator _am : mutators) {
 			_am.mutate(
 				aContext.peek(),
@@ -41,7 +41,7 @@ public class AttributesMarshaller implements Marshaller {
 			try {
 				mutator.invoke(anObject, aValue);
 			} catch (Exception anExc) {
-				throw new XmlParseException(anExc);
+				throw new XmlMarshallingException(anExc);
 			}
 		}
 	}

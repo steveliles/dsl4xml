@@ -30,27 +30,8 @@ public class TagMarshaller<T> implements Marshaller {
 			mappers = new ArrayList<Marshaller>();
 		}
 		
-		mappers.add(new CDataMapper() {
-			private Method mutator;
-
-			@SuppressWarnings("unchecked")
-			public void map(MappingContext aContext, String aText) {
-				T _ctx = aContext.peek();
-				
-				try {
-					getMutator((Class<T>)_ctx.getClass(), aFieldName).invoke(_ctx, aText); // TODO: type conversion
-				} catch (Exception anExc) {
-					throw new XmlParseException(anExc);
-				}
-			}
-			
-			private Method getMutator(Class<T> aClass, String aFieldName) {
-				if (mutator == null) {
-					mutator = Classes.getMutatorMethod(aClass, aFieldName);
-				}
-				return mutator;
-			}
-		});
+		mappers.add(new CDataMarshaller<T>(aFieldName));
+		
 		return this;
 	}
 	
@@ -73,19 +54,9 @@ public class TagMarshaller<T> implements Marshaller {
 	}
 	
 	@Override
-	public boolean map(MappingContext aContext) {
-		if (
-			(aContext.isStartTag()) &&
-			(aContext.isTagNamed(tagName))
-		) {	
-			if (type != null) {
-				Object _ctx = aContext.peek();
-				T _nestedCtx = newContextObject();
-				
-				getMutator(_ctx.getClass(), type).apply(_ctx, _nestedCtx);
-				
-				aContext.push(_nestedCtx);
-			}
+	public boolean map(MarshallingContext aContext) {
+		if (aContext.isStartTagNamed(tagName)) {	
+			maybePushNewContextObject(aContext);
 			
 			try
 	        {
@@ -102,21 +73,36 @@ public class TagMarshaller<T> implements Marshaller {
 	            }
 	            return true;
 	        }
-	        catch (XmlParseException anExc)
+	        catch (XmlMarshallingException anExc)
 	        {
 	            throw anExc;
 	        }
 	        catch (Exception anExc)
 	        {
-	            throw new XmlParseException(anExc);
+	            throw new XmlMarshallingException(anExc);
 	        }
 			finally {
-				if (type != null) {
-					aContext.pop();
-				}
+				maybePopContext(aContext);
 			}
 		} else {
 			return false;
+		}
+	}
+
+	private void maybePopContext(MarshallingContext aContext) {
+		if (type != null) {
+			aContext.pop();
+		}
+	}
+
+	private void maybePushNewContextObject(MarshallingContext aContext) {
+		if (type != null) {
+			Object _ctx = aContext.peek();
+			T _nestedCtx = newContextObject();
+			
+			getMutator(_ctx.getClass(), type).apply(_ctx, _nestedCtx);
+			
+			aContext.push(_nestedCtx);
 		}
 	}
 	
@@ -124,7 +110,7 @@ public class TagMarshaller<T> implements Marshaller {
 		try {
 			return type.newInstance();
 		} catch (Exception anExc) {
-			throw new XmlParseException(anExc);
+			throw new XmlMarshallingException(anExc);
 		}
 	}
 	
@@ -146,7 +132,7 @@ public class TagMarshaller<T> implements Marshaller {
 			try {
 				method.invoke(aTo, aWith);
 			} catch (Exception anExc) {
-				throw new XmlParseException(anExc);
+				throw new XmlMarshallingException(anExc);
 			}
 		}
 	}
