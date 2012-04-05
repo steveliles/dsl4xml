@@ -4,10 +4,10 @@ DOM parsing tends to make for code that is easy to read and write, but is very s
 
 SAX and "pull" parsing tend to be very fast, have significantly lower memory requirements, and typically produce much less garbage, but can lead to complex code and tortuously nested `if` statements, or lots of boiler-plate code to create state-machines.
 
-Inspired by some recent work speeding up XML parsing in a slow Android application, `dsl4xml` is my free-time thought-experiment with the following aims:
+Inspired by some recent work speeding up XML parsing in a slow Android application, `dsl4xml` is an experiment with the following aims:
 
-1. To make _readable_ declarative code that marshalls XML documents to Java objects.
-2. To make marshalling XML documents to Java objects very fast (pull parsing speeds).
+1. To make _readable_, maintainable, declarative code that marshalls XML documents to Java objects.
+2. To make marshalling XML documents to Java objects very fast (near pull-parsing speeds).
 3. To avoid polluting model classes with metadata about xml parsing (no annotations).
 4. To avoid additional build-time steps (code generators, etc).
 
@@ -15,7 +15,11 @@ It works by providing a thin DSL wrapper around a Pull-Parser to declaratively c
 
 The DSL mirrors the structure of the XML document itself, making it very easy to write (and importantly to _read_ and _maintain_) XML marshalling code.
 
+Boiler-plate is minimised through use of reflection, which does of course incur some performance penalty. The penalty is reduced where possible by caching reflectively gleaned information.
+
 ## Examples
+
+### Simple XML, no attributes
 
 Given a simple XML like this:
 
@@ -30,7 +34,7 @@ Given a simple XML like this:
 	    </book>
 	</books>
 
-And some simple model objects we want to marshall to that look like this:
+And some simple model objects we want to marshall to:
 
     class Books implements Iterable<Book> {
        private List<Book> books = new ArrayList<Book>();
@@ -86,4 +90,85 @@ We can marshall the XML to those model objects using the following simple Java c
 	    }
 	}
 	
-.. more soon ...
+### Simple XML with attributes
+
+XML:
+
+	<example>
+	    <hobbit firstname="frodo" surname="baggins" age="50"/>
+	    <hobbit firstname="samwise" surname="gamgee" age="35"/>
+	    <hobbit firstname="peregrine" surname="took"/>
+	    <hobbit firstname="meriadoc" age="32"/>
+	</example>
+	
+POJO's:
+
+	public static class Hobbits {
+		private List<Hobbit> hobbits;
+		
+		public Hobbits() {
+			hobbits = new ArrayList<Hobbit>();
+		}
+		
+		public void addHobbit(Hobbit aHobbit) {
+			hobbits.add(aHobbit);
+		}
+		
+		public int size() {
+			return hobbits.size();
+		}
+		
+		public Hobbit get(int anIndex) {
+			return hobbits.get(anIndex);
+		}
+	}
+	
+	public static class Hobbit {
+		private String firstname;
+		private String surname;
+		private int age;
+		
+		public String getFirstname() {
+			return firstname;
+		}
+		
+		public void setFirstname(String aFirstname) {
+			firstname = aFirstname;
+		}
+		
+		public String getSurname() {
+			return surname;
+		}
+		
+		public void setSurname(String aSurname) {
+			surname = aSurname;
+		}
+		
+		public int getAge() {
+			return age;
+		}
+		
+		public void setAge(int aAge) {
+			age = aAge;
+		}
+	}
+	
+Marshalling code:
+
+	import static com.sjl.dsl4xml.DocumentMarshaller.*;
+
+    class HobbitsMarshaller {
+	    private DocumentMarshaller<Hobbits> marshaller;
+
+	    public HobbitsMarshaller() {
+	        marshaller = mappingOf(Hobbits.class).to(
+		        tag("hobbit", Hobbit.class).with(
+	               attributes("firstname", "surname", "age")
+			    )
+		    );
+	    }
+
+        public Hobbits marshall(Reader aReader) {
+            return marshaller.marshall(aReader);
+	    }
+	}
