@@ -58,7 +58,7 @@ public class SimpleXmlNoAttributesTest {
 	private static DocumentMapper<Description> newParser() {
 		return mappingOf(Description.class).with(
 			tag("description").with(
-				tag("title").withCDataMappedTo("title"),
+				tag("title").withCData(),
 				tag("summary").with(
 					tag("p").withCDataMappedTo("paragraph")
 				)

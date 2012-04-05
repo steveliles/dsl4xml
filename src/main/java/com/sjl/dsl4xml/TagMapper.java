@@ -21,6 +21,10 @@ public class TagMapper<T> implements Mapper {
 		type = aType;
 	}
 	
+	public TagMapper<T> withCData() {
+		return withCDataMappedTo(tagName);
+	}
+	
 	public TagMapper<T> withCDataMappedTo(final String aFieldName) {
 		if (mappers == null) {
 			mappers = new ArrayList<Mapper>();

@@ -73,8 +73,8 @@ We can marshall the XML to those model objects using the following simple declar
 	    public BooksMarshaller() {
 	        mapper = mappingOf(Books.class).with(
 		        tag("book", Book.class).with(
-	               tag("title"),
-	               tag("synopsis")
+	               tag("title").withCData(),
+	               tag("synopsis").withCData()
 			    )
 		    );
 	    }
