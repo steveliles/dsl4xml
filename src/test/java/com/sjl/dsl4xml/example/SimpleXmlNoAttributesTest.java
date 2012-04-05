@@ -43,8 +43,8 @@ public class SimpleXmlNoAttributesTest {
 	}
 
 	private Description marshallTestDocumentToDescription() {
-		DocumentMarshaller<Description> _p = newMarshaller();
-		return _p.map(getTestInput(), "utf-8");
+		DocumentMarshaller<Description> _m = newMarshaller();
+		return _m.map(getTestInput(), "utf-8");
 	}
 
 	private InputStream getTestInput() {

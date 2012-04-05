@@ -65,7 +65,7 @@ And some simple model objects we want to marshall to that look like this:
 
 We can marshall the XML to those model objects using the following simple Java code:
 
-    import static com.sjl.dsl4xml.DocumentMapper.*;
+    import static com.sjl.dsl4xml.DocumentMarshaller.*;
 
     class BooksMarshaller {
 	    private DocumentMarshaller<Books> marshaller;
