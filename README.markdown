@@ -2,7 +2,7 @@
 
 DOM parsing tends to make for code that is easy to read and write, but is very slow, memory intensive, and generates heaps of garbage. 
 
-SAX and "pull" parsing can lead to complex code and tortuously nested `if` statements, or lots of boiler-plate code to create state-machines.
+SAX and "pull" parsing tend to be very fast, have significantly lower memory requirements, and typically produce much less garbage, but can lead to complex code and tortuously nested `if` statements, or lots of boiler-plate code to create state-machines.
 
 Inspired by some recent work speeding up XML parsing in a slow Android application, `dsl4xml` is my free-time thought-experiment with the following aims:
 
