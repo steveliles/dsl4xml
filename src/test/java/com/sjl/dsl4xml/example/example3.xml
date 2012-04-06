@@ -1,0 +1,13 @@
+<hobbit>
+  <name firstname="Frodo" surname="Baggins"/>
+  <dob>11400930</dob>
+  <address>
+    <house>
+	  <name>Bag End</name>
+	  <number></number>
+	</house>
+ 	<street>Bagshot Row</street>
+ 	<town>Hobbiton</town>
+ 	<country>The Shire</country>
+  </address>
+</hobbit>

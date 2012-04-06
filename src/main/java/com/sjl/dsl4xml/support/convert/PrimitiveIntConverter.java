@@ -6,7 +6,7 @@ public class PrimitiveIntConverter implements Converter<Integer> {
 
 	@Override
 	public boolean canConvertTo(Class<?> aClass) {
-		return Integer.TYPE.isAssignableFrom(aClass);
+		return aClass.isAssignableFrom(Integer.TYPE);
 	}
 
 	@Override

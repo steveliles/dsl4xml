@@ -1,8 +1,11 @@
 package com.sjl.dsl4xml;
 
 import java.io.*;
+import java.util.*;
 
 import org.xmlpull.v1.*;
+
+import com.sjl.dsl4xml.support.*;
 
 public class DocumentMarshaller<T> {
 
@@ -25,6 +28,7 @@ public class DocumentMarshaller<T> {
 	private XmlPullParserFactory factory;
 	private Marshaller[] mappers;
 	private Class<T> resultType;
+	private Converter<?>[] converters;
 	
 	public DocumentMarshaller(Class<T> aClass) {
 		resultType = aClass;
@@ -34,6 +38,14 @@ public class DocumentMarshaller<T> {
 			throw new XmlMarshallingException(anExc);
 		}
 	}
+	
+	public void registerConverters(Converter<?>... aConverters) {
+		List<Converter<?>> _converters = new ArrayList<Converter<?>>();
+		_converters.addAll(Arrays.asList(aConverters));
+		if (converters != null)
+			_converters.addAll(Arrays.asList(converters));
+		converters = _converters.toArray(new Converter<?>[_converters.size()]);
+	}
 
 	public DocumentMarshaller<T> to(Marshaller... aMappers) {
 		mappers = aMappers;
@@ -41,15 +53,18 @@ public class DocumentMarshaller<T> {
 	}
 	
 	public T map(InputStream anInputStream, String aCharSet) {
-		return map(newReader(anInputStream, aCharSet));
+		return marshall(newReader(anInputStream, aCharSet));
 	}
 	
-	public T map(Reader aReader)
+	public T marshall(Reader aReader)
 	throws XmlMarshallingException {
 		try {
 			XmlPullParser _p = factory.newPullParser();
 			_p.setInput(aReader);
+			
 		    MarshallingContext _ctx = new MarshallingContext(_p);
+		    if (converters != null)
+		    	_ctx.registerConverters(converters);
 		    _ctx.push(resultType.newInstance());
 		    
 		    try
