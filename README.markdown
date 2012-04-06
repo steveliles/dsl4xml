@@ -216,8 +216,3 @@ Marshalling code:
 		
 		return _marshaller;
 	}
-	
-<script 
-  type="text/javascript" language="javascript" 
-  src="http://steveliles.github.com/blog/blog.nocache.js">
-</script>
