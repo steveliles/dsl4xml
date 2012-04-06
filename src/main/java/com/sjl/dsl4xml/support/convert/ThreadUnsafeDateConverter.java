@@ -15,11 +15,11 @@ import com.sjl.dsl4xml.support.*;
  * 
  * @author steve
  */
-public class UnsafeDateConverter implements Converter<Date> {
+public class ThreadUnsafeDateConverter implements Converter<Date> {
 
 	private DateFormat dateFormat;
 	
-	public UnsafeDateConverter(String aDateFormatPattern) {
+	public ThreadUnsafeDateConverter(String aDateFormatPattern) {
 		dateFormat = new SimpleDateFormat(aDateFormatPattern);
 	}
 	

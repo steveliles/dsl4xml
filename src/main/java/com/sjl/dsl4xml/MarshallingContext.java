@@ -35,7 +35,7 @@ public final class MarshallingContext {
 			new CharacterConverter(),
 			new FloatConverter(),
 			new DoubleConverter(),
-			new IntegerConverter(),
+			new ClassConverter(),
 			new StringConverter()
 		);
 	}
