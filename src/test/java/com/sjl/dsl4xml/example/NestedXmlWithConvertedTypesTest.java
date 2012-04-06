@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.convert.*;
 
-public class NestedXmlWithConvertedTypes {
+public class NestedXmlWithConvertedTypesTest {
 
 	@Test
 	public void mapsHobbitNameCorrectly()
