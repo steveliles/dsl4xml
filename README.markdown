@@ -172,3 +172,47 @@ Marshalling code:
             return marshaller.marshall(aReader);
 	    }
 	}
+	
+### Deeper tag nesting, and type conversion
+
+XML:
+
+	<hobbit>
+	  <name firstname="Frodo" surname="Baggins"/>
+	  <dob>11400930</dob>
+	  <address>
+	    <house>
+		  <name>Bag End</name>
+		  <number></number>
+		</house>
+	 	<street>Bagshot Row</street>
+	 	<town>Hobbiton</town>
+	 	<country>The Shire</country>
+	  </address>
+	</hobbit>
+	
+POJO's: [See the source-code of the test-case](https://github.com/steveliles/dsl4xml/commit/ad2141df218a776ebd68a75072feab16a5221fd5#diff-4)
+	
+Marshalling code:
+
+	private static DocumentMarshaller<Hobbit> newMarshaller() {
+		DocumentMarshaller<Hobbit> _marshaller = mappingOf(Hobbit.class).to(
+			tag("name", Name.class).with(
+				attributes("firstname", "surname")
+			),
+			tag("dob").withCData(),
+			tag("address", Address.class).with(
+				tag("house", Address.House.class).with(
+					tag("name").withCData(),
+					tag("number").withCData()
+				),
+				tag("street").withCData(),
+				tag("town").withCData(),
+				tag("country").withCData()
+			)
+		);
+		
+		_marshaller.registerConverters(new UnsafeDateConverter("yyyyMMdd"));
+		
+		return _marshaller;
+	}
