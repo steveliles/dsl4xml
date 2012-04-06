@@ -19,9 +19,24 @@ public final class MarshallingContext {
 		converters = new ArrayList<Converter<?>>();
 		
 		registerConverters(
-			new StringConverter(),
+			new PrimitiveBooleanConverter(),
+			new PrimitiveByteConverter(),
+			new PrimitiveShortConverter(),
 			new PrimitiveIntConverter(),
-			new IntegerConverter()
+			new PrimitiveLongConverter(),
+			new PrimitiveCharConverter(),
+			new PrimitiveFloatConverter(),
+			new PrimitiveDoubleConverter(),
+			new BooleanConverter(),
+			new ByteConverter(),
+			new ShortConverter(),
+			new IntegerConverter(),
+			new LongConverter(),
+			new CharacterConverter(),
+			new FloatConverter(),
+			new DoubleConverter(),
+			new IntegerConverter(),
+			new StringConverter()
 		);
 	}
 	
