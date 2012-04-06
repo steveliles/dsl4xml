@@ -1,48 +1,31 @@
 package com.sjl.dsl4xml;
 
-import java.lang.reflect.*;
-
 import com.sjl.dsl4xml.support.*;
 
 public class AttributesMarshaller implements Marshaller {
 
-	private AttributeMutator[] mutators;
+	private String[] attributeNames;
+	private ValueSetter[] mutators;
 	
 	public AttributesMarshaller(String... anAttributeNames) {
-		mutators = new AttributeMutator[anAttributeNames.length];
-		for (int i=0; i<anAttributeNames.length; i++) {
-			mutators[i] = new AttributeMutator(anAttributeNames[i]);
-		}
+		attributeNames = anAttributeNames;
+		mutators = new ValueSetter[anAttributeNames.length];
 	}
 	
 	@Override
 	public boolean map(MarshallingContext aContext) {
-		for (AttributeMutator _am : mutators) {
-			_am.mutate(
-				aContext.peek(),
-				aContext.getAttributeValue(_am.attributeName)
+		Object _currentContext = aContext.peek();
+		for (int i=0; i<attributeNames.length; i++) {
+			
+			if (mutators[i] == null) {
+				mutators[i] = new ValueSetter(aContext, _currentContext.getClass(), attributeNames[i]);
+			}
+			
+			mutators[i].invoke(
+				_currentContext,
+				aContext.getAttributeValue(attributeNames[i])
 			);
 		}
 		return false;
-	}
-	
-	class AttributeMutator {
-		private String attributeName;
-		private Method mutator;
-		public AttributeMutator(String anAttributeName) {
-			attributeName = anAttributeName;
-		}
-		
-		public void mutate(Object anObject, String aValue) {
-			if (mutator == null) {
-				mutator = Classes.getMutatorMethod(anObject.getClass(), attributeName);
-			}
-			
-			try {
-				mutator.invoke(anObject, aValue);
-			} catch (Exception anExc) {
-				throw new XmlMarshallingException(anExc);
-			}
-		}
 	}
 }

@@ -54,7 +54,7 @@ public class SimpleXmlWithAttributesTest {
 	public static class Hobbit {
 		private String firstname;
 		private String surname;
-		private String age;
+		private int age;
 		
 		public String getFirstname() {
 			return firstname;
@@ -72,11 +72,11 @@ public class SimpleXmlWithAttributesTest {
 			surname = aSurname;
 		}
 		
-		public String getAge() {
+		public int getAge() {
 			return age;
 		}
 		
-		public void setAge(String aAge) {
+		public void setAge(int aAge) {
 			age = aAge;
 		}
 	}

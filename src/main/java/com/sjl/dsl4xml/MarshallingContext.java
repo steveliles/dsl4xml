@@ -4,14 +4,30 @@ import java.util.*;
 
 import org.xmlpull.v1.*;
 
+import com.sjl.dsl4xml.support.*;
+import com.sjl.dsl4xml.support.convert.*;
+
 public final class MarshallingContext {
 
 	private XmlPullParser parser;
 	private Stack<Object> stack;
+	private List<Converter<?>> converters;
 	
 	public MarshallingContext(XmlPullParser aParser) {
 		stack = new Stack<Object>();
 		parser = aParser;
+		converters = new ArrayList<Converter<?>>();
+		
+		registerConverters(
+			new StringConverter(),
+			new PrimitiveIntConverter(),
+			new IntegerConverter()
+		);
+	}
+	
+	public void registerConverters(Converter<?>... aConverters) {
+		// push any registered converters on ahead of existing converters (allows simple override)
+		converters.addAll(0, Arrays.asList(aConverters));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -92,5 +108,15 @@ public final class MarshallingContext {
 		} catch (Exception anExc) {
 			throw new XmlMarshallingException(anExc);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> Converter<T> getConverter(Class<T> aArgType) {
+		for (Converter<?> _c : converters) {
+			if (_c.canConvertTo(aArgType)) {
+				return (Converter<T>) _c;
+			}
+		}
+		throw new RuntimeException("No converter registered that can convert to " + aArgType);
 	}
 }
