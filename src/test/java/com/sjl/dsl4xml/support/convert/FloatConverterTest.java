@@ -31,7 +31,13 @@ public class FloatConverterTest {
 	@Test
 	public void convertsLargeRealValues() {
 		FloatConverter _c = new FloatConverter();
-		Assert.assertEquals(new Float("65535.65535"), _c.convert("65535.65535"));
+		Assert.assertEquals(new Float(65535.65535f), _c.convert("65535.65535"));
+	}
+	
+	@Test
+	public void convertsNegativeRealValues() {
+		FloatConverter _c = new FloatConverter();
+		Assert.assertEquals(new Float(-65535.65535f), _c.convert("-65535.65535"));
 	}
 	
 	@Test

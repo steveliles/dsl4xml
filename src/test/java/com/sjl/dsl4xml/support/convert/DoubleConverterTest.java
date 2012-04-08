@@ -31,7 +31,13 @@ public class DoubleConverterTest {
 	@Test
 	public void convertsLargeRealValues() {
 		DoubleConverter _c = new DoubleConverter();
-		Assert.assertEquals(new Double((double)Integer.MAX_VALUE + 0.012345f), _c.convert("2147483647.012345"));
+		Assert.assertEquals(new Double(2147483647.012345d), _c.convert("2147483647.012345"));
+	}
+	
+	@Test
+	public void convertsLargeNegativeRealValues() {
+		DoubleConverter _c = new DoubleConverter();
+		Assert.assertEquals(new Double(9999999999.9999d), _c.convert("9999999999.9999"));
 	}
 	
 	@Test

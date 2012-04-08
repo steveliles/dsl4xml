@@ -23,6 +23,12 @@ public class IntegerConverterTest {
 	}
 	
 	@Test
+	public void convertsLargeNegativeOrdinalValues() {
+		IntegerConverter _c = new IntegerConverter();
+		Assert.assertEquals(new Integer(Integer.MIN_VALUE), _c.convert("-2147483648"));
+	}
+	
+	@Test
 	public void throwsExceptionOnNumbersGreaterThanIntegerMaxValue() {
 		IntegerConverter _c = new IntegerConverter();
 		try {
