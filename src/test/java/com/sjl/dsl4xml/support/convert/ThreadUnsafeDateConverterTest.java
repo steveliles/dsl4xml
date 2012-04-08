@@ -32,7 +32,7 @@ public class ThreadUnsafeDateConverterTest {
 	@Test
 	public void testThrowsExceptionWhenInvalidDateFormatPattern() throws Exception {
 		try {
-			ThreadUnsafeDateConverter _c = new ThreadUnsafeDateConverter("fnar");
+			new ThreadUnsafeDateConverter("fnar");
 			Assert.fail("Expected an exception");
 		} catch (IllegalArgumentException anExc) {
 			// good
