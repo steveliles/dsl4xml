@@ -106,6 +106,10 @@ public final class ReadingContext {
 		return parser.getAttributeValue(null, anAttributeName);
 	}
 	
+	public String getAttributeValue(int anIndex) {
+		return parser.getAttributeValue(anIndex);
+	}
+	
 	public boolean isTextNode() {
 		try {
 			return parser.getEventType() == XmlPullParser.TEXT;

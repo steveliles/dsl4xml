@@ -2,12 +2,12 @@ package com.sjl.dsl4xml;
 
 import com.sjl.dsl4xml.support.*;
 
-public class AttributesReader implements XmlReader {
+public class NamedAttributesReader implements XmlReader {
 
 	private String[] attributeNames;
 	private ValueSetter[] mutators;
 	
-	public AttributesReader(String... anAttributeNames) {
+	public NamedAttributesReader(String... anAttributeNames) {
 		attributeNames = anAttributeNames;
 		mutators = new ValueSetter[anAttributeNames.length];
 	}

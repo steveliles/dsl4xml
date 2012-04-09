@@ -21,8 +21,23 @@ public class DocumentReader<T> {
 		return new TagReader<R>(aTagName, aContextType);
 	}
 	
-	public static AttributesReader attributes(String... anAttributeNames) {
-		return new AttributesReader(anAttributeNames);
+	/**
+	 * @param array of attribute names
+	 * @return a NamedAttributesReader that looks up attribute values by name.
+	 * Useful if some attributes are being ignored.
+	 */
+	public static NamedAttributesReader attributes(String... anAttributeNames) {
+		return new NamedAttributesReader(anAttributeNames);
+	}
+	
+	/**
+	 * @param array of setter-method names (without the prefix)
+	 * @return an OrderedAttributesReader that should be marginally quicker 
+	 * than a NamedAttributesReader due to attribute value lookup by index
+	 * rather than by name. 
+	 */
+	public static OrderedAttributesReader attributesInOrder(String... aSetterMethodNames) {
+		return new OrderedAttributesReader(aSetterMethodNames);
 	}
 	
 	private XmlPullParserFactory factory;
