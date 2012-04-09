@@ -4,12 +4,15 @@ DOM parsing tends to make for code that is easy to read and write, but is very s
 
 SAX and "pull" parsing tend to be very fast, have significantly lower memory requirements, and typically produce much less garbage, but can lead to complex code and tortuously nested `if` statements, or lots of boiler-plate code to create state-machines.
 
+JAXB and other xml-binding tools and frameworks can require dependencies on large libraries, or additional compile-time steps.
+
 Inspired by some recent work speeding up XML parsing in a slow Android application, `dsl4xml` is an experiment with the following aims:
 
 1. To make _readable_, maintainable, declarative code that unmarshalls XML documents to Java objects.
-2. To make unmarshalling XML documents to Java objects very fast (near pull-parsing speeds).
+2. To make unmarshalling XML documents to Java objects very fast (sax/pull-parsing speeds).
 3. To avoid polluting model classes with metadata about xml parsing (no annotations).
 4. To avoid additional build-time steps (code generators, etc).
+5. Very small jar and no additional dependencies for Android.
 
 It works by providing a thin DSL wrapper around a Pull-Parser to declaratively construct a state-machine that unmarshalls XML documents into Java objects. 
 
