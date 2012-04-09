@@ -24,6 +24,7 @@ public class TwitterFeedTest {
 					attribute("type"),
 					pcdataMappedTo("value")
 				),
+				tag("twitter:lang").withPCDataMappedTo("language"),
 				tag("author", Author.class).with(
 					tag("name"),
 					tag("uri")
@@ -76,6 +77,7 @@ public class TwitterFeedTest {
 			_first.getAuthor().getUri()
 		);
 		
+		Assert.assertEquals("en", _first.getLanguage());
 	}
 	
 	private Tweets marshallTestDocumentToTweets() {
@@ -119,7 +121,7 @@ public class TwitterFeedTest {
 		public String title;
 		public Date published;
 		public Content content;
-		private Language language;
+		private String language;
 		private Author author;
 		
 		public String getTitle() {
@@ -146,11 +148,11 @@ public class TwitterFeedTest {
 			content = aContent;
 		}
 		
-		public Language getLanguage() {
+		public String getLanguage() {
 			return language;
 		}
 		
-		public void setLanguage(Language aLanguage) {
+		public void setLanguage(String aLanguage) {
 			language = aLanguage;
 		}
 		
@@ -160,21 +162,6 @@ public class TwitterFeedTest {
 		
 		public void setAuthor(Author aAuthor) {
 			author = aAuthor;
-		}
-	}
-	
-
-	public static class Language {
-		public String code;
-		
-		public Language() {}
-		
-		public String getCode() {
-			return code;
-		}
-		
-		public void setCode(String aCode) {
-			code = aCode;
 		}
 	}
 	

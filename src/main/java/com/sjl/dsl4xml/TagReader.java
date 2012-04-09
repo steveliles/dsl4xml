@@ -58,8 +58,8 @@ public class TagReader<T> implements XmlReader {
 		if (mappers == null) {
 			withPCDataMappedTo(tagName);
 		}
-		
-		if (aContext.isStartTagNamed(tagName)) {	
+
+		if (aContext.isStartTagNamed(tagName)) {		
 			maybePushNewContextObject(aContext);
 			
 			try

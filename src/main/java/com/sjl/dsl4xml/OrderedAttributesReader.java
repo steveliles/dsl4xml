@@ -17,17 +17,17 @@ public class OrderedAttributesReader implements XmlReader {
 		if (aContext.isStartTag()) {
 			Object _currentContext = aContext.peek();
 			for (int i=0; i<methodNames.length; i++) {
-				
-				if (mutators[i] == null) {
-					mutators[i] = new ValueSetter(aContext, _currentContext.getClass(), methodNames[i]);
-				}
-				
-				mutators[i].invoke(
-					_currentContext,
-					aContext.getAttributeValue(i)
-				);
+				ValueSetter _vs = getValueSetter(i, aContext, _currentContext.getClass());
+				_vs.invoke(_currentContext, aContext.getAttributeValue(i));
 			}
 		}
 		return false;
+	}
+	
+	private ValueSetter getValueSetter(int anIndex, ReadingContext aContext, Class<?> aCurrentContextClass) {
+		if (mutators[anIndex] == null) {
+			mutators[anIndex] = new ValueSetter(aContext, aCurrentContextClass, methodNames[anIndex]);
+		}
+		return mutators[anIndex];
 	}
 }

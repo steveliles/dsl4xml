@@ -17,17 +17,17 @@ public class NamedAttributesReader implements XmlReader {
 		if (aContext.isStartTag()) {
 			Object _currentContext = aContext.peek();
 			for (int i=0; i<attributeNames.length; i++) {
-				
-				if (mutators[i] == null) {
-					mutators[i] = new ValueSetter(aContext, _currentContext.getClass(), attributeNames[i]);
-				}
-				
-				mutators[i].invoke(
-					_currentContext,
-					aContext.getAttributeValue(attributeNames[i])
-				);
+				ValueSetter _vs = getValueSetter(i, aContext, _currentContext.getClass());
+				_vs.invoke(_currentContext, aContext.getAttributeValue(attributeNames[i]));
 			}
 		}
 		return false;
+	}
+	
+	private ValueSetter getValueSetter(int anIndex, ReadingContext aContext, Class<?> aCurrentContextClass) {
+		if (mutators[anIndex] == null) {
+			mutators[anIndex] = new ValueSetter(aContext, aCurrentContextClass, attributeNames[anIndex]);
+		}
+		return mutators[anIndex];
 	}
 }
