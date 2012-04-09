@@ -77,7 +77,7 @@ public class DocumentReader<T> {
 			XmlPullParser _p = factory.newPullParser();
 			_p.setInput(aReader);
 			
-		    ReadingContext _ctx = new ReadingContext(_p);
+		    PullParserReadingContext _ctx = new PullParserReadingContext(_p);
 		    if (converters != null)
 		    	_ctx.registerConverters(converters);
 		    _ctx.push(resultType.newInstance());
