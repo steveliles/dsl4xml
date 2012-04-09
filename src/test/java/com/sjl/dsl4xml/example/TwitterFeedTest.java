@@ -22,7 +22,11 @@ public class TwitterFeedTest {
 				tag("title"),
 				tag("content", Content.class).
 					withPCDataMappedTo("value").
-					with(attributes("type"))
+					with(attributes("type")),
+				tag("author", Author.class).with(
+					tag("name"),
+					tag("uri")
+				)
 			)
 		);
 		
@@ -60,6 +64,17 @@ public class TwitterFeedTest {
 			">#UML</a></em>", 
 			_first.getContent().getValue()
 		);
+		
+		Assert.assertEquals(
+			"addinquy (Christophe Addinquy)",
+			_first.getAuthor().getName()
+		);
+		
+		Assert.assertEquals(
+			"http://twitter.com/addinquy",
+			_first.getAuthor().getUri()
+		);
+		
 	}
 	
 	private Tweets marshallTestDocumentToTweets() {
@@ -99,6 +114,55 @@ public class TwitterFeedTest {
 		}
 	}
 	
+	public static class Tweet {
+		public String title;
+		public Date published;
+		public Content content;
+		private Language language;
+		private Author author;
+		
+		public String getTitle() {
+			return title;
+		}
+		
+		public void setTitle(String aTitle) {
+			title = aTitle;
+		}
+		
+		public Date getPublished() {
+			return published;
+		}
+		
+		public void setPublished(Date aDate) {
+			published = aDate;
+		}
+		
+		public Content getContent() {
+			return content;
+		}
+		
+		public void setContent(Content aContent) {
+			content = aContent;
+		}
+		
+		public Language getLanguage() {
+			return language;
+		}
+		
+		public void setLanguage(Language aLanguage) {
+			language = aLanguage;
+		}
+		
+		public Author getAuthor() {
+			return author;
+		}
+		
+		public void setAuthor(Author aAuthor) {
+			author = aAuthor;
+		}
+	}
+	
+
 	public static class Language {
 		public String code;
 		
@@ -134,42 +198,26 @@ public class TwitterFeedTest {
 		}
 	}
 	
-	public static class Tweet {
-		public String title;
-		public Date published;
-		public Content content;
-		private Language language;
+	public static class Author {
+		private String name;
+		private String uri;
 		
-		public String getTitle() {
-			return title;
+		public Author() {}
+		
+		public String getName() {
+			return name;
 		}
 		
-		public void setTitle(String aTitle) {
-			title = aTitle;
+		public void setName(String aName) {
+			name = aName;
 		}
 		
-		public Date getPublished() {
-			return published;
+		public String getUri() {
+			return uri;
 		}
 		
-		public void setPublished(Date aDate) {
-			published = aDate;
-		}
-		
-		public Content getContent() {
-			return content;
-		}
-		
-		public void setContent(Content aContent) {
-			content = aContent;
-		}
-		
-		public Language getLanguage() {
-			return language;
-		}
-		
-		public void setLanguage(Language aLanguage) {
-			language = aLanguage;
+		public void setUri(String aUri) {
+			uri = aUri;
 		}
 	}
 }
