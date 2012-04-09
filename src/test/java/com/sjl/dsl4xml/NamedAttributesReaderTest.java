@@ -25,6 +25,11 @@ public class NamedAttributesReaderTest {
 		intConverter = (Converter<Integer>)mockery.mock(Converter.class, "int-converter");
 	}
 	
+	@After
+	public void tearDown() {
+		mockery.assertIsSatisfied();
+	}
+	
 	@Test
 	public void readsSingleAttributeByName() {
 		mockery.checking(new Expectations(){{
@@ -58,7 +63,7 @@ public class NamedAttributesReaderTest {
 			oneOf(model).setIntAttr(12);
 		}});
 		
-		NamedAttributesReader _nar = new NamedAttributesReader("stringAttr");
+		NamedAttributesReader _nar = new NamedAttributesReader("stringAttr", "intAttr");
 		_nar.read(ctx);
 	}
 	
