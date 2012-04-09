@@ -7,7 +7,7 @@ public class Classes {
 
 	public static <T> Method getMutatorMethod(Class<T> aClass, String aFieldName) {
 		String _methodSuffix = upperCaseFirstLetter(aFieldName);
-		return getMethod(aClass, _methodSuffix, "set", "add", "insert");
+		return getMethod(aClass, _methodSuffix, "set", "add", "insert", "put");
 	}
 	
 	private static String upperCaseFirstLetter(String aString) {
@@ -29,7 +29,12 @@ public class Classes {
 		for (String _pre : aPrefixes) {
 			_msg += _pre + aSuffix + ",";
 		}
-		throw new RuntimeException(_msg);
+		throw new NoSuitableMethodException(_msg);
 	}
 	
+	static class NoSuitableMethodException extends RuntimeException {
+		public NoSuitableMethodException(String aMessage) {
+			super(aMessage);
+		}
+	}
 }
