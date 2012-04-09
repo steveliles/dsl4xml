@@ -1,4 +1,4 @@
-# Easy and fast marshalling of XML to Java
+# Easy and fast unmarshalling of XML to Java
 
 DOM parsing tends to make for code that is easy to read and write, but is very slow, memory intensive, and generates heaps of garbage. 
 
@@ -6,14 +6,14 @@ SAX and "pull" parsing tend to be very fast, have significantly lower memory req
 
 Inspired by some recent work speeding up XML parsing in a slow Android application, `dsl4xml` is an experiment with the following aims:
 
-1. To make _readable_, maintainable, declarative code that marshalls XML documents to Java objects.
-2. To make marshalling XML documents to Java objects very fast (near pull-parsing speeds).
+1. To make _readable_, maintainable, declarative code that unmarshalls XML documents to Java objects.
+2. To make unmarshalling XML documents to Java objects very fast (near pull-parsing speeds).
 3. To avoid polluting model classes with metadata about xml parsing (no annotations).
 4. To avoid additional build-time steps (code generators, etc).
 
-It works by providing a thin DSL wrapper around a Pull-Parser to declaratively construct a state-machine that marshalls XML documents into Java objects. 
+It works by providing a thin DSL wrapper around a Pull-Parser to declaratively construct a state-machine that unmarshalls XML documents into Java objects. 
 
-The DSL mirrors the structure of the XML document itself, making it very easy to write (and importantly to _read_ and _maintain_) XML marshalling code.
+The DSL mirrors the structure of the XML document itself, making it very easy to write (and importantly to _read_ and _maintain_) XML unmarshalling code.
 
 Boiler-plate is minimised through use of reflection, which does of course incur some performance penalty. The penalty is reduced where possible by caching reflectively gleaned information.
 
@@ -69,15 +69,15 @@ And some simple model objects we want to marshall to:
     	}
     }
 
-We can marshall the XML to those model objects using the following simple Java code:
+We can unmarshall the XML to those model objects using the following simple Java code:
 
-    import static com.sjl.dsl4xml.DocumentMarshaller.*;
+    import static com.sjl.dsl4xml.DocumentReader.*;
 
-    class BooksMarshaller {
-	    private DocumentMarshaller<Books> marshaller;
+    class BooksReader {
+	    private DocumentReader<Books> reader;
 
-	    public BooksMarshaller() {
-	        marshaller = mappingOf(Books.class).to(
+	    public BooksReader() {
+	        reader = mappingOf(Books.class).to(
 		        tag("book", Book.class).with(
 	               tag("title"),
 	               tag("synopsis")
@@ -85,8 +85,8 @@ We can marshall the XML to those model objects using the following simple Java c
 		    );
 	    }
 
-        public Books marshall(Reader aReader) {
-            return marshaller.marshall(aReader);
+        public Books read(Reader aReader) {
+            return reader.read(aReader);
 	    }
 	}
 	
@@ -153,23 +153,23 @@ POJO's:
 		}
 	}
 	
-Marshalling code:
+Unmarshalling code:
 
-	import static com.sjl.dsl4xml.DocumentMarshaller.*;
+	import static com.sjl.dsl4xml.DocumentReader.*;
 
-    class HobbitsMarshaller {
-	    private DocumentMarshaller<Hobbits> marshaller;
+    class HobbitsReader {
+	    private DocumentReader<Hobbits> Reader;
 
-	    public HobbitsMarshaller() {
-	        marshaller = mappingOf(Hobbits.class).to(
+	    public HobbitsReader() {
+	        reader = mappingOf(Hobbits.class).to(
 		        tag("hobbit", Hobbit.class).with(
 	               attributes("firstname", "surname", "age")
 			    )
 		    );
 	    }
 
-        public Hobbits marshall(Reader aReader) {
-            return marshaller.marshall(aReader);
+        public Hobbits read(Reader aReader) {
+            return reader.read(aReader);
 	    }
 	}
 	
@@ -193,10 +193,10 @@ XML:
 	
 POJO's: [See the source-code of the test-case](https://github.com/steveliles/dsl4xml/commit/ad2141df218a776ebd68a75072feab16a5221fd5#diff-4)
 	
-Marshalling code:
+Unmarshalling code:
 
-	private static DocumentMarshaller<Hobbit> newMarshaller() {
-		DocumentMarshaller<Hobbit> _marshaller = mappingOf(Hobbit.class).to(
+	private static DocumentReader<Hobbit> newReader() {
+		DocumentReader<Hobbit> _reader = mappingOf(Hobbit.class).to(
 			tag("name", Name.class).with(
 				attributes("firstname", "surname")
 			),
@@ -212,7 +212,7 @@ Marshalling code:
 			)
 		);
 		
-		_marshaller.registerConverters(new UnsafeDateConverter("yyyyMMdd"));
+		_reader.registerConverters(new UnsafeDateConverter("yyyyMMdd"));
 		
-		return _marshaller;
+		return _reader;
 	}
