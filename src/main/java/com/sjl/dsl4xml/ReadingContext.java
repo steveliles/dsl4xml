@@ -7,13 +7,13 @@ import org.xmlpull.v1.*;
 import com.sjl.dsl4xml.support.*;
 import com.sjl.dsl4xml.support.convert.*;
 
-public final class MarshallingContext {
+public final class ReadingContext {
 
 	private XmlPullParser parser;
 	private Stack<Object> stack;
 	private List<Converter<?>> converters;
 	
-	public MarshallingContext(XmlPullParser aParser) {
+	public ReadingContext(XmlPullParser aParser) {
 		stack = new Stack<Object>();
 		parser = aParser;
 		converters = new ArrayList<Converter<?>>();
@@ -67,7 +67,7 @@ public final class MarshallingContext {
 		try {
 			return parser.getEventType() != XmlPullParser.END_DOCUMENT;
 		} catch (XmlPullParserException anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 	
@@ -75,7 +75,7 @@ public final class MarshallingContext {
 		try {
 			return parser.next();
 		} catch (Exception anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 
@@ -90,7 +90,7 @@ public final class MarshallingContext {
 				(aTagName.equals(parser.getName()))
 			);
 		} catch (XmlPullParserException anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 
@@ -98,7 +98,7 @@ public final class MarshallingContext {
 		try {
 			return parser.getEventType() == XmlPullParser.START_TAG;
 		} catch (XmlPullParserException anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 	
@@ -110,7 +110,7 @@ public final class MarshallingContext {
 		try {
 			return parser.getEventType() == XmlPullParser.TEXT;
 		} catch (XmlPullParserException anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 
@@ -121,7 +121,7 @@ public final class MarshallingContext {
 				(aTagName.equals(parser.getName()))
 			);
 		} catch (Exception anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 

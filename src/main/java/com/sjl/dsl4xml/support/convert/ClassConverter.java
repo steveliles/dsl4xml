@@ -15,7 +15,7 @@ public class ClassConverter implements Converter<Class<?>> {
 		try {
 			return ((aValue == null) || ("".equals(aValue)) ? null : Class.forName(aValue));
 		} catch (ClassNotFoundException anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 

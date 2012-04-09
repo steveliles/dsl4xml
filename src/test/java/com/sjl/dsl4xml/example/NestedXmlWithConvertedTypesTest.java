@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.DocumentMarshaller.*;
+import static com.sjl.dsl4xml.DocumentReader.*;
 
 import java.io.*;
 import java.text.*;
@@ -50,7 +50,7 @@ public class NestedXmlWithConvertedTypesTest {
 	}
 	
 	private Hobbit marshallTestDocumentToHobbit() {
-		return newMarshaller().map(getTestInput(), "utf-8");
+		return newMarshaller().read(getTestInput(), "utf-8");
 	}
 	
 	private InputStream getTestInput() {
@@ -58,12 +58,12 @@ public class NestedXmlWithConvertedTypesTest {
 	}
 	
 	/**
-	 * @return a DocumentMarshaller that can map documents like example3.xml
+	 * @return a DocumentReader that can map documents like example3.xml
 	 * to the Hobbit class declared below. This includes nested Address fields
 	 * with nested House fields, and fields that need type conversion (int's and Date's).
 	 */
-	private static DocumentMarshaller<Hobbit> newMarshaller() {
-		DocumentMarshaller<Hobbit> _result = mappingOf(Hobbit.class).to(
+	private static DocumentReader<Hobbit> newMarshaller() {
+		DocumentReader<Hobbit> _result = mappingOf(Hobbit.class).to(
 			tag("name", Name.class).with(
 				attributes("firstname", "surname")
 			),

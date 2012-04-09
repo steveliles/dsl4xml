@@ -7,35 +7,35 @@ import org.xmlpull.v1.*;
 
 import com.sjl.dsl4xml.support.*;
 
-public class DocumentMarshaller<T> {
+public class DocumentReader<T> {
 
-	public static <R> DocumentMarshaller<R> mappingOf(Class<R> aClass) {
-		return new DocumentMarshaller<R>(aClass);
+	public static <R> DocumentReader<R> mappingOf(Class<R> aClass) {
+		return new DocumentReader<R>(aClass);
 	}
 	
-	public static <R> TagMarshaller<R> tag(String aTagName) {
-		return new TagMarshaller<R>(aTagName);
+	public static <R> TagReader<R> tag(String aTagName) {
+		return new TagReader<R>(aTagName);
 	}
 	
-	public static <R> TagMarshaller<R> tag(String aTagName, Class<R> aContextType) {
-		return new TagMarshaller<R>(aTagName, aContextType);
+	public static <R> TagReader<R> tag(String aTagName, Class<R> aContextType) {
+		return new TagReader<R>(aTagName, aContextType);
 	}
 	
-	public static AttributesMarshaller attributes(String... anAttributeNames) {
-		return new AttributesMarshaller(anAttributeNames);
+	public static AttributesReader attributes(String... anAttributeNames) {
+		return new AttributesReader(anAttributeNames);
 	}
 	
 	private XmlPullParserFactory factory;
-	private Marshaller[] mappers;
+	private XmlReader[] mappers;
 	private Class<T> resultType;
 	private Converter<?>[] converters;
 	
-	public DocumentMarshaller(Class<T> aClass) {
+	public DocumentReader(Class<T> aClass) {
 		resultType = aClass;
 		try {
 			factory = XmlPullParserFactory.newInstance();
 		} catch (XmlPullParserException anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 	
@@ -47,22 +47,22 @@ public class DocumentMarshaller<T> {
 		converters = _converters.toArray(new Converter<?>[_converters.size()]);
 	}
 
-	public DocumentMarshaller<T> to(Marshaller... aMappers) {
+	public DocumentReader<T> to(XmlReader... aMappers) {
 		mappers = aMappers;
 		return this;
 	}
 	
-	public T map(InputStream anInputStream, String aCharSet) {
-		return marshall(newReader(anInputStream, aCharSet));
+	public T read(InputStream anInputStream, String aCharSet) {
+		return read(newReader(anInputStream, aCharSet));
 	}
 	
-	public T marshall(Reader aReader)
-	throws XmlMarshallingException {
+	public T read(Reader aReader)
+	throws XmlReadingException {
 		try {
 			XmlPullParser _p = factory.newPullParser();
 			_p.setInput(aReader);
 			
-		    MarshallingContext _ctx = new MarshallingContext(_p);
+		    ReadingContext _ctx = new ReadingContext(_p);
 		    if (converters != null)
 		    	_ctx.registerConverters(converters);
 		    _ctx.push(resultType.newInstance());
@@ -71,9 +71,9 @@ public class DocumentMarshaller<T> {
 	        {
 	            while (_ctx.hasMoreTags())
 	            {                   
-	                for (Marshaller _m : mappers)
+	                for (XmlReader _m : mappers)
 	                {                 
-	                    if (_m.map(_ctx))
+	                    if (_m.read(_ctx))
 	                    {                            
 	                        break;
 	                    }
@@ -84,18 +84,18 @@ public class DocumentMarshaller<T> {
 	            }
 	            return _ctx.peek();
 	        }
-	        catch (XmlMarshallingException anExc)
+	        catch (XmlReadingException anExc)
 	        {
 	            throw anExc;
 	        }
 	        catch (Exception anExc)
 	        {
-	            throw new XmlMarshallingException(anExc);
+	            throw new XmlReadingException(anExc);
 	        }
-		} catch (XmlMarshallingException anExc) {
+		} catch (XmlReadingException anExc) {
 			throw anExc;
 		} catch (Exception anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 

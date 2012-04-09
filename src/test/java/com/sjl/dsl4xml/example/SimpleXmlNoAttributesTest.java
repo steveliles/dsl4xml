@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.DocumentMarshaller.*;
+import static com.sjl.dsl4xml.DocumentReader.*;
 
 import java.io.*;
 import java.util.*;
@@ -43,8 +43,8 @@ public class SimpleXmlNoAttributesTest {
 	}
 
 	private Description marshallTestDocumentToDescription() {
-		DocumentMarshaller<Description> _m = newMarshaller();
-		return _m.map(getTestInput(), "utf-8");
+		DocumentReader<Description> _m = newMarshaller();
+		return _m.read(getTestInput(), "utf-8");
 	}
 
 	private InputStream getTestInput() {
@@ -52,10 +52,10 @@ public class SimpleXmlNoAttributesTest {
 	}
 	
 	/**
-	 * @return a DocumentMarshaller that can map documents like example1.xml
+	 * @return a DocumentReader that can map documents like example1.xml
 	 * to the Description class declared below.
 	 */
-	private static DocumentMarshaller<Description> newMarshaller() {
+	private static DocumentReader<Description> newMarshaller() {
 		return mappingOf(Description.class).to(
 			tag("description").with(
 				tag("title"),

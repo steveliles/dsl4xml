@@ -36,7 +36,7 @@ public class ThreadSafeDateConverter implements Converter<Date> {
 		try {
 			return ((aValue == null) || ("".equals(aValue))) ? null : dateFormat.get().parse(aValue);
 		} catch (ParseException anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 }

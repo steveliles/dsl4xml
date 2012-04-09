@@ -8,7 +8,7 @@ public class ValueSetter {
 	private Method method;
 	private Converter<?> converter;
 	
-	public ValueSetter(MarshallingContext aContext, Class<?> aClass, String aFieldName) {
+	public ValueSetter(ReadingContext aContext, Class<?> aClass, String aFieldName) {
 		method = getMethod(aClass, aFieldName);
 		converter = aContext.getConverter(getArgType(method));
 	}

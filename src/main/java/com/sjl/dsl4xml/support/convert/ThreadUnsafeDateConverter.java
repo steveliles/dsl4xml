@@ -8,7 +8,7 @@ import com.sjl.dsl4xml.support.*;
 
 /**
  * A Date converter that should only be used when you know that
- * the DocumentMarshaller that refers to this converter will only
+ * the DocumentReader that refers to this converter will only
  * ever be used in a single-threaded manner.
  * 
  * For multi-threaded usage, use ThreadSafeDateConverter instead.
@@ -33,7 +33,7 @@ public class ThreadUnsafeDateConverter implements Converter<Date> {
 		try {
 			return ((aValue == null) || ("".equals(aValue))) ? null : dateFormat.parse(aValue);
 		} catch (ParseException anExc) {
-			throw new XmlMarshallingException(anExc);
+			throw new XmlReadingException(anExc);
 		}
 	}
 	

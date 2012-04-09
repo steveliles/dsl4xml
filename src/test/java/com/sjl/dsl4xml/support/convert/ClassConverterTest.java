@@ -21,7 +21,7 @@ public class ClassConverterTest {
 		try {
 			_c.convert("no.such.Class");
 			Assert.fail("Expected an exception");
-		} catch (XmlMarshallingException anExc) {
+		} catch (XmlReadingException anExc) {
 			Assert.assertEquals(ClassNotFoundException.class, anExc.getCause().getClass());
 		}
 	}

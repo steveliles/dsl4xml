@@ -45,7 +45,7 @@ public class ThreadUnsafeDateConverterTest {
 		try {
 			_c.convert("boo");
 			Assert.fail("Expected an exception");
-		} catch (XmlMarshallingException anExc) {
+		} catch (XmlReadingException anExc) {
 			Assert.assertEquals(ParseException.class, anExc.getCause().getClass());
 		}
 	}
