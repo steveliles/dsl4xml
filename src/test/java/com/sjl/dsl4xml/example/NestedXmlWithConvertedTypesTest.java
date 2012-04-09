@@ -67,15 +67,15 @@ public class NestedXmlWithConvertedTypesTest {
 			tag("name", Name.class).with(
 				attributes("firstname", "surname")
 			),
-			tag("dob").withCData(),
+			tag("dob"),
 			tag("address", Address.class).with(
 				tag("house", Address.House.class).with(
-					tag("name").withCData(),
-					tag("number").withCData()
+					tag("name"),
+					tag("number")
 				),
-				tag("street").withCData(),
-				tag("town").withCData(),
-				tag("country").withCData()
+				tag("street"),
+				tag("town"),
+				tag("country")
 			)
 		);
 		

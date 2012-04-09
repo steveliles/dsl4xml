@@ -55,6 +55,10 @@ public class TagMarshaller<T> implements Marshaller {
 	
 	@Override
 	public boolean map(MarshallingContext aContext) {
+		if (mappers == null) {
+			withCDataMappedTo(tagName);
+		}
+		
 		if (aContext.isStartTagNamed(tagName)) {	
 			maybePushNewContextObject(aContext);
 			

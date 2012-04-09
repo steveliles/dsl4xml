@@ -58,7 +58,7 @@ public class SimpleXmlNoAttributesTest {
 	private static DocumentMarshaller<Description> newMarshaller() {
 		return mappingOf(Description.class).to(
 			tag("description").with(
-				tag("title").withCData(),
+				tag("title"),
 				tag("summary").with(
 					tag("p").withCDataMappedTo("paragraph")
 				)
