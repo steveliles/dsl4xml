@@ -21,21 +21,21 @@ public class TagMarshaller<T> implements Marshaller {
 		type = aType;
 	}
 	
-	public TagMarshaller<T> withCData() {
-		return withCDataMappedTo(tagName);
+	public TagMarshaller<T> withPCData() {
+		return withPCDataMappedTo(tagName);
 	}
 	
-	public TagMarshaller<T> withCDataMappedTo(final String aFieldName) {
+	public TagMarshaller<T> withPCDataMappedTo(final String aFieldName) {
 		if (mappers == null) {
 			mappers = new ArrayList<Marshaller>();
 		}
 		
-		mappers.add(new CDataMarshaller<T>(aFieldName));
+		mappers.add(new PCDataMarshaller<T>(aFieldName));
 		
 		return this;
 	}
 	
-	public TagMarshaller<T> mappingCDataTo(Marshaller aMapper) {
+	public TagMarshaller<T> mappingPCDataTo(Marshaller aMapper) {
 		if (mappers == null) {
 			mappers = new ArrayList<Marshaller>();
 		} 
@@ -56,7 +56,7 @@ public class TagMarshaller<T> implements Marshaller {
 	@Override
 	public boolean map(MarshallingContext aContext) {
 		if (mappers == null) {
-			withCDataMappedTo(tagName);
+			withPCDataMappedTo(tagName);
 		}
 		
 		if (aContext.isStartTagNamed(tagName)) {	

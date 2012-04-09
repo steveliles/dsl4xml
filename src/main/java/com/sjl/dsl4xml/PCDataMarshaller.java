@@ -2,12 +2,12 @@ package com.sjl.dsl4xml;
 
 import com.sjl.dsl4xml.support.*;
 
-public final class CDataMarshaller<T> implements Marshaller {
+public final class PCDataMarshaller<T> implements Marshaller {
 
 	private String fieldName;
 	private ValueSetter setter;
 
-	public CDataMarshaller(String aFieldName) {
+	public PCDataMarshaller(String aFieldName) {
 		fieldName = aFieldName;
 	}
 	

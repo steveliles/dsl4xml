@@ -60,7 +60,7 @@ public class SimpleXmlNoAttributesTest {
 			tag("description").with(
 				tag("title"),
 				tag("summary").with(
-					tag("p").withCDataMappedTo("paragraph")
+					tag("p").withPCDataMappedTo("paragraph")
 				)
 			)
 		);
