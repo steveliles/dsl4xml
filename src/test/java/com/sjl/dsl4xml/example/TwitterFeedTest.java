@@ -20,9 +20,10 @@ public class TwitterFeedTest {
 			tag("entry", Tweet.class).with(
 				tag("published"),
 				tag("title"),
-				tag("content", Content.class).
-					withPCDataMappedTo("value").
-					with(attributes("type")),
+				tag("content", Content.class).with(
+					attribute("type"),
+					pcdataMappedTo("value")
+				),
 				tag("author", Author.class).with(
 					tag("name"),
 					tag("uri")

@@ -30,6 +30,14 @@ public class DocumentReader<T> {
 		return new NamedAttributesReader(anAttributeNames);
 	}
 	
+	public static NamedAttributesReader attribute(String anAttributeName) {
+		return new NamedAttributesReader(anAttributeName);
+	}
+	
+	public static <T> PCDataReader<T> pcdataMappedTo(String aFieldName) {
+		return new PCDataReader<T>(aFieldName);
+	}
+	
 	/**
 	 * @param array of setter-method names (without the prefix)
 	 * @return an OrderedAttributesReader that should be marginally quicker 
