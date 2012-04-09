@@ -77,7 +77,7 @@ public class DocumentReader<T> {
 			XmlPullParser _p = factory.newPullParser();
 			_p.setInput(aReader);
 			
-		    PullParserReadingContext _ctx = new PullParserReadingContext(_p);
+		    ReadingContext _ctx = new PullParserReadingContext(_p);
 		    if (converters != null)
 		    	_ctx.registerConverters(converters);
 		    _ctx.push(resultType.newInstance());
@@ -85,7 +85,7 @@ public class DocumentReader<T> {
 		    try
 	        {
 	            while (_ctx.hasMoreTags())
-	            {                   
+	            {	       
 	                for (XmlReader _m : mappers)
 	                {                 
 	                    if (_m.read(_ctx))

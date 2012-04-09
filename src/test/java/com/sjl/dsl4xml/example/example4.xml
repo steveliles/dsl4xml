@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:google="http://base.google.com/ns/1.0" xml:lang="en-US"
+	xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/" xmlns="http://www.w3.org/2005/Atom"
+	xmlns:twitter="http://api.twitter.com/" xmlns:georss="http://www.georss.org/georss">
+	<id>tag:search.twitter.com,2005:search/#uml</id>
+	<link type="text/html" href="http://search.twitter.com/search?q=%23uml"
+		rel="alternate" />
+	<link type="application/atom+xml" href="http://search.twitter.com/search.atom?q=%23uml"
+		rel="self" />
+	<title>#uml - Twitter Search</title>
+	<link type="application/opensearchdescription+xml" href="http://twitter.com/opensearch.xml"
+		rel="search" />
+	<link type="application/atom+xml"
+		href="http://search.twitter.com/search.atom?since_id=189294182681165824&amp;q=%23uml"
+		rel="refresh" />
+	<updated>2012-04-09T10:10:24Z</updated>
+	<openSearch:itemsPerPage>15</openSearch:itemsPerPage>
+	<link type="application/atom+xml"
+		href="http://search.twitter.com/search.atom?page=2&amp;max_id=189294182681165824&amp;q=%23uml"
+		rel="next" />
+	<entry>
+		<id>tag:search.twitter.com,2005:189294182681165824</id>
+		<published>2012-04-09T10:10:24Z</published>
+		<link type="text/html"
+			href="http://twitter.com/addinquy/statuses/189294182681165824" rel="alternate" />
+		<title>Note de lecture : Succeeding with Use Cases par Richard Denney http://t.co/5lcCXWsO #bookReview #useCases #UML</title>
+		<content type="html">Note de lecture : Succeeding with Use Cases par Richard Denney &lt;a href="http://t.co/5lcCXWsO"&gt;http://t.co/5lcCXWsO&lt;/a&gt; &lt;a href="http://search.twitter.com/search?q=%23bookReview" title="#bookReview" class=" "&gt;#bookReview&lt;/a&gt; &lt;a href="http://search.twitter.com/search?q=%23useCases" title="#useCases" class=" "&gt;#useCases&lt;/a&gt; &lt;em&gt;&lt;a href="http://search.twitter.com/search?q=%23UML" title="#UML" class=" "&gt;#UML&lt;/a&gt;&lt;/em&gt;</content>
+		<updated>2012-04-09T10:10:24Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/218690398/christophe_normal.jpg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://twitter.com"
+			rel="nofollow"&gt;Tweetie for Mac&lt;/a&gt;</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>addinquy (Christophe Addinquy)</name>
+			<uri>http://twitter.com/addinquy</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:189280579936731138</id>
+		<published>2012-04-09T09:16:21Z</published>
+		<link type="text/html"
+			href="http://twitter.com/AntonioCortinaL/statuses/189280579936731138"
+			rel="alternate" />
+		<title>UML y patrones de dise&#xf1;o, Observer y Composite (casos
+			pr&#xe1;cticos) http://t.co/4g90uRgO #UML #PatronesDise&#xf1;o
+		</title>
+		<content type="html">UML y patrones de dise&#xf1;o, Observer y
+			Composite (casos pr&#xe1;cticos) &lt;a
+			href="http://t.co/4g90uRgO"&gt;http://t.co/4g90uRgO&lt;/a&gt;
+			&lt;em&gt;&lt;a href="http://search.twitter.com/search?q=%23UML"
+			title="#UML" class=" "&gt;#UML&lt;/a&gt;&lt;/em&gt; &lt;a
+			href="http://search.twitter.com/search?q=%23PatronesDise&#xf1;o"
+			title="#PatronesDise&#xf1;o" class="
+			"&gt;#PatronesDise&#xf1;o&lt;/a&gt;</content>
+		<updated>2012-04-09T09:16:21Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/1405800615/foto_perfil_red_normal.png"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://twitter.com/"&gt;web&lt;/a&gt;
+		</twitter:source>
+		<twitter:lang>es</twitter:lang>
+		<author>
+			<name>AntonioCortinaL (Antonio Cortina)</name>
+			<uri>http://twitter.com/AntonioCortinaL</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:189265758050725888</id>
+		<published>2012-04-09T08:17:27Z</published>
+		<link type="text/html"
+			href="http://twitter.com/_StephanRoth/statuses/189265758050725888"
+			rel="alternate" />
+		<title>@BruceDouglass has developed a #UML profile for safety
+			analysis: https://t.co/9pnUd2j4 #iso26262 #femca #fmea
+			#hazardanalysis</title>
+		<content type="html">@&lt;a class=" "
+			href="http://twitter.com/BruceDouglass"&gt;BruceDouglass&lt;/a&gt;
+			has developed a &lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt; profile for safety analysis: &lt;a
+			href="https://t.co/9pnUd2j4"&gt;https://t.co/9pnUd2j4&lt;/a&gt; &lt;a
+			href="http://search.twitter.com/search?q=%23iso26262"
+			title="#iso26262" class=" "&gt;#iso26262&lt;/a&gt; &lt;a
+			href="http://search.twitter.com/search?q=%23femca" title="#femca"
+			class=" "&gt;#femca&lt;/a&gt; &lt;a
+			href="http://search.twitter.com/search?q=%23fmea" title="#fmea"
+			class=" "&gt;#fmea&lt;/a&gt; &lt;a
+			href="http://search.twitter.com/search?q=%23hazardanalysis"
+			title="#hazardanalysis" class=" "&gt;#hazardanalysis&lt;/a&gt;
+		</content>
+		<updated>2012-04-09T08:17:27Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/1785640786/cccee5c5-ec6e-4c9c-ab0b-4b88e946449e_normal.png"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://www.tweetdeck.com"
+			rel="nofollow"&gt;TweetDeck&lt;/a&gt;</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>_StephanRoth (Stephan Roth)</name>
+			<uri>http://twitter.com/_StephanRoth</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:189167543540400128</id>
+		<published>2012-04-09T01:47:12Z</published>
+		<link type="text/html"
+			href="http://twitter.com/mchad1403/statuses/189167543540400128" rel="alternate" />
+		<title>they are staring at me. too bad i can't wear them till friday
+			#UML vs zoomass slamherst http://t.co/UfVcUXrM</title>
+		<content type="html">they are staring at me. too bad i can't wear
+			them till friday &lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt; vs zoomass slamherst &lt;a
+			href="http://t.co/UfVcUXrM"&gt;http://t.co/UfVcUXrM&lt;/a&gt;
+		</content>
+		<updated>2012-04-09T01:47:12Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/1890370747/image_normal.jpg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://twitter.com/#!/download/iphone"
+			rel="nofollow"&gt;Twitter for iPhone&lt;/a&gt;</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>mchad1403 (Mike Chadwick)</name>
+			<uri>http://twitter.com/mchad1403</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:189049682889146368</id>
+		<published>2012-04-08T17:58:51Z</published>
+		<link type="text/html"
+			href="http://twitter.com/grafandreas/statuses/189049682889146368"
+			rel="alternate" />
+		<title>Trufun take their Eclipse based #UML tool to the Web and
+			publish and alternative to Eclipse RAP while they are at it:
+			http://t.co/P2yG2W54</title>
+		<content type="html">Trufun take their Eclipse based &lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt; tool to the Web and publish and
+			alternative to Eclipse RAP while they are at it: &lt;a
+			href="http://t.co/P2yG2W54"&gt;http://t.co/P2yG2W54&lt;/a&gt;
+		</content>
+		<updated>2012-04-08T17:58:51Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/799221159/AG-b_normal.jpg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://twitter.com/"&gt;web&lt;/a&gt;
+		</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>grafandreas (Andreas Graf)</name>
+			<uri>http://twitter.com/grafandreas</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:189036006954106882</id>
+		<published>2012-04-08T17:04:30Z</published>
+		<link type="text/html"
+			href="http://twitter.com/pata_de_jaguar/statuses/189036006954106882"
+			rel="alternate" />
+		<title>#UML In #Linux, Complete #List in http://t.co/ISzbqnCA</title>
+		<content type="html">&lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt; In &lt;a
+			href="http://search.twitter.com/search?q=%23Linux" title="#Linux"
+			class=" "&gt;#Linux&lt;/a&gt;, Complete &lt;a
+			href="http://search.twitter.com/search?q=%23List" title="#List"
+			class=" "&gt;#List&lt;/a&gt; in &lt;a
+			href="http://t.co/ISzbqnCA"&gt;http://t.co/ISzbqnCA&lt;/a&gt;
+		</content>
+		<updated>2012-04-08T17:04:30Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/1190717944/south-park-gamer_normal.jpg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://twitter.com/"&gt;web&lt;/a&gt;
+		</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>pata_de_jaguar (Luis H. Balam Glez)</name>
+			<uri>http://twitter.com/pata_de_jaguar</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:188980548637691904</id>
+		<published>2012-04-08T13:24:08Z</published>
+		<link type="text/html"
+			href="http://twitter.com/soundproofingfl/statuses/188980548637691904"
+			rel="alternate" />
+		<title>The Unified Modeling Language Reference Manual Review
+			http://t.co/EvRaokoJ #uml #softwaredevelopment</title>
+		<content type="html">The Unified Modeling Language Reference Manual
+			Review &lt;a
+			href="http://t.co/EvRaokoJ"&gt;http://t.co/EvRaokoJ&lt;/a&gt;
+			&lt;em&gt;&lt;a href="http://search.twitter.com/search?q=%23uml"
+			title="#uml" class=" "&gt;#uml&lt;/a&gt;&lt;/em&gt; &lt;a
+			href="http://search.twitter.com/search?q=%23softwaredevelopment"
+			title="#softwaredevelopment" class="
+			"&gt;#softwaredevelopment&lt;/a&gt;</content>
+		<updated>2012-04-08T13:24:08Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://www.google.com/"
+			rel="nofollow"&gt;Google&lt;/a&gt;</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>soundproofingfl (king)</name>
+			<uri>http://twitter.com/soundproofingfl</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:188936805280776192</id>
+		<published>2012-04-08T10:30:19Z</published>
+		<link type="text/html"
+			href="http://twitter.com/ArkadiySkr/statuses/188936805280776192" rel="alternate" />
+		<title>RT @rubakaz:
+			&#x412;&#x43e;&#x441;&#x43a;&#x440;&#x435;&#x441;&#x435;&#x43d;&#x44c;&#x435;,
+			&#x434;&#x435;&#x43d;&#x44c;, &#x432;&#x441;&#x435;
+			&#x43c;&#x443;&#x447;&#x430;&#x44e;&#x442;&#x441;&#x44f;
+			&#x43f;&#x435;&#x440;&#x435;&#x434;
+			&#x437;&#x430;&#x449;&#x438;&#x442;&#x43e;&#x439;,
+			&#x43a;&#x442;&#x43e;
+			&#x43f;&#x440;&#x43e;&#x43a;&#x43b;&#x438;&#x43d;&#x430;&#x435;&#x442;
+			#IDEF0, &#x43a;&#x442;&#x43e; #DFD, &#x43a;&#x442;&#x43e; #UML
+			&#x438; &#x443; &#x432;&#x441;&#x435;&#x445; &#x432;
+			&#x441;&#x442;&#x430;&#x442;&#x443;&#x441;&#x435;
+			&#x448;&#x430;&#x43f;&#x43e;&#x447;&#x43a;&#x438; :)
+			http://t.co/oP9W6rOA</title>
+		<content type="html">RT @&lt;a class=" "
+			href="http://twitter.com/rubakaz"&gt;rubakaz&lt;/a&gt;:
+			&#x412;&#x43e;&#x441;&#x43a;&#x440;&#x435;&#x441;&#x435;&#x43d;&#x44c;&#x435;,
+			&#x434;&#x435;&#x43d;&#x44c;, &#x432;&#x441;&#x435;
+			&#x43c;&#x443;&#x447;&#x430;&#x44e;&#x442;&#x441;&#x44f;
+			&#x43f;&#x435;&#x440;&#x435;&#x434;
+			&#x437;&#x430;&#x449;&#x438;&#x442;&#x43e;&#x439;,
+			&#x43a;&#x442;&#x43e;
+			&#x43f;&#x440;&#x43e;&#x43a;&#x43b;&#x438;&#x43d;&#x430;&#x435;&#x442;
+			&lt;a href="http://search.twitter.com/search?q=%23IDEF0"
+			title="#IDEF0" class=" "&gt;#IDEF0&lt;/a&gt;, &#x43a;&#x442;&#x43e;
+			&lt;a href="http://search.twitter.com/search?q=%23DFD" title="#DFD"
+			class=" "&gt;#DFD&lt;/a&gt;, &#x43a;&#x442;&#x43e; &lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt; &#x438; &#x443;
+			&#x432;&#x441;&#x435;&#x445; &#x432;
+			&#x441;&#x442;&#x430;&#x442;&#x443;&#x441;&#x435;
+			&#x448;&#x430;&#x43f;&#x43e;&#x447;&#x43a;&#x438; :) &lt;a
+			href="http://t.co/oP9W6rOA"&gt;http://t.co/oP9W6rOA&lt;/a&gt;
+		</content>
+		<updated>2012-04-08T10:30:19Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/699194946/IMG0178A1_normal.jpg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://www.tweetdeck.com"
+			rel="nofollow"&gt;TweetDeck&lt;/a&gt;</twitter:source>
+		<twitter:lang>ru</twitter:lang>
+		<author>
+			<name>ArkadiySkr (&#x410;&#x440;&#x43a;&#x430;&#x434;&#x438;&#x439;
+				&#x421;&#x43a;&#x440;&#x44b;&#x43b;&#x44c;&#x43d;&#x438;&#x43a;&#x43e;&#x432;)
+			</name>
+			<uri>http://twitter.com/ArkadiySkr</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:188936660451475457</id>
+		<published>2012-04-08T10:29:45Z</published>
+		<link type="text/html"
+			href="http://twitter.com/rubakaz/statuses/188936660451475457" rel="alternate" />
+		<title>&#x412;&#x43e;&#x441;&#x43a;&#x440;&#x435;&#x441;&#x435;&#x43d;&#x44c;&#x435;,
+			&#x434;&#x435;&#x43d;&#x44c;, &#x432;&#x441;&#x435;
+			&#x43c;&#x443;&#x447;&#x430;&#x44e;&#x442;&#x441;&#x44f;
+			&#x43f;&#x435;&#x440;&#x435;&#x434;
+			&#x437;&#x430;&#x449;&#x438;&#x442;&#x43e;&#x439;,
+			&#x43a;&#x442;&#x43e;
+			&#x43f;&#x440;&#x43e;&#x43a;&#x43b;&#x438;&#x43d;&#x430;&#x435;&#x442;
+			#IDEF0, &#x43a;&#x442;&#x43e; #DFD, &#x43a;&#x442;&#x43e; #UML
+			&#x438; &#x443; &#x432;&#x441;&#x435;&#x445; &#x432;
+			&#x441;&#x442;&#x430;&#x442;&#x443;&#x441;&#x435;
+			&#x448;&#x430;&#x43f;&#x43e;&#x447;&#x43a;&#x438; :)
+			http://t.co/oP9W6rOA</title>
+		<content type="html">&#x412;&#x43e;&#x441;&#x43a;&#x440;&#x435;&#x441;&#x435;&#x43d;&#x44c;&#x435;,
+			&#x434;&#x435;&#x43d;&#x44c;, &#x432;&#x441;&#x435;
+			&#x43c;&#x443;&#x447;&#x430;&#x44e;&#x442;&#x441;&#x44f;
+			&#x43f;&#x435;&#x440;&#x435;&#x434;
+			&#x437;&#x430;&#x449;&#x438;&#x442;&#x43e;&#x439;,
+			&#x43a;&#x442;&#x43e;
+			&#x43f;&#x440;&#x43e;&#x43a;&#x43b;&#x438;&#x43d;&#x430;&#x435;&#x442;
+			&lt;a href="http://search.twitter.com/search?q=%23IDEF0"
+			title="#IDEF0" class=" "&gt;#IDEF0&lt;/a&gt;, &#x43a;&#x442;&#x43e;
+			&lt;a href="http://search.twitter.com/search?q=%23DFD" title="#DFD"
+			class=" "&gt;#DFD&lt;/a&gt;, &#x43a;&#x442;&#x43e; &lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt; &#x438; &#x443;
+			&#x432;&#x441;&#x435;&#x445; &#x432;
+			&#x441;&#x442;&#x430;&#x442;&#x443;&#x441;&#x435;
+			&#x448;&#x430;&#x43f;&#x43e;&#x447;&#x43a;&#x438; :) &lt;a
+			href="http://t.co/oP9W6rOA"&gt;http://t.co/oP9W6rOA&lt;/a&gt;
+		</content>
+		<updated>2012-04-08T10:29:45Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/2019036648/99px_ru_avatar_114551_normal.jpg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://www.tweetdeck.com"
+			rel="nofollow"&gt;TweetDeck&lt;/a&gt;</twitter:source>
+		<twitter:lang>ru</twitter:lang>
+		<author>
+			<name>rubakaz (Rubaka)</name>
+			<uri>http://twitter.com/rubakaz</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:188847592778633216</id>
+		<published>2012-04-08T04:35:49Z</published>
+		<link type="text/html"
+			href="http://twitter.com/youRJob_/statuses/188847592778633216" rel="alternate" />
+		<title>#design HELP with Small VDM-SL / UML Project (needs checking)
+			by semicoder: I require a freelancer to help ... http://t.co/9E2w6lvY
+			#UML</title>
+		<content type="html">&lt;a
+			href="http://search.twitter.com/search?q=%23design" title="#design"
+			class=" "&gt;#design&lt;/a&gt; HELP with Small VDM-SL / UML Project
+			(needs checking) by semicoder: I require a freelancer to help ...
+			&lt;a href="http://t.co/9E2w6lvY"&gt;http://t.co/9E2w6lvY&lt;/a&gt;
+			&lt;em&gt;&lt;a href="http://search.twitter.com/search?q=%23UML"
+			title="#UML" class=" "&gt;#UML&lt;/a&gt;&lt;/em&gt;</content>
+		<updated>2012-04-08T04:35:49Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/1236727466/saf_normal.jpeg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://twitterfeed.com"
+			rel="nofollow"&gt;twitterfeed&lt;/a&gt;</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>youRJob_ (Design Jobs)</name>
+			<uri>http://twitter.com/youRJob_</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:188837710209875969</id>
+		<published>2012-04-08T03:56:33Z</published>
+		<link type="text/html"
+			href="http://twitter.com/JobList1/statuses/188837710209875969" rel="alternate" />
+		<title>#UML HELP with Small VDM-SL / UML Project (needs checking) by
+			semicoder: I require a freelancer to help ... http://t.co/Wis94GTM
+			#Design</title>
+		<content type="html">&lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt; HELP with Small VDM-SL / UML Project
+			(needs checking) by semicoder: I require a freelancer to help ...
+			&lt;a href="http://t.co/Wis94GTM"&gt;http://t.co/Wis94GTM&lt;/a&gt;
+			&lt;a href="http://search.twitter.com/search?q=%23Design"
+			title="#Design" class=" "&gt;#Design&lt;/a&gt;</content>
+		<updated>2012-04-08T03:56:33Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://twitterfeed.com"
+			rel="nofollow"&gt;twitterfeed&lt;/a&gt;</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>JobList1 (Job List)</name>
+			<uri>http://twitter.com/JobList1</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:188831222775037952</id>
+		<published>2012-04-08T03:30:46Z</published>
+		<link type="text/html"
+			href="http://twitter.com/ChazScog/statuses/188831222775037952" rel="alternate" />
+		<title>BC beats Ferris St. 4-1 to win third NCAA crown in 5 years and
+			Hockey East's 4th in same span. #UML</title>
+		<content type="html">BC beats Ferris St. 4-1 to win third NCAA crown
+			in 5 years and Hockey East's 4th in same span. &lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt;</content>
+		<updated>2012-04-08T03:30:46Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/1797756972/20120104_111902_riverhawkshockeyicon_normal.jpg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://twitter.com/"&gt;web&lt;/a&gt;
+		</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>ChazScog (Charles Scoggins)</name>
+			<uri>http://twitter.com/ChazScog</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:188782457603104768</id>
+		<published>2012-04-08T00:16:59Z</published>
+		<link type="text/html"
+			href="http://twitter.com/_The_Sanchise/statuses/188782457603104768"
+			rel="alternate" />
+		<title>This place is a ghost town #Uml</title>
+		<content type="html">This place is a ghost town &lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23Uml" title="#Uml" class="
+			"&gt;#Uml&lt;/a&gt;&lt;/em&gt;</content>
+		<updated>2012-04-08T00:16:59Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/2068072662/IMG_8263_normal.JPG"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://twitter.com/download/android"
+			rel="nofollow"&gt;Twitter for Android&lt;/a&gt;</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>_The_Sanchise (matthew sanchez)</name>
+			<uri>http://twitter.com/_The_Sanchise</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:188770034875768832</id>
+		<published>2012-04-07T23:27:38Z</published>
+		<link type="text/html"
+			href="http://twitter.com/LowellSunSports/statuses/188770034875768832"
+			rel="alternate" />
+		<title>#UML baseball swept Southern Conn. by 9-4 and 4-3 at LeLacheur
+			Park. The #RiverHawks are now 17-11-1 on the season.</title>
+		<content type="html">&lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt; baseball swept Southern Conn. by 9-4
+			and 4-3 at LeLacheur Park. The &lt;a
+			href="http://search.twitter.com/search?q=%23RiverHawks"
+			title="#RiverHawks" class=" "&gt;#RiverHawks&lt;/a&gt; are now
+			17-11-1 on the season.</content>
+		<updated>2012-04-07T23:27:38Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/1535977866/lonely-sun_normal.jpg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://www.hootsuite.com"
+			rel="nofollow"&gt;HootSuite&lt;/a&gt;</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>LowellSunSports (Lowell Sun Sports)</name>
+			<uri>http://twitter.com/LowellSunSports</uri>
+		</author>
+	</entry>
+	<entry>
+		<id>tag:search.twitter.com,2005:188769791409012736</id>
+		<published>2012-04-07T23:26:40Z</published>
+		<link type="text/html"
+			href="http://twitter.com/LowellSunSports/statuses/188769791409012736"
+			rel="alternate" />
+		<title>#UML sports info director Chris O'Donnell honored with big
+			award from his peers. Top SID in the ECAC. Softball team splits with
+			Adelphi.</title>
+		<content type="html">&lt;em&gt;&lt;a
+			href="http://search.twitter.com/search?q=%23UML" title="#UML" class="
+			"&gt;#UML&lt;/a&gt;&lt;/em&gt; sports info director Chris O'Donnell
+			honored with big award from his peers. Top SID in the ECAC. Softball
+			team splits with Adelphi.</content>
+		<updated>2012-04-07T23:26:40Z</updated>
+		<link type="image/png"
+			href="http://a0.twimg.com/profile_images/1535977866/lonely-sun_normal.jpg"
+			rel="image" />
+		<twitter:geo></twitter:geo>
+		<twitter:metadata>
+			<twitter:result_type>recent</twitter:result_type>
+		</twitter:metadata>
+		<twitter:source>&lt;a href="http://www.hootsuite.com"
+			rel="nofollow"&gt;HootSuite&lt;/a&gt;</twitter:source>
+		<twitter:lang>en</twitter:lang>
+		<author>
+			<name>LowellSunSports (Lowell Sun Sports)</name>
+			<uri>http://twitter.com/LowellSunSports</uri>
+		</author>
+	</entry>
+</feed>

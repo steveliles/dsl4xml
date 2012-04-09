@@ -14,17 +14,19 @@ public class OrderedAttributesReader implements XmlReader {
 	
 	@Override
 	public boolean read(ReadingContext aContext) {
-		Object _currentContext = aContext.peek();
-		for (int i=0; i<methodNames.length; i++) {
-			
-			if (mutators[i] == null) {
-				mutators[i] = new ValueSetter(aContext, _currentContext.getClass(), methodNames[i]);
+		if (aContext.isStartTag()) {
+			Object _currentContext = aContext.peek();
+			for (int i=0; i<methodNames.length; i++) {
+				
+				if (mutators[i] == null) {
+					mutators[i] = new ValueSetter(aContext, _currentContext.getClass(), methodNames[i]);
+				}
+				
+				mutators[i].invoke(
+					_currentContext,
+					aContext.getAttributeValue(i)
+				);
 			}
-			
-			mutators[i].invoke(
-				_currentContext,
-				aContext.getAttributeValue(i)
-			);
 		}
 		return false;
 	}

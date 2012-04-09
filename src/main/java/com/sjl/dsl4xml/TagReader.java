@@ -54,7 +54,7 @@ public class TagReader<T> implements XmlReader {
 	}
 	
 	@Override
-	public boolean read(ReadingContext aContext) {
+	public boolean read(ReadingContext aContext) {	
 		if (mappers == null) {
 			withPCDataMappedTo(tagName);
 		}
@@ -69,7 +69,7 @@ public class TagReader<T> implements XmlReader {
 	                for (XmlReader _m : mappers)
 	                {          	
 	                    if (_m.read(aContext))
-	                    {                            
+	                    {
 	                        break;
 	                    }
 	                }

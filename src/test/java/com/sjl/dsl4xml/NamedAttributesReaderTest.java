@@ -33,6 +33,7 @@ public class NamedAttributesReaderTest {
 	@Test
 	public void readsSingleAttributeByName() {
 		mockery.checking(new Expectations(){{
+			oneOf(ctx).isStartTag(); will(returnValue(true));
 			oneOf(ctx).getAttributeValue("stringAttr"); will(returnValue("value"));
 			oneOf(ctx).getConverter(String.class); will(returnValue(strConverter));
 			
@@ -49,6 +50,7 @@ public class NamedAttributesReaderTest {
 	@Test
 	public void readsMultipleAttributesByName() {
 		mockery.checking(new Expectations(){{
+			oneOf(ctx).isStartTag(); will(returnValue(true));
 			oneOf(ctx).getAttributeValue("stringAttr"); will(returnValue("value"));
 			oneOf(ctx).getAttributeValue("intAttr"); will(returnValue("12"));
 			oneOf(ctx).getConverter(String.class); will(returnValue(strConverter));

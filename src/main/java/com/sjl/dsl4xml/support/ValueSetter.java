@@ -16,6 +16,8 @@ public class ValueSetter {
 	public void invoke(Object anOn, String aWith) {
 		try {
 			method.invoke(anOn, converter.convert(aWith));
+		} catch (XmlReadingException anExc) {
+			throw anExc;
 		} catch (Exception anExc) {
 			throw new RuntimeException(anExc);
 		}

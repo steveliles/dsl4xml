@@ -27,6 +27,8 @@ public final class PCDataReader<T> implements XmlReader {
 		try {
 			ValueSetter _vs = getSetter(aContext, _currentContext.getClass(), fieldName);
 			_vs.invoke(_currentContext, aText);
+		} catch (XmlReadingException anExc) {
+			throw anExc;
 		} catch (Exception anExc) {
 			throw new XmlReadingException(anExc);
 		}

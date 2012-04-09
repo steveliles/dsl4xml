@@ -14,17 +14,19 @@ public class NamedAttributesReader implements XmlReader {
 	
 	@Override
 	public boolean read(ReadingContext aContext) {
-		Object _currentContext = aContext.peek();
-		for (int i=0; i<attributeNames.length; i++) {
-			
-			if (mutators[i] == null) {
-				mutators[i] = new ValueSetter(aContext, _currentContext.getClass(), attributeNames[i]);
+		if (aContext.isStartTag()) {
+			Object _currentContext = aContext.peek();
+			for (int i=0; i<attributeNames.length; i++) {
+				
+				if (mutators[i] == null) {
+					mutators[i] = new ValueSetter(aContext, _currentContext.getClass(), attributeNames[i]);
+				}
+				
+				mutators[i].invoke(
+					_currentContext,
+					aContext.getAttributeValue(attributeNames[i])
+				);
 			}
-			
-			mutators[i].invoke(
-				_currentContext,
-				aContext.getAttributeValue(attributeNames[i])
-			);
 		}
 		return false;
 	}
