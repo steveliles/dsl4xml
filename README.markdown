@@ -79,8 +79,8 @@ We can marshall the XML to those model objects using the following simple Java c
 	    public BooksMarshaller() {
 	        marshaller = mappingOf(Books.class).to(
 		        tag("book", Book.class).with(
-	               tag("title").withCData(),
-	               tag("synopsis").withCData()
+	               tag("title"),
+	               tag("synopsis")
 			    )
 		    );
 	    }
@@ -200,15 +200,15 @@ Marshalling code:
 			tag("name", Name.class).with(
 				attributes("firstname", "surname")
 			),
-			tag("dob").withCData(),
+			tag("dob"),
 			tag("address", Address.class).with(
 				tag("house", Address.House.class).with(
-					tag("name").withCData(),
-					tag("number").withCData()
+					tag("name"),
+					tag("number")
 				),
-				tag("street").withCData(),
-				tag("town").withCData(),
-				tag("country").withCData()
+				tag("street"),
+				tag("town"),
+				tag("country")
 			)
 		);
 		
