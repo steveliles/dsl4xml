@@ -8,9 +8,9 @@ public class ValueSetter {
 	private Method method;
 	private Converter<?> converter;
 	
-	public ValueSetter(ReadingContext aContext, Class<?> aClass, String aFieldName) {
+	public ValueSetter(HasConverters aConverters, Class<?> aClass, String aFieldName) {
 		method = getMethod(aClass, aFieldName);
-		converter = aContext.getConverter(getArgType(method));
+		converter = aConverters.getConverter(getArgType(method));
 	}
 	
 	public void invoke(Object anOn, String aWith) {

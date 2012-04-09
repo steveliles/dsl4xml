@@ -2,11 +2,7 @@ package com.sjl.dsl4xml;
 
 import org.xmlpull.v1.*;
 
-import com.sjl.dsl4xml.support.*;
-
-public interface ReadingContext {
-
-	public abstract void registerConverters(Converter<?>... aConverters);
+public interface ReadingContext extends HasConverters {
 
 	public abstract <T> T peek();
 
@@ -33,7 +29,5 @@ public interface ReadingContext {
 	public abstract boolean isTextNode();
 
 	public abstract boolean isStartTagNamed(String aTagName);
-
-	public abstract <T> Converter<T> getConverter(Class<T> aArgType);
 
 }
