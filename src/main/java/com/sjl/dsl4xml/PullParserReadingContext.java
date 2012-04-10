@@ -92,11 +92,12 @@ public final class PullParserReadingContext implements ReadingContext {
 	}
 
 	@Override
-	public boolean isNotEndTag(String aTagName) {
+	public boolean isNotEndTag(String aNamespacePrefix, String aTagName) {
 		try {
 			return !(
 				(parser.getEventType() == XmlPullParser.END_TAG) && 
-				(aTagName.equals(parser.getName()))
+				(aTagName.equals(parser.getName())) &&
+				(isMatchingNamespace(aNamespacePrefix, parser.getPrefix()))
 			);
 		} catch (XmlPullParserException anExc) {
 			throw new XmlReadingException(anExc);
@@ -132,11 +133,12 @@ public final class PullParserReadingContext implements ReadingContext {
 	}
 
 	@Override
-	public boolean isStartTagNamed(String aTagName) {
+	public boolean isStartTagNamed(String aNamespacePrefix, String aTagName) {
 		try {
 			return (
 				(parser.getEventType() == XmlPullParser.START_TAG) && 
-				(aTagName.equals(parser.getName()))
+				(aTagName.equals(parser.getName())) &&
+				(isMatchingNamespace(aNamespacePrefix, parser.getPrefix()))
 			);
 		} catch (Exception anExc) {
 			throw new XmlReadingException(anExc);
@@ -152,5 +154,13 @@ public final class PullParserReadingContext implements ReadingContext {
 			}
 		}
 		throw new RuntimeException("No converter registered that can convert to " + aArgType);
+	}
+	
+	private boolean isMatchingNamespace(String aWantedPrefix, String aCurrentPrefix) {
+		if ((aWantedPrefix == null) || ("".equals(aWantedPrefix))) {
+			return (aCurrentPrefix == null);
+		} else {
+			return aWantedPrefix.equals(aCurrentPrefix);
+		}
 	}
 }

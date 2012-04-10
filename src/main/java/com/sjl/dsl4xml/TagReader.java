@@ -7,6 +7,7 @@ import com.sjl.dsl4xml.support.*;
 
 public class TagReader<T> implements XmlReader {
 
+	private String namespace;
 	private String tagName;
 	private Class<T> type;
 	private ContextMutator mutator;
@@ -16,7 +17,18 @@ public class TagReader<T> implements XmlReader {
 		tagName = aTagName;
 	}
 	
+	public TagReader(String aNamespace, String aTagName) {
+		namespace = aNamespace;
+		tagName = aTagName;
+	}
+	
 	public TagReader(String aTagName, Class<T> aType) {
+		tagName = aTagName;
+		type = aType;
+	}
+	
+	public TagReader(String aNamespace, String aTagName, Class<T> aType) {
+		namespace = aNamespace;
 		tagName = aTagName;
 		type = aType;
 	}
@@ -59,12 +71,12 @@ public class TagReader<T> implements XmlReader {
 			withPCDataMappedTo(tagName);
 		}
 
-		if (aContext.isStartTagNamed(tagName)) {		
+		if (aContext.isStartTagNamed(namespace, tagName)) {		
 			maybePushNewContextObject(aContext);
 			
 			try
 	        {
-	            while (aContext.isNotEndTag(tagName))
+	            while (aContext.isNotEndTag(namespace, tagName))
 	            {	            	
 	                for (XmlReader _m : mappers)
 	                {          	

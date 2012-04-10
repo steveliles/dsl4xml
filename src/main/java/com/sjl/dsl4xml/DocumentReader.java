@@ -17,8 +17,16 @@ public class DocumentReader<T> {
 		return new TagReader<R>(aTagName);
 	}
 	
+	public static <R> TagReader<R> tag(String aNamespace, String aTagName) {
+		return new TagReader<R>(aNamespace, aTagName);
+	}
+	
 	public static <R> TagReader<R> tag(String aTagName, Class<R> aContextType) {
 		return new TagReader<R>(aTagName, aContextType);
+	}
+	
+	public static <R> TagReader<R> tag(String aNamespace, String aTagName, Class<R> aContextType) {
+		return new TagReader<R>(aNamespace, aTagName, aContextType);
 	}
 	
 	/**
@@ -30,8 +38,14 @@ public class DocumentReader<T> {
 		return new NamedAttributesReader(anAttributeNames);
 	}
 	
+	// TODO: multi-attributes with namespace?
+	
 	public static NamedAttributesReader attribute(String anAttributeName) {
 		return new NamedAttributesReader(anAttributeName);
+	}
+	
+	public static NamedAttributesReader attribute(String aNamespace, String anAttributeName) {
+		return new NamedAttributesReader(aNamespace, anAttributeName);
 	}
 	
 	public static <T> PCDataReader<T> pcdataMappedTo(String aFieldName) {
@@ -57,6 +71,7 @@ public class DocumentReader<T> {
 		resultType = aClass;
 		try {
 			factory = XmlPullParserFactory.newInstance();
+			factory.setNamespaceAware(true);
 		} catch (XmlPullParserException anExc) {
 			throw new XmlReadingException(anExc);
 		}

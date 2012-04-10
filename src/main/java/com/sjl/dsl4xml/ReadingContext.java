@@ -18,8 +18,6 @@ public interface ReadingContext extends HasConverters {
 
 	public abstract boolean isTagNamed(String aTagName);
 
-	public abstract boolean isNotEndTag(String aTagName);
-
 	public abstract boolean isStartTag();
 
 	public abstract String getAttributeValue(String anAttributeName);
@@ -28,6 +26,8 @@ public interface ReadingContext extends HasConverters {
 
 	public abstract boolean isTextNode();
 
-	public abstract boolean isStartTagNamed(String aTagName);
+	public abstract boolean isStartTagNamed(String aNamespace, String aTagName);
+	
+	public abstract boolean isNotEndTag(String aNamespace, String aTagName);
 
 }
