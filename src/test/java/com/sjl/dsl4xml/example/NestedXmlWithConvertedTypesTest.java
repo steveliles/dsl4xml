@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.DocumentReader.*;
+import static com.sjl.dsl4xml.SAXDocumentReader.*;
 
 import java.io.*;
 import java.text.*;
@@ -62,8 +62,8 @@ public class NestedXmlWithConvertedTypesTest {
 	 * to the Hobbit class declared below. This includes nested Address fields
 	 * with nested House fields, and fields that need type conversion (int's and Date's).
 	 */
-	private static DocumentReader<Hobbit> newMarshaller() {
-		DocumentReader<Hobbit> _result = mappingOf(Hobbit.class).to(
+	private static SAXDocumentReader<Hobbit> newMarshaller() {
+		SAXDocumentReader<Hobbit> _result = mappingOf("hobbit", Hobbit.class).to(
 			tag("name", Name.class).with(
 				attributes("firstname", "surname")
 			),
