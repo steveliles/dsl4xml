@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.DocumentReader.*;
+import static com.sjl.dsl4xml.SAXDocumentReader.*;
 
 import java.io.*;
 import java.text.*;
@@ -15,16 +15,15 @@ public class TwitterFeedTest {
 
 	// This creates a new reader capable of parsing twitter responses.
 	// Only call this once, then re-use the returned DocumentReader object (it is thread safe!)
-	private static DocumentReader<Tweets> newReader() {
-		DocumentReader<Tweets> _tweetsReader = mappingOf(Tweets.class).to(
+	private static SAXDocumentReader<Tweets> newReader() {
+		SAXDocumentReader<Tweets> _tweetsReader = mappingOf("feed", Tweets.class).to(
 			tag("entry", Tweet.class).with(
 				tag("published"),
 				tag("title"),
 				tag("content", Content.class).with(
-					attribute("type"),
-					pcdataMappedTo("value")
-				),
-				tag("twitter","lang").withPCDataMappedTo("language"),
+					attributes("type")
+				).withPCDataMappedTo("value"),
+				tag("twitter:lang").withPCDataMappedTo("language"),
 				tag("author", Author.class).with(
 					tag("name"),
 					tag("uri")
@@ -81,7 +80,7 @@ public class TwitterFeedTest {
 	}
 	
 	private Tweets marshallTestDocumentToTweets() {
-		DocumentReader<Tweets> _m = newReader();
+		SAXDocumentReader<Tweets> _m = newReader();
 		return _m.read(getTestInput(), "utf-8");
 	}
 

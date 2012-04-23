@@ -65,6 +65,7 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 		} catch (XmlReadingException anExc) {
 			throw anExc;
 		} catch (Exception anExc) {
+anExc.printStackTrace();			
 			throw new XmlReadingException(anExc);
 		}
 	}
@@ -72,14 +73,17 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 	static class Dsl4XmlContentHandler<R> extends DefaultHandler {
 		
 		private Context context;
+		private Handler<?> root;
 		private Handler<?> handler;
 		
 		public Dsl4XmlContentHandler(DocHandler<R> aRootTagHandler) {
+			root = aRootTagHandler;
 			handler = aRootTagHandler;
 		}
 		
 		public void prepare(Converter<?>... aConverters) {
 			context = new Context(aConverters);
+			handler = root;
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -104,7 +108,7 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 
 		@Override
 		public void characters(char[] aChars, int aStart, int aLength)
-		throws SAXException {			
+		throws SAXException {
 			handler = handler.characters(aChars, aStart, aLength, context);
 		}
 	}
@@ -138,7 +142,8 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 				new StringConverter()
 			);
 			
-			converters.addAll(0, Arrays.asList(aConverters));
+			if (aConverters != null)
+				converters.addAll(0, Arrays.asList(aConverters));
 		}
 		
 		public void push(Object anObject) {
@@ -238,6 +243,7 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 		public TagHandler(String aTagName, Class<R> aModelType) {
 			tagName = aTagName;
 			modelType = aModelType;
+			parent = this;
 		}
 		
 		public TagHandler(String aTagName) {
@@ -267,12 +273,12 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 		}
 		
 		public void setParent(TagHandler<?> aParent) {
-			if (parent != null)
+			if ((parent != null) && (parent != this))
 				throw new InvalidStateException("Parent is already set!");
 			parent = aParent;			
 		}
 		
-		public boolean handlesTag(String aName) {			
+		public boolean handlesTag(String aName) {
 			return tagName.equals(aName);
 		}
 		
@@ -300,6 +306,10 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 		}
 
 		public Handler<?> startTag(String aQName, Attributes anAttributes, Context aCtx) {
+			if (text != null) {
+				text.complete(aCtx);
+			}
+			
 			if (tags == null) {
 				return this;
 			}
@@ -313,6 +323,9 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 		}
 
 		public TagHandler<?> moveUp(String aQName, Context aCtx) {
+			if (text != null) {
+				text.complete(aCtx);
+			}
 			if (modelType != null) {
 				aCtx.pop();
 			}			
@@ -325,7 +338,7 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 			}
 			
 			if (text != null) {				
-				text.handle(new String(aChars, aStart, aLength), aContext);
+				text.handle(aChars, aStart, aLength, aContext);
 			}
 			return this;
 		}
@@ -376,15 +389,19 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 	}
 	
 	static class IgnoreHandler<T> implements Handler<T> {
-		private TagHandler<T> parent;
+		private Handler<T> parent;
+		private IgnoreHandler<T> child;
 		
-		public IgnoreHandler(TagHandler<T> aParent) {
+		public IgnoreHandler(Handler<T> aParent) {
 			parent = aParent;
 		}
 
 		@Override
 		public Handler<?> startTag(String aQName, Attributes anAttributes, Context aCtx) {
-			return this;
+			if (child == null) {
+				child = new IgnoreHandler<T>(this);
+			}
+			return child;
 		}
 
 		@Override
@@ -429,16 +446,23 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 		
 		private ValueSetter setter;
 		private String field;
+		private StringBuilder chars;
 		
 		public TextHandler(String aFieldName) {
 			field = aFieldName;
+			chars = new StringBuilder();
 		}
 		
-		public void handle(String aString, Context aContext) {
+		public void handle(char[] aChars, int aStart, int aLength, Context aContext) {
+			chars.append(aChars, aStart, aLength);
+		}
+		
+		public void complete(Context aContext) {
 			Object _currentContext = aContext.peek();	
 			try {
 				ValueSetter _vs = getSetter(aContext, _currentContext.getClass(), field);
-				_vs.invoke(_currentContext, aString);
+				_vs.invoke(_currentContext, chars.toString());
+				chars.setLength(0);
 			} catch (XmlReadingException anExc) {
 				throw anExc;
 			} catch (Exception anExc) {

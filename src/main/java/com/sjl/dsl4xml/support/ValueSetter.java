@@ -23,6 +23,10 @@ public class ValueSetter {
 		}
 	}
 	
+	public String toString() {
+		return method.getDeclaringClass().getSimpleName() + "." + method.getName();
+	}
+	
 	private Method getMethod(Class<?> aClass, String aFieldName) {
 		Method _m = Classes.getMutatorMethod(aClass, aFieldName);
 		
