@@ -14,7 +14,7 @@ import com.sjl.dsl4xml.support.convert.*;
 public class TwitterFeedTest {
 
 	// This creates a new reader capable of parsing twitter responses.
-	// Only call this once, then re-use the returned DocumentReader object (it is thread safe!)
+	// Only call this once, then re-use the returned PullDocumentReader object (it is thread safe!)
 	private static SAXDocumentReader<Tweets> newReader() {
 		SAXDocumentReader<Tweets> _tweetsReader = mappingOf("feed", Tweets.class).to(
 			tag("entry", Tweet.class).with(

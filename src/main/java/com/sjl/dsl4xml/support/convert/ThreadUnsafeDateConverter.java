@@ -8,7 +8,7 @@ import com.sjl.dsl4xml.support.*;
 
 /**
  * A Date converter that should only be used when you know that
- * the DocumentReader that refers to this converter will only
+ * the PullDocumentReader that refers to this converter will only
  * ever be used in a single-threaded manner.
  * 
  * For multi-threaded usage, use ThreadSafeDateConverter instead.

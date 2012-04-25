@@ -53,7 +53,7 @@ public class SimpleXmlNoAttributesTest {
 	}
 	
 	/**
-	 * @return a DocumentReader that can map documents like example1.xml
+	 * @return a PullDocumentReader that can map documents like example1.xml
 	 * to the Description class declared below.
 	 */
 	private static SAXDocumentReader<Description> newMarshaller() {

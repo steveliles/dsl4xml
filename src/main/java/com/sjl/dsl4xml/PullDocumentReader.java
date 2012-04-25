@@ -4,10 +4,10 @@ import java.io.*;
 
 import org.xmlpull.v1.*;
 
-public class DocumentReader<T> extends AbstractDocumentReader<T> {
+public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
 
-	public static <R> DocumentReader<R> mappingOf(Class<R> aClass) {
-		return new DocumentReader<R>(aClass);
+	public static <R> PullDocumentReader<R> mappingOf(Class<R> aClass) {
+		return new PullDocumentReader<R>(aClass);
 	}
 	
 	public static <R> TagReader<R> tag(String aTagName) {
@@ -62,7 +62,7 @@ public class DocumentReader<T> extends AbstractDocumentReader<T> {
 	private XmlPullParserFactory factory;
 	private XmlReader[] mappers;
 	
-	public DocumentReader(Class<T> aClass) {
+	public PullDocumentReader(Class<T> aClass) {
 		super(aClass);
 		try {
 			factory = XmlPullParserFactory.newInstance();
@@ -72,7 +72,7 @@ public class DocumentReader<T> extends AbstractDocumentReader<T> {
 		}
 	}
 	
-	public DocumentReader<T> to(XmlReader... aMappers) {
+	public PullDocumentReader<T> to(XmlReader... aMappers) {
 		mappers = aMappers;
 		return this;
 	}

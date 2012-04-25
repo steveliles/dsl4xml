@@ -14,11 +14,21 @@ Inspired by some recent work speeding up XML parsing in a slow Android applicati
 4. To avoid additional build-time steps (code generators, etc).
 5. Very small jar and no additional dependencies for Android.
 
-It works by providing a thin DSL wrapper around a Pull-Parser to declaratively construct a state-machine that unmarshalls XML documents into Java objects. 
+### How it works
+
+dsl4xml works by providing a thin DSL wrapper around either a SAX or Pull-Parser to declaratively construct a state-machine that unmarshalls XML documents into Java objects. 
 
 The DSL mirrors the structure of the XML document itself, making it very easy to write (and importantly to _read_ and _maintain_) XML unmarshalling code.
 
 Boiler-plate is minimised through use of reflection, which does of course incur some performance penalty. The penalty is reduced where possible by caching reflectively gleaned information.
+
+### Options for different platforms
+
+Initially dsl4xml was written to work with a Pull-Parser only. Performance tests on desktop and laptop machines showed this to be consistently faster than raw SAX parsing.
+
+Testing on Android devices, however, showed SAX parsing to be an order of magnitude faster than pull-parsing, so a second implementation of dsl4xml was created, wrapping a SAX parser.
+
+If you are writing XML unmarshalling code for servers/desktops, use the Pull variant (statically import PullDocumentReader). When writing code to run on Android be very sure to statically import SAXDocumentReader - it makes a huge difference to performance!
 
 ## Examples
 
