@@ -6,7 +6,9 @@ SAX and "pull" parsing tend to be very fast, have significantly lower memory req
 
 JAXB and other xml-binding tools and frameworks can require dependencies on large libraries, or additional compile-time steps.
 
-Inspired by some recent work speeding up XML parsing in a slow Android application, `dsl4xml` is an experiment with the following aims:
+dsl4xml was inspired by some recent work speeding up and improving the readability of some complex (and _slow_) XML parsing code in an Android application.
+
+### Aims
 
 1. To make _readable_, maintainable, declarative code that unmarshalls XML documents to Java objects.
 2. To make unmarshalling XML documents to Java objects very fast (sax/pull-parsing speeds).
