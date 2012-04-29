@@ -64,8 +64,7 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 			return handler.getResult();
 		} catch (XmlReadingException anExc) {
 			throw anExc;
-		} catch (Exception anExc) {
-anExc.printStackTrace();			
+		} catch (Exception anExc) {		
 			throw new XmlReadingException(anExc);
 		}
 	}
