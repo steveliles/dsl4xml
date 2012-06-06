@@ -310,7 +310,7 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 			}
 			
 			if (tags == null) {
-				return this;
+				return getIgnore();
 			}
 			
 			for (TagHandler<?> _h : tags) {
