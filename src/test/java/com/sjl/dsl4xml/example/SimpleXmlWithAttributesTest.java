@@ -14,7 +14,7 @@ public class SimpleXmlWithAttributesTest {
 	@Test
 	public void mapsHobbitTagToHobbitObject()
 	throws Exception {
-		SAXDocumentReader<Hobbits> _p = newMarshaller();
+		DocumentReader<Hobbits> _p = newMarshaller();
 		Hobbits _h = _p.read(getTestInput(), "utf-8");
 		Assert.assertEquals(4, _h.size());
 	}
@@ -23,7 +23,7 @@ public class SimpleXmlWithAttributesTest {
 		return getClass().getResourceAsStream("example2.xml");
 	}
 	
-	private SAXDocumentReader<Hobbits> newMarshaller() {
+	private DocumentReader<Hobbits> newMarshaller() {
 		return mappingOf("example", Hobbits.class).to(
 			tag("hobbit", Hobbit.class).with(
 				attributes("firstname", "surname", "age")

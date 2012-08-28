@@ -1,6 +1,8 @@
-package com.sjl.dsl4xml;
+package com.sjl.dsl4xml.pull;
 
 import org.xmlpull.v1.*;
+
+import com.sjl.dsl4xml.*;
 
 public interface ReadingContext extends HasConverters {
 

@@ -3,6 +3,7 @@ package com.sjl.dsl4xml;
 import org.jmock.*;
 import org.junit.*;
 
+import com.sjl.dsl4xml.pull.*;
 import com.sjl.dsl4xml.support.*;
 
 public class NamedAttributesReaderTest {

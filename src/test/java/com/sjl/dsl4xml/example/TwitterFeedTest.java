@@ -15,8 +15,8 @@ public class TwitterFeedTest {
 
 	// This creates a new reader capable of parsing twitter responses.
 	// Only call this once, then re-use the returned PullDocumentReader object (it is thread safe!)
-	private static SAXDocumentReader<Tweets> newReader() {
-		SAXDocumentReader<Tweets> _tweetsReader = mappingOf("feed", Tweets.class).to(
+	private static DocumentReader<Tweets> newReader() {
+		DocumentReader<Tweets> _tweetsReader = mappingOf("feed", Tweets.class).to(
 			tag("entry", Tweet.class).with(
 				tag("published"),
 				tag("title"),
@@ -80,7 +80,7 @@ public class TwitterFeedTest {
 	}
 	
 	private Tweets marshallTestDocumentToTweets() {
-		SAXDocumentReader<Tweets> _m = newReader();
+		DocumentReader<Tweets> _m = newReader();
 		return _m.read(getTestInput(), "utf-8");
 	}
 

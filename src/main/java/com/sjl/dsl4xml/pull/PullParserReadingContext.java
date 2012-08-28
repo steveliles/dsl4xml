@@ -1,9 +1,10 @@
-package com.sjl.dsl4xml;
+package com.sjl.dsl4xml.pull;
 
 import java.util.*;
 
 import org.xmlpull.v1.*;
 
+import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.*;
 import com.sjl.dsl4xml.support.convert.*;
 

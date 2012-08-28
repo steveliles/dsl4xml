@@ -34,8 +34,8 @@ public class UnknownTagsTest {
 		Assert.assertEquals(1, mainTag.size());
 	}
 	
-	private static SAXDocumentReader<MainTag> newMarshaller() {
-		SAXDocumentReader<MainTag> _result = mappingOf("mainTag", MainTag.class).to(
+	private static DocumentReader<MainTag> newMarshaller() {
+		DocumentReader<MainTag> _result = mappingOf("mainTag", MainTag.class).to(
 			tag("subTag", SubTag.class)
 		);
 		return _result;

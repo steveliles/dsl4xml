@@ -5,7 +5,7 @@ import java.util.*;
 
 import com.sjl.dsl4xml.support.*;
 
-public abstract class AbstractDocumentReader<T> {
+public abstract class AbstractDocumentReader<T> implements DocumentReader<T> {
 
 	protected Converter<?>[] converters;
 	protected Class<T> resultType;

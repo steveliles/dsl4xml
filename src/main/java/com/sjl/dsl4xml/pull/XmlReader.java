@@ -1,4 +1,4 @@
-package com.sjl.dsl4xml;
+package com.sjl.dsl4xml.pull;
 
 public interface XmlReader {
 

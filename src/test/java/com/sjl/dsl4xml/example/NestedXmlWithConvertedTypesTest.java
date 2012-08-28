@@ -58,12 +58,12 @@ public class NestedXmlWithConvertedTypesTest {
 	}
 	
 	/**
-	 * @return a PullDocumentReader that can map documents like example3.xml
+	 * @return a DocumentReader that can map documents like example3.xml
 	 * to the Hobbit class declared below. This includes nested Address fields
 	 * with nested House fields, and fields that need type conversion (int's and Date's).
 	 */
-	private static SAXDocumentReader<Hobbit> newMarshaller() {
-		SAXDocumentReader<Hobbit> _result = mappingOf("hobbit", Hobbit.class).to(
+	private static DocumentReader<Hobbit> newMarshaller() {
+		DocumentReader<Hobbit> _result = mappingOf("hobbit", Hobbit.class).to(
 			tag("name", Name.class).with(
 				attributes("firstname", "surname")
 			),

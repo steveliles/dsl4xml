@@ -44,7 +44,7 @@ public class SimpleXmlNoAttributesTest {
 	}
 
 	private Description marshallTestDocumentToDescription() {
-		SAXDocumentReader<Description> _m = newMarshaller();
+		DocumentReader<Description> _m = newMarshaller();
 		return _m.read(getTestInput(), "utf-8");
 	}
 
@@ -56,7 +56,7 @@ public class SimpleXmlNoAttributesTest {
 	 * @return a PullDocumentReader that can map documents like example1.xml
 	 * to the Description class declared below.
 	 */
-	private static SAXDocumentReader<Description> newMarshaller() {
+	private static DocumentReader<Description> newMarshaller() {
 		return mappingOf("example", Description.class).to(
 			tag("description").with(
 				tag("title"),

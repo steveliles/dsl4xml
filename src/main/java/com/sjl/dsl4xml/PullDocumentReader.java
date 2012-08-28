@@ -4,6 +4,8 @@ import java.io.*;
 
 import org.xmlpull.v1.*;
 
+import com.sjl.dsl4xml.pull.*;
+
 public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
 
 	public static <R> PullDocumentReader<R> mappingOf(Class<R> aClass) {

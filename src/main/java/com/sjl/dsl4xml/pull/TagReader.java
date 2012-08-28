@@ -1,8 +1,9 @@
-package com.sjl.dsl4xml;
+package com.sjl.dsl4xml.pull;
 
 import java.lang.reflect.*;
 import java.util.*;
 
+import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.*;
 
 public class TagReader<T> implements XmlReader {
