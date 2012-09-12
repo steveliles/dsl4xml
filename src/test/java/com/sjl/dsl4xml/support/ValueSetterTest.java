@@ -5,7 +5,6 @@ import org.junit.*;
 
 import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.Classes.NoSuitableMethodException;
-import com.sjl.dsl4xml.support.ValueSetter.UnsuitableMethodException;
 
 public class ValueSetterTest {
 
@@ -100,7 +99,7 @@ public class ValueSetterTest {
 		try {
 			new ValueSetter(converters, TestModel.class, "fieldFour");
 			Assert.fail("Expected an exception");
-		} catch (UnsuitableMethodException anExc) {
+		} catch (NoSuitableMethodException anExc) {
 			// good
 		}
 	}
@@ -110,7 +109,7 @@ public class ValueSetterTest {
 		try {
 			new ValueSetter(converters, TestModel.class, "fieldFive");
 			Assert.fail("Expected an exception");
-		} catch (UnsuitableMethodException anExc) {
+		} catch (NoSuitableMethodException anExc) {
 			// good
 		}
 	}

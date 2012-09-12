@@ -3,6 +3,7 @@ package com.sjl.dsl4xml.support;
 import java.lang.reflect.*;
 
 import com.sjl.dsl4xml.*;
+import com.sjl.dsl4xml.support.Classes.NoSuitableMethodException;
 
 public class ValueSetter {
 	private Method method;
@@ -32,19 +33,13 @@ public class ValueSetter {
 		
 		Class<?>[] _params = _m.getParameterTypes();
 		if (_params.length != 1) {
-			throw new UnsuitableMethodException("Mutator method " + aClass.getSimpleName() + "." + _m.getName() + " should accept 1 param, but wants " + _params.length);
+			throw new NoSuitableMethodException("Mutator method " + aClass.getSimpleName() + "." + _m.getName() + " should accept 1 param, but wants " + _params.length);
 		}	
 		return _m;
 	}
 	
 	private Class<?> getArgType(Method aMethod) {
 		return aMethod.getParameterTypes()[0];
-	}
-	
-	static class UnsuitableMethodException extends RuntimeException {
-		public UnsuitableMethodException(String aMessage) {
-			super(aMessage);
-		}
 	}
 }
 
