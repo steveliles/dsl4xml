@@ -32,7 +32,25 @@ Testing on Android devices, however, showed SAX parsing to be an order of magnit
 
 If you are writing XML unmarshalling code for servers/desktops, use the Pull variant (statically import PullDocumentReader). When writing code to run on Android be very sure to statically import SAXDocumentReader - it makes a huge difference to performance!
 
+### Usage
+
 Statically import `SAXDocumentReader` or `PullDocumentReader` to control which parsing method is used and to bring the dsl into scope (ie., so you can write it without prefixing).
+
+Maven repository:
+
+	<repository>
+	    <id>sjl-github</id>
+	    <name>steveliles github repo</name>
+	    <url>http://steveliles.github.com/repository</url>
+	</repository>
+	
+Maven dependency:
+
+    <dependency>
+        <groupId>com.sjl</groupId>
+        <artifactId>dsl4xml</artifactId>
+        <version>0.1.3</artifactId>
+    </dependency>
 
 ## Examples
 
