@@ -32,6 +32,8 @@ Testing on Android devices, however, showed SAX parsing to be an order of magnit
 
 If you are writing XML unmarshalling code for servers/desktops, use the Pull variant (statically import PullDocumentReader). When writing code to run on Android be very sure to statically import SAXDocumentReader - it makes a huge difference to performance!
 
+Statically import `SAXDocumentReader` or `PullDocumentReader` to control which parsing method is used and to bring the dsl into scope (ie., so you can write it without prefixing).
+
 ## Examples
 
 ### Simple XML, no attributes
@@ -86,7 +88,7 @@ And some simple model objects we want to marshall to:
 
 We can unmarshall the XML to those model objects using the following simple Java code:
 
-    import static com.sjl.dsl4xml.DocumentReader.*;
+    import static com.sjl.dsl4xml.SAXDocumentReader.*;
 
     class BooksReader {
 	    private DocumentReader<Books> reader;
@@ -170,7 +172,7 @@ POJO's:
 	
 Unmarshalling code:
 
-	import static com.sjl.dsl4xml.DocumentReader.*;
+	import static com.sjl.dsl4xml.SAXDocumentReader.*;
 
     class HobbitsReader {
 	    private DocumentReader<Hobbits> Reader;
@@ -209,6 +211,8 @@ XML:
 POJO's: [See the source-code of the test-case](https://github.com/steveliles/dsl4xml/commit/ad2141df218a776ebd68a75072feab16a5221fd5#diff-4)
 	
 Unmarshalling code:
+
+	import static com.sjl.dsl4xml.PullDocumentReader.*;
 
 	private static DocumentReader<Hobbit> newReader() {
 		DocumentReader<Hobbit> _reader = mappingOf(Hobbit.class).to(
