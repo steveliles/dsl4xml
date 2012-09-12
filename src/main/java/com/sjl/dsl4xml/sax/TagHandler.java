@@ -133,7 +133,11 @@ public class TagHandler<R> implements Handler<R> {
 	
 	private R newContextObject() {
 		try {
-			return (R) modelType.newInstance();
+			if (modelType.isInterface()) {
+				return (R) Classes.newDynamicProxy(modelType);
+			} else {
+				return (R) modelType.newInstance();	
+			}
 		} catch (Exception anExc) {
 			throw new XmlReadingException(anExc);
 		}
@@ -157,7 +161,10 @@ public class TagHandler<R> implements Handler<R> {
 			try {
 				method.invoke(aTo, aWith);
 			} catch (Exception anExc) {
-				throw new XmlReadingException(anExc);
+				throw new XmlReadingException(
+					"invoking " + method.getName() + 
+					" on " + aTo.getClass().getName() + 
+					" with " + aWith.getClass().getName(), anExc);
 			}
 		}
 	}

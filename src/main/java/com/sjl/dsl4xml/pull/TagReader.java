@@ -125,7 +125,11 @@ public class TagReader<T> implements XmlReader {
 	
 	private T newContextObject() {
 		try {
-			return type.newInstance();
+			if (type.isInterface()) {
+				return (T) Classes.newDynamicProxy(type);
+			} else {
+				return (T) type.newInstance();	
+			}
 		} catch (Exception anExc) {
 			throw new XmlReadingException(anExc);
 		}

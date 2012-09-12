@@ -59,7 +59,7 @@ public class NestedXmlWithConvertedTypesTest {
 	
 	/**
 	 * @return a DocumentReader that can map documents like example3.xml
-	 * to the Hobbit class declared below. This includes nested Address fields
+	 * to the Halfling class declared below. This includes nested Address fields
 	 * with nested House fields, and fields that need type conversion (int's and Date's).
 	 */
 	private static DocumentReader<Hobbit> newMarshaller() {
