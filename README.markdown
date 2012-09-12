@@ -44,12 +44,20 @@ Maven repository:
 	    <url>http://steveliles.github.com/repository</url>
 	</repository>
 	
-Maven dependency:
+Maven dependency (stable):
 
     <dependency>
         <groupId>com.sjl</groupId>
         <artifactId>dsl4xml</artifactId>
         <version>0.1.3</artifactId>
+    </dependency>
+    
+Maven dependency (latest):
+
+    <dependency>
+        <groupId>com.sjl</groupId>
+        <artifactId>dsl4xml</artifactId>
+        <version>0.1.4-SNAPSHOT</artifactId>
     </dependency>
 
 ## Examples

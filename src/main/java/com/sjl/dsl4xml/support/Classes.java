@@ -30,7 +30,10 @@ public class Classes {
 			}
 		}
 		
-		String _msg = "No mutator method found in class " + aClass.getName() + ", tried ";
+		String _classname = aClass.isAnonymousClass() ? 
+			asString(aClass, aClass.getInterfaces()) : aClass.getName();
+			
+		String _msg = "No mutator method found in class " + _classname + ", tried ";
 		for (String _name : _names) {
 			_msg += _name + ",";
 		}
@@ -93,5 +96,9 @@ public class Classes {
 		public NoSuitableMethodException(String aMessage) {
 			super(aMessage);
 		}
+	}
+	
+	private static String asString(Class<?> aClass, Class<?>... aClasses) {
+		return aClass.getName() + Arrays.asList(aClasses).toString();
 	}
 }
