@@ -3,7 +3,7 @@ package com.sjl.dsl4xml.pull;
 import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.*;
 
-public final class PCDataReader<T> implements XmlReader {
+public final class PCDataReader<T> implements ContentReader {
 
 	private String fieldName;
 	private ValueSetter setter;

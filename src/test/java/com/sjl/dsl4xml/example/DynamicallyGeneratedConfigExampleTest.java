@@ -29,7 +29,7 @@ public class DynamicallyGeneratedConfigExampleTest {
 	private DocumentReader<Config> newMarshaller() {
 		return mappingOf("config", Config.class).to(
 			tag("database", Config.Database.class).with(
-				tag("name"),
+				attributes("name"),
 				tag("host", Config.Host.class).with(
 					tag("name"), tag("port")
 				),
@@ -43,12 +43,14 @@ public class DynamicallyGeneratedConfigExampleTest {
 		return getClass().getResourceAsStream("config-example.xml");
 	}
 	
-	public interface Config {
+	public interface HasName {
+		public String getName();
+		public void setName(String aName);
+	}
+	
+	public interface Config extends HasName {
 		
-		public interface Host {
-			public String getName();
-			public void setName(String aName);
-			
+		public interface Host extends HasName {
 			public Integer getPort();
 			public void setPort(Integer aPort);
 		}
@@ -61,19 +63,13 @@ public class DynamicallyGeneratedConfigExampleTest {
 			public void setPassword(String aPassword);
 		}
 		
-		public interface Database {
-			public String getName();
-			public void setName(String aName);
-			
+		public interface Database extends HasName {
 			public Host getHost();
 			public void setHost(Host aHost);
 			
 			public Credentials getCredentials();
 			public void setCredentials(Credentials aCredentials);
 		}
-		
-		public String getName();
-		public void setName(String aName);
 		
 		public Database getDatabase();
 		public void setDatabase(Database aDatabase);

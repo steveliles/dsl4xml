@@ -33,17 +33,17 @@ public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
 	 * @return a NamedAttributesReader that looks up attribute values by name.
 	 * Useful if some attributes are being ignored.
 	 */
-	public static NamedAttributesReader attributes(String... anAttributeNames) {
+	public static AttributesReader attributes(String... anAttributeNames) {
 		return new NamedAttributesReader(anAttributeNames);
 	}
 	
 	// TODO: multi-attributes with namespace?
 	
-	public static NamedAttributesReader attribute(String anAttributeName) {
+	public static AttributesReader attribute(String anAttributeName) {
 		return new NamedAttributesReader(anAttributeName);
 	}
 	
-	public static NamedAttributesReader attribute(String aNamespace, String anAttributeName) {
+	public static AttributesReader attribute(String aNamespace, String anAttributeName) {
 		return new NamedAttributesReader(aNamespace, anAttributeName);
 	}
 	
@@ -57,7 +57,7 @@ public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
 	 * than a NamedAttributesReader due to attribute value lookup by index
 	 * rather than by name. 
 	 */
-	public static OrderedAttributesReader attributesInOrder(String... aSetterMethodNames) {
+	public static AttributesReader attributesInOrder(String... aSetterMethodNames) {
 		return new OrderedAttributesReader(aSetterMethodNames);
 	}
 	

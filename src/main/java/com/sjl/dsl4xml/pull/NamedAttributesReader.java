@@ -2,7 +2,7 @@ package com.sjl.dsl4xml.pull;
 
 import com.sjl.dsl4xml.support.*;
 
-public class NamedAttributesReader implements XmlReader {
+public class NamedAttributesReader implements AttributesReader {
 
 	private String[] attributeNames;
 	private ValueSetter[] mutators;
@@ -16,8 +16,8 @@ public class NamedAttributesReader implements XmlReader {
 	public boolean read(ReadingContext aContext) {
 		if (aContext.isStartTag()) {
 			Object _currentContext = aContext.peek();
-			for (int i=0; i<attributeNames.length; i++) {
-				ValueSetter _vs = getValueSetter(i, aContext, _currentContext.getClass());
+			for (int i=0; i<attributeNames.length; i++) {		
+				ValueSetter _vs = getValueSetter(i, aContext, _currentContext.getClass());				
 				_vs.invoke(_currentContext, aContext.getAttributeValue(attributeNames[i]));
 			}
 		}

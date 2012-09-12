@@ -29,6 +29,11 @@ public class TagHandler<R> implements Handler<R> {
 		tagName = aTagName;
 	}
 	
+	public TagHandler<R> with(AttributesHandler anAttributes, TagHandler<?>... aTags) {
+		attributes = anAttributes;
+		return to(aTags);
+	}
+	
 	public TagHandler<R> with(AttributesHandler anAttributes) {
 		attributes = anAttributes;
 		return this;

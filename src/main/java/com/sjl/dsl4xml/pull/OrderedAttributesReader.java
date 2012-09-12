@@ -2,7 +2,7 @@ package com.sjl.dsl4xml.pull;
 
 import com.sjl.dsl4xml.support.*;
 
-public class OrderedAttributesReader implements XmlReader {
+public class OrderedAttributesReader implements AttributesReader {
 
 	private String[] methodNames;
 	private ValueSetter[] mutators;

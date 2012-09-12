@@ -1,6 +1,5 @@
 <config>
-  <database>
-    <name>my-db</name>
+  <database name="my-db">
     <host>
       <name>johnny5</name>
       <port>5</port>

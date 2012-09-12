@@ -6,12 +6,13 @@ import java.util.*;
 import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.*;
 
-public class TagReader<T> implements XmlReader {
+public class TagReader<T> implements ContentReader {
 
 	private String namespace;
 	private String tagName;
 	private Class<T> type;
 	private ContextMutator mutator;
+	private AttributesReader attributes;
 	private List<XmlReader> mappers;
 	
 	public TagReader(String aTagName) {
@@ -57,13 +58,24 @@ public class TagReader<T> implements XmlReader {
 		return this;
 	}
 	
-	public TagReader<T> with(XmlReader... aMappers) {
+	public TagReader<T> with(AttributesReader anAttributes) {
+		attributes = anAttributes;
+		return this;
+	}
+	
+	public TagReader<T> with(ContentReader... aMappers) {
 		if (mappers == null) {
 			mappers = new ArrayList<XmlReader>();
 		} 
 		mappers.addAll(0, Arrays.asList(aMappers));
 		
 		return this;
+	}
+	
+	public TagReader<T> with(
+		AttributesReader anAttributes, ContentReader... aMappers) {
+		attributes = anAttributes;
+		return (with(aMappers));
 	}
 	
 	@Override
@@ -77,6 +89,9 @@ public class TagReader<T> implements XmlReader {
 			
 			try
 	        {
+				if (attributes != null)
+					attributes.read(aContext);
+				
 	            while (aContext.isNotEndTag(namespace, tagName))
 	            {	            	
 	                for (XmlReader _m : mappers)
@@ -125,9 +140,9 @@ public class TagReader<T> implements XmlReader {
 	
 	private T newContextObject() {
 		try {
-			if (type.isInterface()) {
+			if (type.isInterface()) {		
 				return (T) Classes.newDynamicProxy(type);
-			} else {
+			} else {		
 				return (T) type.newInstance();	
 			}
 		} catch (Exception anExc) {
