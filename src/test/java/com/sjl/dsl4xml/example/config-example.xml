@@ -1,0 +1,13 @@
+<config>
+  <database>
+    <name>my-db</name>
+    <host>
+      <name>johnny5</name>
+      <port>5</port>
+    </host>
+    <credentials>
+      <username>username</username>
+      <password>password</password>
+    </credentials>
+  </database>
+</config>

@@ -30,7 +30,8 @@ public class Classes {
 			}
 		}
 		
-		String _classname = aClass.isAnonymousClass() ? 
+		String _classname = 
+				(aClass.isAnonymousClass() || aClass.isSynthetic() || aClass.getName().startsWith("$Proxy")) ? 
 			asString(aClass, aClass.getInterfaces()) : aClass.getName();
 			
 		String _msg = "No mutator method found in class " + _classname + ", tried ";
