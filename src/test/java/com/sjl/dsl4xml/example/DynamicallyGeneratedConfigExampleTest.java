@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.SAXDocumentReader.*;
+import static com.sjl.dsl4xml.PullDocumentReader.*;
 
 import java.io.*;
 
@@ -27,7 +27,7 @@ public class DynamicallyGeneratedConfigExampleTest {
 	}
 	
 	private DocumentReader<Config> newMarshaller() {
-		return mappingOf("config", Config.class).to(
+		return mappingOf(Config.class).to(
 			tag("database", Config.Database.class).with(
 				attributes("name"),
 				tag("host", Config.Database.Host.class).with(
