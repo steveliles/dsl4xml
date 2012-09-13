@@ -73,7 +73,7 @@ public class TagHandler<R> implements Handler<R> {
 				R _model = newContextObject();
 				aCtx.push(_model);
 				if (_parent != null) {
-					ContextMutator<R> _m = getMutator(_parent.getClass(), modelType);
+					ContextMutator<R> _m = getMutator(_parent.getClass(), modelType, tagName);
 					_m.apply(_parent, _model);
 				}
 			}
@@ -137,20 +137,12 @@ public class TagHandler<R> implements Handler<R> {
 	}
 	
 	private R newContextObject() {
-		try {
-			if (modelType.isInterface()) {
-				return (R) Classes.newDynamicProxy(modelType);
-			} else {
-				return (R) modelType.newInstance();	
-			}
-		} catch (Exception anExc) {
-			throw new XmlReadingException(anExc);
-		}
+		return Classes.newInstance(modelType);
 	}
 	
-	private ContextMutator<R> getMutator(Class<?> aFor, Class<R> aWith) {
+	private ContextMutator<R> getMutator(Class<?> aFor, Class<R> aWith, String aTagName) {
 		if (mutator == null) {
-			mutator = new ContextMutator<R>(aFor, aWith);
+			mutator = new ContextMutator<R>(aFor, aWith, aTagName);
 		}
 		return mutator;
 	}
@@ -158,8 +150,8 @@ public class TagHandler<R> implements Handler<R> {
 	private static class ContextMutator<R> {
 		private Method method;
 		
-		public ContextMutator(Class<?> aFor, Class<R> aWith) {
-			method = Classes.getMutatorMethod(aFor, aWith.getSimpleName());
+		public ContextMutator(Class<?> aFor, Class<R> aWith, String aTagName) {
+			method = Classes.getMutatorMethod(aFor, aWith.getSimpleName(), aTagName);
 		}
 		
 		public void apply(Object aTo, R aWith) {

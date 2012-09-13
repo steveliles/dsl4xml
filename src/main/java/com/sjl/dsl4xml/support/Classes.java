@@ -3,25 +3,30 @@ package com.sjl.dsl4xml.support;
 import java.lang.reflect.*;
 import java.util.*;
 
+import com.sjl.dsl4xml.*;
+
 public class Classes {
 
-	public static <T> Method getMutatorMethod(Class<T> aClass, String aFieldName) {
-		String _methodSuffix = upperCaseFirstLetter(aFieldName);
-		return getMethod(aClass, _methodSuffix, "set", "add", "insert", "put");
+    public static final String[] MUTATOR_PREFIXES = {"set", "add", "insert", "put"};
+    
+	public static <T> Method getMutatorMethod(Class<T> aClass, String... aMaybeNames) {
+	    List<String> _names = new ArrayList<String>();
+	    for (String _s : aMaybeNames) {
+	        String _suffix = upperCaseFirstLetter(_s);	        
+	        for (String _prefix : MUTATOR_PREFIXES) {
+	            _names.add(_prefix);
+	            _names.add(_prefix + _suffix);
+	        }	        
+	    }	 
+	    return getMethod(aClass, _names);
 	}
 	
 	private static String upperCaseFirstLetter(String aString) {
 		return ("" + aString.charAt(0)).toUpperCase() + aString.substring(1, aString.length());
 	}
 	
-	private static <T> Method getMethod(Class<T> aClass, String aSuffix, String... aPrefixes) {
-		List<String> _names = new ArrayList<String>();
-		for (String _pre : aPrefixes) {
-			_names.add(_pre);
-			_names.add(_pre + aSuffix);
-		}
-		
-		for (String _name : _names) {
+	private static <T> Method getMethod(Class<T> aClass, List<String> aNames) {
+	    for (String _name : aNames) {
 			for (Method _m : aClass.getMethods()) {
 				if (_name.equals(_m.getName()) && (_m.getParameterTypes().length == 1)) {
 					_m.setAccessible(true); // allow to invoke non-public methods
@@ -30,15 +35,27 @@ public class Classes {
 			}
 		}
 		
-		String _classname = 
-				(aClass.isAnonymousClass() || aClass.isSynthetic() || aClass.getName().startsWith("$Proxy")) ? 
-			asString(aClass, aClass.getInterfaces()) : aClass.getName();
-			
-		String _msg = "No mutator method found in class " + _classname + ", tried ";
-		for (String _name : _names) {
-			_msg += _name + ",";
-		}
-		throw new NoSuitableMethodException(_msg);
+	    String _classname = 
+            (aClass.isAnonymousClass() || aClass.isSynthetic() || aClass.getName().startsWith("$Proxy")) ? 
+                asString(aClass, aClass.getInterfaces()) : aClass.getName();
+           
+       String _msg = "No mutator method found in class " + _classname + ", tried ";
+       for (String _name : aNames) {
+           _msg += _name + ",";
+       }
+       throw new NoSuitableMethodException(_msg);
+	}
+	
+	public static <T> T newInstance(Class<T> aClass) {
+	    try {
+            if (aClass.isInterface()) {
+                return (T) newDynamicProxy(aClass);
+            } else {        
+                return (T) aClass.newInstance();
+            }
+        } catch (Exception anExc) {
+            throw new XmlReadingException(anExc);
+        }
 	}
 	
 	public static <T> T newDynamicProxy(Class<T> aClass) {
@@ -71,16 +88,16 @@ public class Classes {
 	public static <T> T newMapBasedProxy(Class<T> aClass) {
 		return (T) Proxy.newProxyInstance(
 			aClass.getClassLoader(),
-			new Class<?>[]{ aClass },
+			new Class<?>[]{ aClass, Comparable.class },
 			new InvocationHandler() {
-				private Map<String, Object> data = new HashMap<String, Object>();
+			    private Map<String, Object> data = new HashMap<String, Object>();
 				@Override
 				public Object invoke(Object aProxy, Method aMethod, Object[] aArgs) throws Throwable {
 					if (isMutator(aMethod)) {
 						return data.put(getSuffix(aMethod.getName()), aArgs[0]);
 					} else {
 						return data.get(getSuffix(aMethod.getName()));
-					}
+					}				    
 				}
 				
 				private boolean isMutator(Method aMethod) {

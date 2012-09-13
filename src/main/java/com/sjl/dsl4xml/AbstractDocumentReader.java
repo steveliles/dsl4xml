@@ -30,15 +30,7 @@ public abstract class AbstractDocumentReader<T> implements DocumentReader<T> {
 	}
 	
 	protected T newResultObject() {
-		try {
-			if (resultType.isInterface()) {		
-				return (T) Classes.newDynamicProxy(resultType);
-			} else {		
-				return (T) resultType.newInstance();
-			}
-		} catch (Exception anExc) {
-			throw new XmlReadingException(anExc);
-		}
+		return Classes.newInstance(resultType);
 	}
 	
 	private Reader newReader(InputStream anInputStream, String aCharSet) {

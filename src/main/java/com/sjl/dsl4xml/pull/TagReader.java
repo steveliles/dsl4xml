@@ -132,7 +132,7 @@ public class TagReader<T> implements ContentReader {
 			Object _ctx = aContext.peek();
 			T _nestedCtx = newContextObject();
 			
-			getMutator(_ctx.getClass(), type).apply(_ctx, _nestedCtx);
+			getMutator(_ctx.getClass(), type, tagName).apply(_ctx, _nestedCtx);
 			
 			aContext.push(_nestedCtx);
 		}
@@ -150,9 +150,9 @@ public class TagReader<T> implements ContentReader {
 		}
 	}
 	
-	private ContextMutator getMutator(Class<?> aFor, Class<T> aWith) {
+	private ContextMutator getMutator(Class<?> aFor, Class<T> aWith, String aTagName) {
 		if (mutator == null) {
-			mutator = new ContextMutator(aFor, aWith);
+			mutator = new ContextMutator(aFor, aWith, aTagName);
 		}
 		return mutator;
 	}
@@ -160,8 +160,8 @@ public class TagReader<T> implements ContentReader {
 	private class ContextMutator {
 		private Method method;
 		
-		public ContextMutator(Class<?> aFor, Class<T> aWith) {
-			method = Classes.getMutatorMethod(aFor, aWith.getSimpleName());
+		public ContextMutator(Class<?> aFor, Class<T> aWith, String aTagName) {
+			method = Classes.getMutatorMethod(aFor, aWith.getSimpleName(), aTagName);
 		}
 		
 		public void apply(Object aTo, T aWith) {

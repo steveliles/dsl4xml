@@ -9,8 +9,8 @@ public class ValueSetter {
 	private Method method;
 	private Converter<?> converter;
 	
-	public ValueSetter(HasConverters aConverters, Class<?> aClass, String aFieldName) {
-		method = getMethod(aClass, aFieldName);
+	public ValueSetter(HasConverters aConverters, Class<?> aClass, String... aMaybeNames) {
+		method = getMethod(aClass, aMaybeNames);
 		converter = aConverters.getConverter(getArgType(method));
 	}
 	
@@ -28,8 +28,8 @@ public class ValueSetter {
 		return method.getDeclaringClass().getSimpleName() + "." + method.getName();
 	}
 	
-	private Method getMethod(Class<?> aClass, String aFieldName) {
-		Method _m = Classes.getMutatorMethod(aClass, aFieldName);
+	private Method getMethod(Class<?> aClass, String... aMaybeNames) {
+		Method _m = Classes.getMutatorMethod(aClass, aMaybeNames);
 		
 		Class<?>[] _params = _m.getParameterTypes();
 		if (_params.length != 1) {
