@@ -24,6 +24,8 @@ The DSL mirrors the structure of the XML document itself, making it very easy to
 
 Boiler-plate is minimised through use of reflection, which does of course incur some performance penalty. The penalty is reduced where possible by caching reflectively gleaned information.
 
+Where pure data objects conforming to Java Interfaces are required, implementations can be generated dynamically - you write the interface, dsl4xml will generated a POJO which implements it.
+
 ### Options for different platforms
 
 Initially dsl4xml was written to work with a Pull-Parser only. Performance tests on desktop and laptop machines showed this to be consistently faster than raw SAX parsing.
@@ -120,7 +122,7 @@ We can unmarshall the XML to those model objects using the following simple Java
 	    private DocumentReader<Books> reader;
 
 	    public BooksReader() {
-	        reader = mappingOf(Books.class).to(
+	        reader = mappingOf("books", Books.class).to(
 		        tag("book", Book.class).with(
 	               tag("title"),
 	               tag("synopsis")
@@ -132,6 +134,11 @@ We can unmarshall the XML to those model objects using the following simple Java
             return reader.read(aReader);
 	    }
 	}
+	
+Two changes would be required to use the pull-parser implementation:
+
+1. statically import `PullDocumentReader` instead of `SAXDocumentReader`.
+2. remove the first parameter ("books") from the call to `mappingOf()` - the Pull reader doesn't need to know the name of the root element.
 	
 ### Simple XML with attributes
 
@@ -204,7 +211,7 @@ Unmarshalling code:
 	    private DocumentReader<Hobbits> Reader;
 
 	    public HobbitsReader() {
-	        reader = mappingOf(Hobbits.class).to(
+	        reader = mappingOf("example", Hobbits.class).to(
 		        tag("hobbit", Hobbit.class).with(
 	               attributes("firstname", "surname", "age")
 			    )
@@ -261,3 +268,119 @@ Unmarshalling code:
 		
 		return _reader;
 	}
+	
+### Runtime Code Generation
+
+Why write dumb javabeans if an interface is sufficient? Lets revisit the original example:
+
+The XML:
+
+	<books>
+	    <book>
+	        <title>The Hobbit</title>
+	        <synopsis>A little guy goes on an adventure, finds ring, comes back.</synopsis>
+	    </book>
+	    <book>
+	        <title>The Lord of the Rings</title>
+	        <synopsis>A couple of little guys go on an adventure, lose ring, come back.</synopsis>
+	    </book>
+	</books>
+
+And some simple model _interfaces_ we want to unmarshall to:
+
+    interface Books extends List<Book> {}
+    
+    interface Book {
+        public String getTitle();
+    	public void setTitle(String aTitle);
+    	public String getSynopsis();
+    	public void setSynopsis(String aSynopsis);
+    }
+    
+We can unmarshall the XML to those model objects using the exact same simple Java code we used in the original example. Dsl4Xml understands that it should dynamically implement interfaces:
+
+    import static com.sjl.dsl4xml.SAXDocumentReader.*;
+
+    class BooksReader {
+	    private DocumentReader<Books> reader;
+
+	    public BooksReader() {
+	        reader = mappingOf(Books.class).to(
+		        tag("book", Book.class).with(
+	               tag("title"),
+	               tag("synopsis")
+			    )
+		    );
+	    }
+
+        public Books read(Reader aReader) {
+            return reader.read(aReader);
+	    }
+	}
+	
+You can nest interface declarations if you want to mirror the nesting of xml tags. This structure works well for certain situations, for example declaring a strongly typed configuration class to unmarshall configuration files to:
+
+XML:
+
+    <config>
+      <database name="my-db">
+        <host>
+          <name>johnny5</name>
+          <port>5</port>
+        </host>
+        <credentials>
+          <username>username</username>
+          <password>password</password>
+        </credentials>
+      </database>
+    </config>
+
+Interfaces:
+
+	public interface Config {
+		
+		public interface HasName {
+			public String getName();
+			public void setName(String aName);
+		}
+
+		public interface Host extends HasName {		
+			public Integer getPort();
+			public void setPort(Integer aPort);
+		}
+		
+		public interface Credentials {
+			public String getUsername();
+			public void setUsername(String aUsername);
+			
+			public String getPassword();
+			public void setPassword(String aPassword);
+		}
+		
+		public interface Database extends HasName {
+			public Host getHost();
+			public void setHost(Host aHost);
+			
+			public Credentials getCredentials();
+			public void setCredentials(Credentials aCredentials);
+		}
+		
+		public Database getDatabase();
+		public void setDatabase(Database aDatabase);
+	}
+	
+Mapping:
+
+	mappingOf("config", Config.class).to(
+		tag("database", Config.Database.class).with(
+			attributes("name"),
+			tag("host", Config.Host.class).with(
+				tag("name"), tag("port")
+			),
+			tag("credentials", Config.Credentials.class).with(
+				tag("username"), tag("password")
+			)
+		)
+	);
+
+A note on performance of dynamic implementation: The first time a DynamicProxy is generated for any interface the generation process can be "slow". Repeat instantiations are nice and quick. I have not tested dynamic implementation on Android yet, and cannot speak to its usability or performance.

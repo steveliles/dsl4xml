@@ -43,12 +43,12 @@ public class DynamicallyGeneratedConfigExampleTest {
 		return getClass().getResourceAsStream("config-example.xml");
 	}
 	
-	public interface HasName {
-		public String getName();
-		public void setName(String aName);
-	}
+	public interface Config {
 	
-	public interface Config extends HasName {
+		public interface HasName {
+			public String getName();
+			public void setName(String aName);
+		}
 		
 		public interface Host extends HasName {
 			public Integer getPort();
