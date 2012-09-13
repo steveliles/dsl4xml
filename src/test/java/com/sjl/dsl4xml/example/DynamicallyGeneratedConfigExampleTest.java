@@ -30,10 +30,10 @@ public class DynamicallyGeneratedConfigExampleTest {
 		return mappingOf("config", Config.class).to(
 			tag("database", Config.Database.class).with(
 				attributes("name"),
-				tag("host", Config.Host.class).with(
+				tag("host", Config.Database.Host.class).with(
 					tag("name"), tag("port")
 				),
-				tag("credentials", Config.Credentials.class).with(
+				tag("credentials", Config.Database.Credentials.class).with(
 					tag("username"), tag("password")
 				)
 			));
@@ -50,20 +50,21 @@ public class DynamicallyGeneratedConfigExampleTest {
 			public void setName(String aName);
 		}
 		
-		public interface Host extends HasName {
-			public Integer getPort();
-			public void setPort(Integer aPort);
-		}
-		
-		public interface Credentials {
-			public String getUsername();
-			public void setUsername(String aUsername);
-			
-			public String getPassword();
-			public void setPassword(String aPassword);
-		}
-		
 		public interface Database extends HasName {
+		
+			public interface Host extends HasName {
+				public Integer getPort();
+				public void setPort(Integer aPort);
+			}
+			
+			public interface Credentials {
+				public String getUsername();
+				public void setUsername(String aUsername);
+				
+				public String getPassword();
+				public void setPassword(String aPassword);
+			}
+
 			public Host getHost();
 			public void setHost(Host aHost);
 			
