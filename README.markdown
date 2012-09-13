@@ -24,7 +24,7 @@ The DSL mirrors the structure of the XML document itself, making it very easy to
 
 Boiler-plate is minimised through use of reflection, which does of course incur some performance penalty. The penalty is reduced where possible by caching reflectively gleaned information.
 
-Where pure data objects conforming to Java Interfaces are required, implementations can be generated dynamically - you write the interface, dsl4xml will generated a POJO which implements it.
+You can unmarshall to your own POJOs or have dsl4xml generate the boring stuff - you write the interface, dsl4xml will generated a POJO which implements it (dynamically, at runtime).
 
 ### Options for different platforms
 
