@@ -1,6 +1,4 @@
-package com.sjl.dsl4xml.sax;
-
-import static com.sjl.dsl4xml.SAXDocumentReader.*;
+package com.sjl.dsl4xml;
 
 import java.io.*;
 import java.text.*;
@@ -8,13 +6,11 @@ import java.util.*;
 
 import org.junit.*;
 
-import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.*;
-import com.sjl.dsl4xml.support.convert.*;
 
-public class DynamicImplementationSaxParsingTest {
+public abstract class DynamicImplementationTestBase {
 
-	interface Root {
+	public interface Root {
 		public String getAttr1();
 		public void setAttr1(String anAttr);
 		
@@ -28,7 +24,7 @@ public class DynamicImplementationSaxParsingTest {
 		public void setElem2(String aValue);
 	}
 	
-	interface Book {
+	public interface Book {
 		public String getTitle();
 		public void setTitle(String aTitle);
 		
@@ -36,7 +32,7 @@ public class DynamicImplementationSaxParsingTest {
 		public void setAuthor(String anAuthor);
 	}
 	
-	interface Profile1 {
+	public interface Profile1 {
 		public String getName();
 		public void setName(String aName);
 		
@@ -44,12 +40,12 @@ public class DynamicImplementationSaxParsingTest {
 		public void setReadingList(List<Book> aBooks);
 	}
 	
-	interface Profile2 extends List<Book> {
+	public interface Profile2 extends List<Book> {
 		public String getName();
 		public void setName(String aName);
 	}
 	
-	interface Person {
+	public interface Person {
 		public String getName();
 		public void setName(String aName);
 		
@@ -60,9 +56,23 @@ public class DynamicImplementationSaxParsingTest {
 		public void setNumberOfDependents(int aNumber);
 	}
 	
+	protected abstract DocumentReader<Root> newRootOnlyUnmarshaller();
+	
+	protected abstract DocumentReader<Root> newCorrectRootUnmarshaller();
+	
+	protected abstract DocumentReader<Root> newMissingAttributeRootUnmarshaller();
+	
+	protected abstract DocumentReader<Root> newMissingElementRootUnmarshaller();
+	
+	protected abstract DocumentReader<Profile1> newProfile1Unmarshaller();
+	
+	protected abstract DocumentReader<Profile2> newProfile2Unmarshaller();
+	
+	protected abstract DocumentReader<Person> newPersonUnmarshaller();
+	
 	@Test
 	public void unmarshallsRootElementToDynamicallyImplementedRootType() {
-		DocumentReader<Root> _r = mappingOf("root", Root.class);
+		DocumentReader<Root> _r = newRootOnlyUnmarshaller();
 		Root _root = _r.read(get("root-1.xml"), "utf-8");
 		Assert.assertNotNull(_root);
 	}
@@ -112,10 +122,7 @@ public class DynamicImplementationSaxParsingTest {
 	@Test
 	public void givesGoodErrorForMissingAttributeSetMethod() {
 		try {
-			DocumentReader<Root> _r = 
-				mappingOf("root", Root.class).to(
-					attributes("attr1", "attr2", "attr3")
-				);
+			DocumentReader<Root> _r = newMissingAttributeRootUnmarshaller();
 			
 			_r.read(get("root-6.xml"), "utf-8");
 			Assert.fail("should have thrown exception");
@@ -134,10 +141,7 @@ public class DynamicImplementationSaxParsingTest {
 	@Test
 	public void givesGoodErrorForMissingElementSetMethod() {
 		try {
-			DocumentReader<Root> _r = 
-				mappingOf("root", Root.class).to(
-					tag("missing", String.class)
-				);
+			DocumentReader<Root> _r = newMissingElementRootUnmarshaller();
 			
 			_r.read(get("root-6.xml"), "utf-8");
 			Assert.fail("should have thrown exception");
@@ -211,48 +215,8 @@ public class DynamicImplementationSaxParsingTest {
 		Assert.assertEquals(3, _person.getNumberOfDependents());
 	}
 	
-	private DocumentReader<Root> newCorrectRootUnmarshaller() {
-		return mappingOf("root", Root.class).to(
-			attributes("attr1", "attr2"),
-			tag("elem1"),
-			tag("elem2")
-		);
-	}
-	
-	private DocumentReader<Profile1> newProfile1Unmarshaller() {
-		return mappingOf("profile", Profile1.class).to(
-			tag("name"),
-			tag("readingList", List.class).with(
-				tag("book", Book.class).with(
-					tag("title"), tag("author")
-				)
-			)
-		);
-	}
-	
-	private DocumentReader<Profile2> newProfile2Unmarshaller() {
-		return mappingOf("profile", Profile2.class).to(
-			tag("name"),
-			tag("book", Book.class).with(
-				tag("title"), tag("author")
-			)
-		);
-	}
-	
-	private DocumentReader<Person> newPersonUnmarshaller() {
-		DocumentReader<Person> _r = mappingOf("person", Person.class).to(
-			tag("name"),
-			tag("dateOfBirth"),
-			tag("numberOfDependents")
-		);
-		
-		_r.registerConverters(new ThreadUnsafeDateConverter("yyyyMMdd"));
-		
-		return _r;
-	}
-	
-	private InputStream get(String anXml) {
-		return getClass().getResourceAsStream(anXml);
+	protected InputStream get(String anXml) {
+		return DynamicImplementationTestBase.class.getResourceAsStream(anXml);
 	}
 	
 }
