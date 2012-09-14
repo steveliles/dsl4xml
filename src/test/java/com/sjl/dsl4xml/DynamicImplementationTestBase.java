@@ -162,7 +162,10 @@ public abstract class DynamicImplementationTestBase {
 	public void dynamicImplementationsProduceReasonableToString() {
 		DocumentReader<Root> _r = newCorrectRootUnmarshaller();
 		Root _root = _r.read(get("root-5.xml"), "utf-8");
-		Assert.assertTrue(_root.toString().startsWith("proxy(" + Root.class.getName() + "){"));
+		
+System.out.println(_root.toString());		
+		
+		Assert.assertTrue(_root.toString().startsWith("proxy(" + Root.class.getName() + "){"));		
 		Assert.assertTrue(_root.toString().contains("Attr1=first"));
 		Assert.assertTrue(_root.toString().contains("Attr2=second"));
 		Assert.assertTrue(_root.toString().contains("Elem1=one"));

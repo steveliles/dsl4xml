@@ -15,10 +15,14 @@ public class NamedAttributesReader implements AttributesReader {
 	@Override
 	public boolean read(ReadingContext aContext) {
 		if (aContext.isStartTag()) {
+			
 			Object _currentContext = aContext.peek();
-			for (int i=0; i<attributeNames.length; i++) {		
-				ValueSetter _vs = getValueSetter(i, aContext, _currentContext.getClass());				
-				_vs.invoke(_currentContext, aContext.getAttributeValue(attributeNames[i]));
+			for (int i=0; i<attributeNames.length; i++) {
+				String _value = aContext.getAttributeValue(attributeNames[i]);
+				if (_value != null) {
+					ValueSetter _vs = getValueSetter(i, aContext, _currentContext.getClass());				
+					_vs.invoke(_currentContext, _value);
+				}
 			}
 		}
 		return false;

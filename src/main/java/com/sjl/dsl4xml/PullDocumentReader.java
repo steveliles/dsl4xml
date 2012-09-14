@@ -62,7 +62,7 @@ public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
 	}
 	
 	private XmlPullParserFactory factory;
-	private XmlReader[] mappers;
+	private XmlReader[] mappers = new XmlReader[]{};
 	
 	public PullDocumentReader(Class<T> aClass) {
 		super(aClass);
