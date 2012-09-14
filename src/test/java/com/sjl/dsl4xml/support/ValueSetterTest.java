@@ -4,7 +4,6 @@ import org.jmock.*;
 import org.junit.*;
 
 import com.sjl.dsl4xml.*;
-import com.sjl.dsl4xml.support.Classes.NoSuitableMethodException;
 
 public class ValueSetterTest {
 

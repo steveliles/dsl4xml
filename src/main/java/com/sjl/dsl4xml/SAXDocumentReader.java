@@ -47,8 +47,18 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 		}
 	}
 	
+	public SAXDocumentReader<T> to(AttributesHandler anAttributes) {
+		root.with(anAttributes);
+		return this;
+	}
+	
 	public SAXDocumentReader<T> to(TagHandler<?>... aHandlers) {
 		root.to(aHandlers);
+		return this;
+	}
+	
+	public SAXDocumentReader<T> to(AttributesHandler anAttributes, TagHandler<?>... aHandlers) {
+		root.with(anAttributes, aHandlers);
 		return this;
 	}
 	

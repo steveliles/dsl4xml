@@ -3,23 +3,22 @@ package com.sjl.dsl4xml.support;
 import java.lang.reflect.*;
 
 import com.sjl.dsl4xml.*;
-import com.sjl.dsl4xml.support.Classes.NoSuitableMethodException;
 
 public class ValueSetter {
 	private Method method;
 	private Converter<?> converter;
-	
-	public ValueSetter(HasConverters aConverters, Class<?> aClass, String... aMaybeNames) {
+
+	public ValueSetter(HasConverters aConverters, Class<?> aClass, String... aMaybeNames) {		
 		method = getMethod(aClass, aMaybeNames);
 		converter = aConverters.getConverter(getArgType(method));
 	}
 	
 	public void invoke(Object anOn, String aWith) {
-		try {
+		try {			
 			method.invoke(anOn, converter.convert(aWith));
-		} catch (XmlReadingException anExc) {
+		} catch (XmlReadingException anExc) {		
 			throw anExc;
-		} catch (Exception anExc) {
+		} catch (Exception anExc) {				
 			throw new RuntimeException(anExc);
 		}
 	}
