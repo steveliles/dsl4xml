@@ -163,8 +163,6 @@ public abstract class DynamicImplementationTestBase {
 		DocumentReader<Root> _r = newCorrectRootUnmarshaller();
 		Root _root = _r.read(get("root-5.xml"), "utf-8");
 		
-System.out.println(_root.toString());		
-		
 		Assert.assertTrue(_root.toString().startsWith("proxy(" + Root.class.getName() + "){"));		
 		Assert.assertTrue(_root.toString().contains("Attr1=first"));
 		Assert.assertTrue(_root.toString().contains("Attr2=second"));

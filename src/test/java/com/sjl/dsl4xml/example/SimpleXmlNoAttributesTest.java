@@ -23,7 +23,6 @@ public class SimpleXmlNoAttributesTest {
 	@Test
 	public void returnsNonNullSummary()
 	throws Exception {
-		System.out.println("-----------");
 		Description _d = marshallTestDocumentToDescription();
 		Assert.assertNotNull(_d.getParagraphs());
 	}
