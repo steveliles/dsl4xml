@@ -104,6 +104,10 @@ public class Classes {
 		public Object invoke(Object aProxy, Method aMethod, Object[] aArgs) throws Throwable {
 			if ("toString".equals(aMethod.getName())) {
 				return toString();
+			} else if ("hashCode".equals(aMethod.getName())) {
+			    return hashCode();
+			} else if ("equals".equals(aMethod.getName())) {
+				return equals(aArgs[0]);
 			} else if (isMutator(aMethod)) {
 				return map.put(getSuffix(aMethod.getName()), aArgs[0]);
 			} else {
@@ -139,6 +143,10 @@ public class Classes {
 			try {
 				if ("toString".equals(aMethod.getName())) {
 					return toString();
+				} else if ("hashCode".equals(aMethod.getName())) {
+				    return hashCode();
+				} else if ("equals".equals(aMethod.getName())) {
+					return equals(aArgs[0]);
 				} else {
 					if (isMethodOf(List.class, aMethod)) {
 						return aMethod.invoke(list, aArgs);

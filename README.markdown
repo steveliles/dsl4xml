@@ -51,7 +51,7 @@ Maven dependency (latest):
     <dependency>
         <groupId>com.sjl</groupId>
         <artifactId>dsl4xml</artifactId>
-        <version>0.1.5</artifactId>
+        <version>0.1.6</artifactId>
     </dependency>
 
 ## Examples
@@ -376,4 +376,4 @@ Mapping:
 		)
 	);
 
-A note on performance of dynamic implementation: The first time a DynamicProxy is generated for any interface the generation process can be "slow". Repeat instantiations are nice and quick. I have not tested dynamic implementation on Android yet, and cannot speak to its usability or performance.
+I have not tested dynamic implementation on Android yet, and cannot speak to its usability or performance.
