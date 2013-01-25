@@ -51,7 +51,7 @@ Maven dependency (latest):
     <dependency>
         <groupId>com.sjl</groupId>
         <artifactId>dsl4xml</artifactId>
-        <version>0.1.6</artifactId>
+        <version>0.1.7</artifactId>
     </dependency>
 
 ## Examples
