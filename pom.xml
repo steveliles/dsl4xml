@@ -5,7 +5,7 @@
   
   <groupId>com.sjl</groupId>
   <artifactId>dsl4xml</artifactId>
-  <version>0.1.6</version>
+  <version>0.1.7</version>
   <name>DSL for XML</name>
   <description>XML pull-parsing based library that uses a DSL to describe how the document should be parsed and the resulting model populated.</description>
   

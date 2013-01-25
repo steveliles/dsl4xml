@@ -1,0 +1,6 @@
+<example>
+  <hobbit first-name="frodo" last-name="baggins" age="50"/>
+  <hobbit first-name="samwise" last-name="gamgee" age="35"/>
+  <hobbit first-name="peregrine" last-name="took"/>
+  <hobbit first-name="meriadoc" age="32"/>
+</example>

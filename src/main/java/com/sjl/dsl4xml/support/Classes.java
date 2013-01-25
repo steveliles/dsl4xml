@@ -12,7 +12,7 @@ public class Classes {
 	public static <T> Method getMutatorMethod(Class<T> aClass, String... aMaybeNames) {
 	    Set<String> _names = new LinkedHashSet<String>();
 	    for (String _s : aMaybeNames) {
-	        String _suffix = upperCaseFirstLetter(_s);	        
+	        String _suffix = removeHyphensAndUpperCaseFirstLetters(_s);	        
 	        for (String _prefix : MUTATOR_PREFIXES) {
 	            _names.add(_prefix + _suffix);
 	        }	        
@@ -25,8 +25,14 @@ public class Classes {
 	    return getMethod(aClass, _names);
 	}
 	
-	private static String upperCaseFirstLetter(String aString) {
-		return ("" + aString.charAt(0)).toUpperCase() + aString.substring(1, aString.length());
+	private static String removeHyphensAndUpperCaseFirstLetters(String aString) {
+		String[] _parts = aString.split("-");
+		StringBuilder _sb = new StringBuilder(aString.length());
+		for (int i=0; i<_parts.length; i++) {
+			_sb.append(Character.toUpperCase(_parts[i].charAt(0)));
+			_sb.append(_parts[i].substring(1, _parts[i].length()));
+		}
+		return _sb.toString();
 	}
 	
 	private static <T> Method getMethod(Class<T> aClass, Collection<String> aNames) {
