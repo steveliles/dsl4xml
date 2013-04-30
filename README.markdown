@@ -284,9 +284,7 @@ And some simple model _interfaces_ we want to unmarshall to:
     
     interface Book {
         public String getTitle();
-    	public void setTitle(String aTitle);
     	public String getSynopsis();
-    	public void setSynopsis(String aSynopsis);
     }
     
 We can unmarshall the XML to those model objects using the exact same simple Java code we used in the original example. Dsl4Xml understands that it should dynamically implement interfaces:
@@ -333,33 +331,24 @@ Interfaces:
 		
 		public interface HasName {
 			public String getName();
-			public void setName(String aName);
 		}
 		
 		public interface Database extends HasName {
 		
 			public interface Host extends HasName {
 				public Integer getPort();
-				public void setPort(Integer aPort);
 			}
 			
 			public interface Credentials {
 				public String getUsername();
-				public void setUsername(String aUsername);
-				
 				public String getPassword();
-				public void setPassword(String aPassword);
 			}
 
 			public Host getHost();
-			public void setHost(Host aHost);
-			
 			public Credentials getCredentials();
-			public void setCredentials(Credentials aCredentials);
 		}
 		
 		public Database getDatabase();
-		public void setDatabase(Database aDatabase);
 	}
 	
 Mapping:
