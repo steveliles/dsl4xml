@@ -7,15 +7,26 @@ import com.sjl.dsl4xml.*;
 public class ValueSetter {
 	private Method method;
 	private Converter<?> converter;
+	private boolean twoArgSetter;
 
-	public ValueSetter(HasConverters aConverters, Class<?> aClass, String... aMaybeNames) {		
+	public ValueSetter(HasConverters aConverters, Class<?> aClass, String... aMaybeNames) {
 		method = getMethod(aClass, aMaybeNames);
-		converter = aConverters.getConverter(getArgType(method));
+		Method _getter = Classes.getAccessorMethod(aClass, aMaybeNames);
+		if (_getter != null) {
+			converter = aConverters.getConverter(_getter.getReturnType());
+		} else {
+			converter = aConverters.getConverter(method.getParameterTypes()[0]);
+		}
+		twoArgSetter = (method.getParameterTypes().length == 2);
 	}
 	
-	public void invoke(Object anOn, String aWith) {
-		try {			
-			method.invoke(anOn, converter.convert(aWith));
+	public void invoke(String aKey, Object anOn, String aWith) {
+		try {
+			if (twoArgSetter) {
+				method.invoke(anOn, aKey, converter.convert(aWith));
+			} else {
+				method.invoke(anOn, converter.convert(aWith));
+			}
 		} catch (XmlReadingException anExc) {		
 			throw anExc;
 		} catch (Exception anExc) {				
@@ -31,14 +42,11 @@ public class ValueSetter {
 		Method _m = Classes.getMutatorMethod(aClass, aMaybeNames);
 		
 		Class<?>[] _params = _m.getParameterTypes();
-		if (_params.length != 1) {
+		if ((_params.length == 1) || ("set".equals(_m.getName()) && _params.length==2)) {
+			return _m;
+		} else {
 			throw new NoSuitableMethodException("Mutator method " + aClass.getSimpleName() + "." + _m.getName() + " should accept 1 param, but wants " + _params.length);
-		}	
-		return _m;
-	}
-	
-	private Class<?> getArgType(Method aMethod) {
-		return aMethod.getParameterTypes()[0];
+		}
 	}
 }
 

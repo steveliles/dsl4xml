@@ -27,7 +27,7 @@ public final class PCDataReader<T> implements ContentReader {
 		
 		try {
 			ValueSetter _vs = getSetter(aContext, _currentContext.getClass(), fieldName);
-			_vs.invoke(_currentContext, aText);
+			_vs.invoke(fieldName, _currentContext, aText);
 		} catch (XmlReadingException anExc) {
 			throw anExc;
 		} catch (Exception anExc) {

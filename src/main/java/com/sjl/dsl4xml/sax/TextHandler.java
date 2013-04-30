@@ -22,7 +22,7 @@ public class TextHandler {
 		Object _currentContext = aContext.peek();	
 		try {
 			ValueSetter _vs = getSetter(aContext, _currentContext.getClass(), field);
-			_vs.invoke(_currentContext, chars.toString());
+			_vs.invoke(field, _currentContext, chars.toString());
 			chars.setLength(0);
 		} catch (XmlReadingException anExc) {
 			throw anExc;

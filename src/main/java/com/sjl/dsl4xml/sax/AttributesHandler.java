@@ -18,7 +18,7 @@ public class AttributesHandler {
 		if (aCtx != null) {
 			for (int i=0; i<attributeNames.length; i++) {
 				ValueSetter _vs = getValueSetter(i, aHasConverters, aCtx.getClass());
-				_vs.invoke(aCtx, anAttributes.getValue(attributeNames[i]));
+				_vs.invoke(attributeNames[i], aCtx, anAttributes.getValue(attributeNames[i]));
 			}
 		}
 		return false;

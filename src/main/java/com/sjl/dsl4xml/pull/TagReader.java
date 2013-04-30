@@ -159,14 +159,22 @@ public class TagReader<T> implements ContentReader {
 	
 	private class ContextMutator {
 		private Method method;
+		private String tag;
+		private boolean twoArgMutator;
 		
 		public ContextMutator(Class<?> aFor, Class<T> aWith, String aTagName) {
 			method = Classes.getMutatorMethod(aFor, aWith.getSimpleName(), aTagName);
+			twoArgMutator = (method.getParameterTypes().length == 2);
+			tag = aTagName;
 		}
 		
 		public void apply(Object aTo, T aWith) {
 			try {
-				method.invoke(aTo, aWith);
+				if (twoArgMutator) {
+					method.invoke(aTo, tag, aWith);
+				} else {
+					method.invoke(aTo, aWith);
+				}
 			} catch (Exception anExc) {
 				throw new XmlReadingException(anExc);
 			}

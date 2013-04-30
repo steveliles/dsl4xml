@@ -7,8 +7,25 @@ import com.sjl.dsl4xml.*;
 
 public class Classes {
 
-    public static final String[] MUTATOR_PREFIXES = {"set", "add", "insert", "put"};
-    
+	public static final String[] ACCESSOR_PREFIXES = {"get", "is"};
+    public static final String[] MUTATOR_PREFIXES = {"add", "set", "insert", "put"};
+
+	public static <T> Method getAccessorMethod(Class<T> aClass, String... aMaybeNames) {
+		Set<String> _names = new LinkedHashSet<String>();
+		for (String _s : aMaybeNames) {
+			String _suffix = removeHyphensAndUpperCaseFirstLetters(_s);
+			for (String _prefix : ACCESSOR_PREFIXES) {
+				_names.add(_prefix + _suffix);
+			}
+		}
+
+		for (String _s : ACCESSOR_PREFIXES) {
+			_names.add(_s);
+		}
+
+		return getMethod(aClass, _names, false);
+	}
+
 	public static <T> Method getMutatorMethod(Class<T> aClass, String... aMaybeNames) {
 	    Set<String> _names = new LinkedHashSet<String>();
 	    for (String _s : aMaybeNames) {
@@ -21,8 +38,9 @@ public class Classes {
 	    for (String _s : MUTATOR_PREFIXES) {
 	    	_names.add(_s);
 	    }
+		_names.add("set"); // a magic "set" method for dynamic proxies
 	    
-	    return getMethod(aClass, _names);
+	    return getMethod(aClass, _names, true);
 	}
 	
 	private static String removeHyphensAndUpperCaseFirstLetters(String aString) {
@@ -35,25 +53,29 @@ public class Classes {
 		return _sb.toString();
 	}
 	
-	private static <T> Method getMethod(Class<T> aClass, Collection<String> aNames) {
+	private static <T> Method getMethod(Class<T> aClass, Collection<String> aNames, boolean aThrowExceptionIfNotFound) {
 	    for (String _name : aNames) {
 			for (Method _m : aClass.getMethods()) {
-				if (_name.equals(_m.getName()) && (_m.getParameterTypes().length == 1)) {					
+				if (_name.equals(_m.getName())) {
 					_m.setAccessible(true); // allow to invoke non-public methods
 					return _m;
 				}
 			}
 		}
 		
-	    String _classname = 
-            (aClass.isAnonymousClass() || aClass.isSynthetic() || aClass.getName().matches(".*\\$Proxy.*")) ? 
-                asString(aClass, aClass.getInterfaces()) : aClass.getName();
-           
-       String _msg = "No mutator in class " + _classname + ", tried ";
-       for (String _name : aNames) {
-           _msg += _name + ",";
-       }
-       throw new NoSuitableMethodException(_msg);
+	    if (aThrowExceptionIfNotFound) {
+		    String _classname =
+			    (aClass.isAnonymousClass() || aClass.isSynthetic() || aClass.getName().matches(".*\\$Proxy.*")) ?
+			        asString(aClass, aClass.getInterfaces()) : aClass.getName();
+
+	       String _msg = "No suitable method found in class " + _classname + ", tried ";
+	       for (String _name : aNames) {
+	           _msg += _name + ",";
+	       }
+	       throw new NoSuitableMethodException(_msg);
+		} else {
+			return null;
+		}
 	}
 	
 	public static <T> T newInstance(Class<T> aClass) {
@@ -79,16 +101,16 @@ public class Classes {
 	@SuppressWarnings("unchecked")
 	public static <T> T newListBasedProxy(final Class<T> aClass) {
 		return (T) Proxy.newProxyInstance(
-			aClass.getClassLoader(),
-			new Class<?>[]{ aClass },
+			Classes.class.getClassLoader(),
+			new Class<?>[]{ aClass, Mutable.class },
 			new ListBasedInvocationHandler<T>(aClass));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static <T> T newMapBasedProxy(final Class<T> aClass) {
 		return (T) Proxy.newProxyInstance(
-			aClass.getClassLoader(),
-			new Class<?>[]{ aClass },
+			Classes.class.getClassLoader(),
+			new Class<?>[]{ aClass, Mutable.class },
 			new MapBasedInvocationHandler(aClass)
 		);
 	}
@@ -115,7 +137,11 @@ public class Classes {
 			} else if ("equals".equals(aMethod.getName())) {
 				return equals(aArgs[0]);
 			} else if (isMutator(aMethod)) {
-				return map.put(getSuffix(aMethod.getName()), aArgs[0]);
+				if (aArgs.length == 2) {
+					return map.put(aArgs[0].toString(), aArgs[1]);
+				} else {
+					return map.put(getSuffix(aMethod.getName()), aArgs[0]);
+				}
 			} else {
 				return map.get(getSuffix(aMethod.getName()));
 			}				    
@@ -126,7 +152,7 @@ public class Classes {
 		}
 		
 		private String getSuffix(String aMethodName) {
-			return aMethodName.substring(3); // TODO
+			return aMethodName.substring(3,4).toLowerCase() + aMethodName.substring(4);
 		}
 		
 		public String toString() {
@@ -158,7 +184,11 @@ public class Classes {
 						return aMethod.invoke(list, aArgs);
 					} else {
 						if (isMutator(aMethod)) {
-							return map.put(getSuffix(aMethod.getName()), aArgs[0]);
+							if (aArgs.length == 2) {
+								return map.put(aArgs[0].toString(), aArgs[1]);
+							} else {
+								return map.put(getSuffix(aMethod.getName()), aArgs[0]);
+							}
 						} else {
 							return map.get(getSuffix(aMethod.getName()));
 						}
@@ -175,8 +205,17 @@ public class Classes {
 		private boolean isMethodOf(Class<?> aClass, Method aMethod) {
 			for (Method _m : aClass.getMethods()) {
 				if (_m.getName().equals(aMethod.getName())) {
-					if (_m.getParameterTypes().length == aMethod.getParameterTypes().length) {
-						return true;
+					Class<?>[] _mp1 = _m.getParameterTypes();
+					Class<?>[] _mp2 = aMethod.getParameterTypes();
+					if (_mp1.length == _mp2.length) {
+						boolean _match = true;
+						for (int i=0; i<_mp1.length; i++) {
+							if (!_mp1[i].equals(_mp2[i]))
+								_match = false;
+						}
+						if (_match) {
+							return true;
+						}
 					}
 				}
 			}

@@ -18,7 +18,7 @@ public class OrderedAttributesReader implements AttributesReader {
 			Object _currentContext = aContext.peek();
 			for (int i=0; i<methodNames.length; i++) {
 				ValueSetter _vs = getValueSetter(i, aContext, _currentContext.getClass());
-				_vs.invoke(_currentContext, aContext.getAttributeValue(i));
+				_vs.invoke(methodNames[i], _currentContext, aContext.getAttributeValue(i));
 			}
 		}
 		return false;

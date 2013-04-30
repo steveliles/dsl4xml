@@ -47,13 +47,8 @@ public abstract class DynamicImplementationTestBase {
 	
 	public interface Person {
 		public String getName();
-		public void setName(String aName);
-		
 		public Date getDateOfBirth();
-		public void setDateOfBirth(Date aDateOfBirth);
-		
 		public int getNumberOfDependents();
-		public void setNumberOfDependents(int aNumber);
 	}
 	
 	protected abstract DocumentReader<Root> newRootOnlyUnmarshaller();
@@ -118,56 +113,17 @@ public abstract class DynamicImplementationTestBase {
 		Assert.assertEquals("one", _root.getElem1());
 		Assert.assertEquals("two", _root.getElem2());
 	}
-	
-	@Test
-	public void givesGoodErrorForMissingAttributeSetMethod() {
-		try {
-			DocumentReader<Root> _r = newMissingAttributeRootUnmarshaller();
-			
-			_r.read(get("root-6.xml"), "utf-8");
-			Assert.fail("should have thrown exception");
-		} catch (NoSuitableMethodException anExc) {
-			Assert.assertTrue(
-				anExc.getMessage().contains("setAttr3") &&
-				anExc.getMessage().contains("putAttr3") &&
-				anExc.getMessage().contains("addAttr3") &&
-				anExc.getMessage().contains("set") &&
-				anExc.getMessage().contains("add") &&
-				anExc.getMessage().contains("put")
-			);
-		}
-	}
-	
-	@Test
-	public void givesGoodErrorForMissingElementSetMethod() {
-		try {
-			DocumentReader<Root> _r = newMissingElementRootUnmarshaller();
-			
-			_r.read(get("root-6.xml"), "utf-8");
-			Assert.fail("should have thrown exception");
-		} catch (NoSuitableMethodException anExc) {	
-			Assert.assertTrue(anExc.getMessage().contains("setMissing"));
-			Assert.assertTrue(anExc.getMessage().contains("putMissing"));
-			Assert.assertTrue(anExc.getMessage().contains("addMissing"));
-			Assert.assertTrue(anExc.getMessage().contains("setString"));
-			Assert.assertTrue(anExc.getMessage().contains("putString"));
-			Assert.assertTrue(anExc.getMessage().contains("addString"));
-			Assert.assertTrue(anExc.getMessage().contains("set"));
-			Assert.assertTrue(anExc.getMessage().contains("add"));
-			Assert.assertTrue(anExc.getMessage().contains("put"));
-		}
-	}
-	
+
 	@Test
 	public void dynamicImplementationsProduceReasonableToString() {
 		DocumentReader<Root> _r = newCorrectRootUnmarshaller();
 		Root _root = _r.read(get("root-5.xml"), "utf-8");
 		
 		Assert.assertTrue(_root.toString().startsWith("proxy(" + Root.class.getName() + "){"));		
-		Assert.assertTrue(_root.toString().contains("Attr1=first"));
-		Assert.assertTrue(_root.toString().contains("Attr2=second"));
-		Assert.assertTrue(_root.toString().contains("Elem1=one"));
-		Assert.assertTrue(_root.toString().contains("Elem2=two"));
+		Assert.assertTrue(_root.toString().contains("attr1=first"));
+		Assert.assertTrue(_root.toString().contains("attr2=second"));
+		Assert.assertTrue(_root.toString().contains("elem1=one"));
+		Assert.assertTrue(_root.toString().contains("elem2=two"));
 	}
 	
 	@Test

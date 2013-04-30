@@ -48,7 +48,7 @@ public class ValueSetterTest {
 		}});
 		
 		ValueSetter _s = new ValueSetter(converters, TestModel.class, "fieldOne");
-		_s.invoke(model, "53");
+		_s.invoke("fieldOne", model, "53");
 	}
 	
 	@Test
@@ -64,7 +64,7 @@ public class ValueSetterTest {
 		}});
 		
 		ValueSetter _s = new ValueSetter(converters, TestModel.class, "fieldTwo");
-		_s.invoke(model, "17");
+		_s.invoke("fieldTwo", model, "17");
 	}
 	
 	@Test
@@ -80,7 +80,7 @@ public class ValueSetterTest {
 		}});
 		
 		ValueSetter _s = new ValueSetter(converters, TestModel.class, "fieldThree");
-		_s.invoke(model, "98");
+		_s.invoke("fieldThree", model, "98");
 	}
 	
 	@Test
@@ -114,6 +114,10 @@ public class ValueSetterTest {
 	}
 	
 	public interface TestModel {
+		public Integer getFieldOne();
+		public Integer getFieldTwo();
+		public Integer getFieldThree();
+
 		public void setFieldOne(Integer aValue);
 		public void addFieldTwo(Integer aValue);
 		public void insertFieldThree(Integer aValue);

@@ -21,7 +21,7 @@ public class NamedAttributesReader implements AttributesReader {
 				String _value = aContext.getAttributeValue(attributeNames[i]);
 				if (_value != null) {
 					ValueSetter _vs = getValueSetter(i, aContext, _currentContext.getClass());				
-					_vs.invoke(_currentContext, _value);
+					_vs.invoke(attributeNames[i], _currentContext, _value);
 				}
 			}
 		}
