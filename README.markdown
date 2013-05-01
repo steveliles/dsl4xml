@@ -36,6 +36,8 @@ If you are writing XML unmarshalling code for servers/desktops, use the Pull var
 
 ### Usage
 
+Import the correct dependencies for the parser variant you wish to use. For SAX parsing you need dsl4xml-core and dsl4xml-sax. For pull parsing you need dsl4xml-core and dsl4xml-pull (and you will need xmlpull 1.1.3.1 and an implementation on your classpath at runtime - Android bundles these already).
+
 Statically import `SAXDocumentReader` or `PullDocumentReader` to control which parsing method is used and to bring the dsl into scope (ie., so you can write it without prefixing).
 
 Maven repository:
@@ -45,8 +47,26 @@ Maven repository:
 	    <name>steveliles github repo</name>
 	    <url>http://steveliles.github.com/repository</url>
 	</repository>
-	
-Maven dependency (latest):
+
+Maven dependencies (latest):
+
+    <dependency>
+        <groupId>com.sjl.dsl4xml</groupId>
+        <artifactId>dsl4xml-core</artifactId>
+        <version>0.1.8-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>com.sjl.dsl4xml</groupId>
+        <artifactId>dsl4xml-sax</artifactId>
+        <version>0.1.8-SNAPSHOT</version>
+    </dependency>
+	<dependency>
+		<groupId>com.sjl.dsl4xml</groupId>
+		<artifactId>dsl4xml-pull</artifactId>
+		<version>0.1.8-SNAPSHOT</version>
+	</dependency>
+
+Maven dependency (stable, single jar containing SAX and PULL parser variants):
 
     <dependency>
         <groupId>com.sjl</groupId>
