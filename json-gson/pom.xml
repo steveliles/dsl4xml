@@ -3,8 +3,8 @@
 				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.sjl</groupId>
-	<artifactId>dsl4xml-gson-json</artifactId>
+	<groupId>com.sjl.dsl4xml</groupId>
+	<artifactId>dsl4xml-json-gson</artifactId>
 	<version>0.1.8-SNAPSHOT</version>
 	<name>DSL for XML - JSON Parsing with GSON</name>
 	<description>XML pull-parsing based library that uses a DSL to describe how the document should be parsed and the resulting model populated.</description>
@@ -44,6 +44,12 @@
 			<groupId>com.sjl</groupId>
 			<artifactId>dsl4xml-core</artifactId>
 			<version>0.1.8-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.3</version>
 		</dependency>
 
 		<dependency>

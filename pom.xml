@@ -18,7 +18,7 @@
     <module>core</module>
     <module>sax</module>
     <module>pull</module>
-    <!--module>gson-json</module-->
+    <module>json-gson</module>
 		<module>example</module>
   </modules>
   
