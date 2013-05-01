@@ -1,0 +1,11 @@
+<profile>
+  <name>Steve</name>
+  <book>
+    <title>Java for Dummies</title>
+    <author>Somebody Cool</author>
+  </book>
+  <book>
+    <title>Xml for Idiots</title>
+    <author>Somebody Else</author>
+  </book>
+</profile>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.sjl.dsl4xml</groupId>
+	<artifactId>dsl4xml-sax</artifactId>
+	<version>0.1.8-SNAPSHOT</version>
+	<name>DSL for XML - SAX Parsing</name>
+	<description>XML pull-parsing based library that uses a DSL to describe how the document should be parsed and the resulting model populated.</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<targetPath>./</targetPath>
+				<directory>src/test/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</testResource>
+		</testResources>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.sjl.dsl4xml</groupId>
+			<artifactId>dsl4xml-core</artifactId>
+			<version>0.1.8-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-junit4</artifactId>
+			<version>2.5.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>
+
