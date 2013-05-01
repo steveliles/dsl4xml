@@ -1,0 +1,13 @@
+{
+  "name":"Steve",
+  "readingList":[
+  	"book":{
+  	  "title:"Java for Dummies",
+  	  "author":"Somebody Cool"
+  	},
+  	"book":{
+  	  "title":"Xml for Idiots",
+  	  "author":"Somebody Else"
+  	}
+  ]
+}
