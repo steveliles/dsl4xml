@@ -7,8 +7,9 @@ import com.sjl.dsl4xml.*;
 
 public class Classes {
 
+    public static final String MAGIC_SET = "__magic_set";
 	public static final String[] ACCESSOR_PREFIXES = {"get", "is"};
-    public static final String[] MUTATOR_PREFIXES = {"add", "set", "insert", "put"};
+    public static final String[] MUTATOR_PREFIXES = {"add", "set", "insert", "put", MAGIC_SET};
 
 	public static <T> Method getAccessorMethod(Class<T> aClass, String... aMaybeNames) {
 		Set<String> _names = new LinkedHashSet<String>();
@@ -38,7 +39,7 @@ public class Classes {
 	    for (String _s : MUTATOR_PREFIXES) {
 	    	_names.add(_s);
 	    }
-		_names.add("set"); // a magic "set" method for dynamic proxies
+		_names.add(MAGIC_SET); // always look for the magic set method for dynamic proxies
 	    
 	    return getMethod(aClass, _names, true);
 	}
@@ -54,8 +55,19 @@ public class Classes {
 	}
 	
 	private static <T> Method getMethod(Class<T> aClass, Collection<String> aNames, boolean aThrowExceptionIfNotFound) {
+        List<Method> _methods = new ArrayList<Method>();
+        List<Method> _twoArgMethods = new ArrayList<Method>();
+        for (Method _m : aClass.getMethods()) {
+            if (_m.getParameterTypes().length <= 1) {
+                _methods.add(_m);
+            } else if (_m.getParameterTypes().length == 2) {
+                _twoArgMethods.add(_m);
+            }
+        }
+        _methods.addAll(_twoArgMethods); // prefer single arg methods, so put them at the front of the list
+
 	    for (String _name : aNames) {
-			for (Method _m : aClass.getMethods()) {
+			for (Method _m : _methods) {
 				if (_name.equals(_m.getName())) {
 					_m.setAccessible(true); // allow to invoke non-public methods
 					return _m;
