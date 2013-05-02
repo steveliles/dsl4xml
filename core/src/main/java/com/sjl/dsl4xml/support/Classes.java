@@ -8,7 +8,7 @@ import com.sjl.dsl4xml.*;
 public class Classes {
 
     public static final String MAGIC_SET = "__magic_set";
-	public static final String[] ACCESSOR_PREFIXES = {"get", "is"};
+	public static final String[] ACCESSOR_PREFIXES = {"get", "is", "to"};
     public static final String[] MUTATOR_PREFIXES = {"add", "set", "insert", "put", MAGIC_SET};
 
 	public static <T> Method getAccessorMethod(Class<T> aClass, String... aMaybeNames) {
@@ -165,9 +165,24 @@ public class Classes {
 		private boolean isMutator(Method aMethod) {
 			return (aMethod.getParameterTypes().length > 0);
 		}
-		
+
+		// TODO: cache?
 		private String getSuffix(String aMethodName) {
-			return aMethodName.substring(3,4).toLowerCase() + aMethodName.substring(4);
+			int _indexOfFirstUpperCase = indexOfUpperCase(aMethodName);
+			if (_indexOfFirstUpperCase < 0)
+				return aMethodName;
+
+			return
+				aMethodName.substring(_indexOfFirstUpperCase, _indexOfFirstUpperCase+1).toLowerCase() +
+				aMethodName.substring(_indexOfFirstUpperCase+1);
+		}
+
+		private int indexOfUpperCase(String aMethodName) {
+			for (int i=0; i<aMethodName.length(); i++) {
+				if (Character.isUpperCase(aMethodName.charAt(i)))
+					return i;
+			}
+			return -1;
 		}
 		
 		public String toString() {

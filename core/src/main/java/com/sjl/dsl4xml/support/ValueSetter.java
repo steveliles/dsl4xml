@@ -32,7 +32,8 @@ private Method _getter;
 			throw anExc;
         } catch (IllegalArgumentException anExc) {
             throw new ParsingException(
-                "Tried to invoke " + method +
+                anExc.getMessage() +
+                " while trying to invoke " + method +
                 " on " + anOn +
                 " with " + ((aKey != null) ? aKey + " and " : "") + aWith +
                 " converted by " + converter, anExc);

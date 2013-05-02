@@ -102,7 +102,6 @@ public class GsonContext implements Context
 	public JsonToken next() {
 		try {
 			token = reader.peek();
-System.out.println(token);
 			switch(token) {
 				case NAME:
 					value = null;
