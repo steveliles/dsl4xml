@@ -1,4 +1,4 @@
-# Easy and fast unmarshalling of XML to Java
+# Easy and fast unmarshalling of XML (and JSON) to Java
 
 DOM parsing tends to make for code that is easy to read and write, but is very slow, memory intensive, and generates heaps of garbage. 
 
@@ -7,6 +7,8 @@ SAX and "pull" parsing tend to be very fast, have significantly lower memory req
 JAXB and other xml-binding tools and frameworks can require dependencies on large libraries, or additional compile-time steps.
 
 dsl4xml was inspired by some recent work speeding up and improving the readability of some complex (and _slow_) XML parsing code in an Android application.
+
+JSON parsing is now available to try (alpha!).
 
 ### Aims
 
@@ -48,25 +50,39 @@ Maven repository:
 	    <url>http://steveliles.github.com/repository</url>
 	</repository>
 
-Maven dependencies (latest):
+Maven dependencies (latest) - you will need core:
 
     <dependency>
         <groupId>com.sjl.dsl4xml</groupId>
         <artifactId>dsl4xml-core</artifactId>
         <version>0.1.8-SNAPSHOT</version>
     </dependency>
+
+... for SAX Parsing add:
+
     <dependency>
         <groupId>com.sjl.dsl4xml</groupId>
         <artifactId>dsl4xml-sax</artifactId>
         <version>0.1.8-SNAPSHOT</version>
     </dependency>
+
+... for PULL Parsing add:
+
 	<dependency>
 		<groupId>com.sjl.dsl4xml</groupId>
 		<artifactId>dsl4xml-pull</artifactId>
 		<version>0.1.8-SNAPSHOT</version>
 	</dependency>
 
-Maven dependency (stable, single jar containing SAX and PULL parser variants):
+... for JSON parsing, built on GSON, add:
+
+	<dependency>
+		<groupId>com.sjl.dsl4xml</groupId>
+		<artifactId>dsl4xml-gson-json</artifactId>
+		<version>0.1.8-SNAPSHOT</version>
+	</dependency>
+
+Older (stable) single jar (pull and sax parsing, no json):
 
     <dependency>
         <groupId>com.sjl</groupId>

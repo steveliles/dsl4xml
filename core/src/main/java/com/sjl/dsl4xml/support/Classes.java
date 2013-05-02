@@ -45,6 +45,9 @@ public class Classes {
 	}
 	
 	private static String removeHyphensAndUpperCaseFirstLetters(String aString) {
+		if (aString == null || "".equals(aString))
+			return "";
+
 		String[] _parts = aString.split("-");
 		StringBuilder _sb = new StringBuilder(aString.length());
 		for (int i=0; i<_parts.length; i++) {

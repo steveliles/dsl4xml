@@ -20,35 +20,37 @@ public class GsonContext implements Context
 	private JsonReader reader;
 	private List<Converter<?>> converters;
 	private Stack<Object> stack;
-
+	private Stack<String> names;
 	private String name;
+	private String value;
 	private JsonToken token;
 
 	public GsonContext(JsonReader aReader)
 	{
 		reader = aReader;
 		stack = new Stack<Object>();
+		names = new Stack<String>();
 		converters = new ArrayList<Converter<?>>();
 
 		registerConverters(
-			new PrimitiveBooleanConverter(),
-			new PrimitiveByteConverter(),
-			new PrimitiveShortConverter(),
-			new PrimitiveIntConverter(),
-			new PrimitiveLongConverter(),
-			new PrimitiveCharConverter(),
-			new PrimitiveFloatConverter(),
-			new PrimitiveDoubleConverter(),
-			new BooleanConverter(),
-			new ByteConverter(),
-			new ShortConverter(),
-			new IntegerConverter(),
-			new LongConverter(),
-			new CharacterConverter(),
-			new FloatConverter(),
-			new DoubleConverter(),
-			new ClassConverter(),
-			new StringConverter()
+		new PrimitiveBooleanConverter(),
+		new DecimalToByteConverter(),
+		new DecimalToShortConverter(),
+		new DecimalToIntConverter(),
+		new DecimalToLongConverter(),
+		new PrimitiveCharConverter(),
+		new PrimitiveFloatConverter(),
+		new PrimitiveDoubleConverter(),
+		new BooleanConverter(),
+		new ByteConverter(),
+		new ShortConverter(),
+		new IntegerConverter(),
+		new LongConverter(),
+		new CharacterConverter(),
+		new FloatConverter(),
+		new DoubleConverter(),
+		new ClassConverter(),
+		new StringConverter()
 		);
 	}
 
@@ -77,6 +79,17 @@ public class GsonContext implements Context
 	}
 
 	@Override
+	public <T> Converter<T> getConverter(Class<T> aArgType)
+	{
+		for (Converter<?> _c : converters) {
+			if (_c.canConvertTo(aArgType)) {
+				return (Converter<T>) _c;
+			}
+		}
+		throw new RuntimeException("No converter registered that can convert to " + aArgType);
+	}
+
+	@Override
 	public boolean hasNext() {
 		try {
 			return reader.peek() != JsonToken.END_DOCUMENT;
@@ -89,16 +102,68 @@ public class GsonContext implements Context
 	public JsonToken next() {
 		try {
 			token = reader.peek();
-System.out.println(token.name());
-			if ((token == JsonToken.BEGIN_OBJECT) || (token == JsonToken.BEGIN_ARRAY)) {
-				reader.beginObject();
-				if (reader.peek() == JsonToken.NAME)
-					name = reader.nextName();
-			} else if (token == JsonToken.END_OBJECT) {
-				reader.endObject();
-			} else if (token == JsonToken.END_ARRAY) {
-				reader.endArray();
+System.out.println(token);
+			switch(token) {
+				case NAME:
+					value = null;
+					name = names.push(reader.nextName());
+					token = reader.peek();
+					break;
+				case BEGIN_OBJECT:
+					value = null;
+					reader.beginObject();
+					break;
+				case END_OBJECT:
+					value = null;
+					reader.endObject();
+					if (!names.isEmpty()) {
+						names.pop();
+						if (!names.isEmpty())
+							name = names.peek();
+						else
+							name = null;
+					} else {
+						name = null;
+					}
+					break;
+				case BEGIN_ARRAY:
+					reader.beginArray();
+					value = null;
+					token = reader.peek();
+					break;
+				case END_ARRAY:
+					value = null;
+					reader.endArray();
+					if (!names.isEmpty()) {
+						names.pop();
+						if (!names.isEmpty())
+							name = names.peek();
+						else
+							name = null;
+					} else {
+						name = null;
+					}
+					token = reader.peek();
+					break;
+				case STRING:
+					value = reader.nextString();
+					name = names.pop();
+					break;
+				case BOOLEAN:
+					value = String.valueOf(reader.nextBoolean());
+					name = names.pop();
+					break;
+				case NUMBER:
+					value = String.valueOf(reader.nextDouble()); // todo: optimise
+					name = names.pop();
+					break;
+				case NULL:
+					value = null;
+					reader.nextNull();
+					name = names.pop();
+					break;
 			}
+
 			return token;
 		} catch (IOException anExc) {
 			throw new ParsingException(anExc);
@@ -114,18 +179,47 @@ System.out.println(token.name());
 	}
 
 	@Override
-	public boolean isStringNamed(String aName) {
+	public boolean isNotEndObject() {
+		return !(token == JsonToken.END_OBJECT);
+	}
+
+
+
+	@Override
+	public boolean isStartArrayNamed(String aName) {
 		return (
-			(token == JsonToken.STRING) &&
+			(token == JsonToken.BEGIN_ARRAY) &&
 			(aName.equals(name))
 		);
 	}
 
 	@Override
-	public boolean isNotEndObject(String aName) {
-		return !(
-			(token == JsonToken.END_OBJECT) &&
+	public boolean isNotEndArray() {
+		return !(token == JsonToken.END_ARRAY);
+	}
+
+	@Override
+	public boolean isPropertyNamed(String aName) {
+		return (
+			(token == JsonToken.BOOLEAN || token == JsonToken.STRING || token == JsonToken.NUMBER) &&
 			(aName.equals(name))
 		);
+	}
+
+	@Override
+	public void prepareForPossibleArrayEntry() {
+		name = names.push("");
+	}
+
+	@Override
+	public void removeUnusedArrayEntry() {
+		names.pop();
+		if (!names.isEmpty())
+			name = names.peek();
+	}
+
+	@Override
+	public String getValue() {
+		return value;
 	}
 }

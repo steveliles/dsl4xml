@@ -17,24 +17,24 @@ public class DynamicImplementationGsonParserTest extends DynamicImplementationTe
 
 	protected DocumentReader<Root> newCorrectRootUnmarshaller() {
 		return mappingOf(Root.class).to(
-			object("elem1"),
-			object("elem2")
+			property("elem1"),
+			property("elem2")
 		);
 	}
 
 	@Override
 	protected DocumentReader<Root> newMissingElementRootUnmarshaller() {
 		return mappingOf(Root.class).to(
-			object("missing", String.class)
+			property("elem2")
 		);
 	}
 
 	protected DocumentReader<Profile1> newProfile1Unmarshaller() {
 		return mappingOf(Profile1.class).to(
-			object("name"),
-			object("readingList", List.class).with(
-				object("book", Book.class).with(
-					object("title"), object("author")
+			property("name"),
+			array("readingList", List.class).of(
+				object(Book.class).with(
+					property("title"), property("author")
 				)
 			)
 		);
@@ -42,18 +42,18 @@ public class DynamicImplementationGsonParserTest extends DynamicImplementationTe
 	
 	protected DocumentReader<Profile2> newProfile2Unmarshaller() {
 		return mappingOf(Profile2.class).to(
-			object("name"),
+			property("name"),
 			object("book", Book.class).with(
-				object("title"), object("author")
+				property("title"), property("author")
 			)
 		);
 	}
 	
 	protected DocumentReader<Person> newPersonUnmarshaller() {
 		DocumentReader<Person> _r = mappingOf(Person.class).to(
-			object("name"),
-			object("dateOfBirth"),
-			object("numberOfDependents")
+			property("name"),
+			property("dateOfBirth"),
+			property("numberOfDependents")
 		);
 		
 		_r.registerConverters(new ThreadUnsafeDateConverter("yyyyMMdd"));

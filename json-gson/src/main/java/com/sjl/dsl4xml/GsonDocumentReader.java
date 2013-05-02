@@ -1,10 +1,8 @@
 package com.sjl.dsl4xml;
 
 import com.google.gson.stream.JsonReader;
-import com.sjl.dsl4xml.gson.Context;
-import com.sjl.dsl4xml.gson.GsonContext;
-import com.sjl.dsl4xml.gson.JsonHandler;
-import com.sjl.dsl4xml.gson.ObjectHandler;
+import com.google.gson.stream.JsonToken;
+import com.sjl.dsl4xml.gson.*;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -26,6 +24,18 @@ public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
 		return new ObjectHandler<R>(aName, aContextType);
 	}
 
+	public static <R> ObjectHandler<R> object(Class<R> aContextType) {
+		return new ObjectHandler<R>(aContextType);
+	}
+
+	public static <R> PropertyHandler<R> property(String aName) {
+		return new PropertyHandler<R>(aName);
+	}
+
+	public static <R> ArrayHandler<R> array(String aName, Class<R> aClass) {
+		return new ArrayHandler<R>(aName, aClass);
+	}
+
 	private JsonHandler[] handlers = new JsonHandler[]{};
 
 	public GsonDocumentReader(Class<T> aClass) {
@@ -34,40 +44,37 @@ public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
 
 	@Override
 	public T read(Reader aReader)
-	throws ParsingException
-	{
+	throws ParsingException {
 		JsonReader _reader = null;
-		try
-		{
+		try {
 			_reader = new JsonReader(aReader);
 			Context _ctx = new GsonContext(_reader);
 			if (converters != null)
 				_ctx.registerConverters(converters);
 			_ctx.push(newResultObject());
 
-			try
-			{
-				while (_ctx.hasNext())
-				{
-					for (JsonHandler _h : handlers)
-					{
-						if (_h.read(_ctx))
-						{
+			try {
+				while (_ctx.isNotEndObject()) {
+					for (JsonHandler _h : handlers) {
+						if (_h.read(_ctx)) {
 							break;
 						}
 					}
 
-					if (_ctx.hasNext())
+					if (_ctx.peek() == JsonToken.END_OBJECT) {
 						_ctx.next();
+						break;
+					} else {
+						_ctx.next();
+					}
+
+					if (!_ctx.hasNext())
+						break;
 				}
 				return _ctx.peek();
-			}
-			catch (ParsingException anExc)
-			{
+			} catch (ParsingException anExc) {
 				throw anExc;
-			}
-			catch (Exception anExc)
-			{
+			} catch (Exception anExc) {
 				throw new ParsingException(anExc);
 			}
 		} catch (ParsingException anExc) {
@@ -86,7 +93,7 @@ public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
 		}
 	}
 
-	public GsonDocumentReader<T> to(ObjectHandler... aHandlers) {
+	public GsonDocumentReader<T> to(JsonHandler... aHandlers) {
 		handlers = aHandlers;
 		return this;
 	}

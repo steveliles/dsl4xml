@@ -1,12 +1,13 @@
 package com.sjl.dsl4xml.gson;
 
 import com.google.gson.stream.JsonToken;
+import com.sjl.dsl4xml.HasConverters;
 import com.sjl.dsl4xml.support.Converter;
 
 /**
  * @author steve
  */
-public interface Context
+public interface Context extends HasConverters
 {
 	void push(Object aContext);
 
@@ -20,9 +21,19 @@ public interface Context
 
 	boolean isStartObjectNamed(String aName);
 
-	boolean isStringNamed(String aName);
+	boolean isNotEndObject();
 
-	boolean isNotEndObject(String aName);
+	boolean isStartArrayNamed(String aName);
+
+	boolean isNotEndArray();
+
+	boolean isPropertyNamed(String aName);
+
+	void prepareForPossibleArrayEntry();
+
+	void removeUnusedArrayEntry();
+
+	String getValue();
 
 	void registerConverters(Converter<?>... converters);
 }

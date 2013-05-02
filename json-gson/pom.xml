@@ -9,6 +9,10 @@
 	<name>DSL for XML - JSON Parsing with GSON</name>
 	<description>XML pull-parsing based library that uses a DSL to describe how the document should be parsed and the resulting model populated.</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>

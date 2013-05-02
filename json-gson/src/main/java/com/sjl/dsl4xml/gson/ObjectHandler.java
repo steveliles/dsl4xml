@@ -1,5 +1,6 @@
 package com.sjl.dsl4xml.gson;
 
+import com.google.gson.stream.JsonToken;
 import com.sjl.dsl4xml.ParsingException;
 import com.sjl.dsl4xml.support.Classes;
 
@@ -13,9 +14,9 @@ import java.util.List;
  */
 public class ObjectHandler<T> implements JsonHandler
 {
-	private String name;
-	private Class<T> type;
-	private List<ObjectHandler> handlers;
+	protected String name;
+	protected Class<T> type;
+	protected List<JsonHandler> handlers;
 	private ContextMutator mutator;
 
 	public ObjectHandler(String aName) {
@@ -27,71 +28,64 @@ public class ObjectHandler<T> implements JsonHandler
 		type = aContextType;
 	}
 
+	public ObjectHandler(Class<T> aContextType) {
+		name = "";
+		type = aContextType;
+	}
+
 	@Override
 	public boolean read(Context aContext)
 	{
 		if (aContext.isStartObjectNamed(name)) {
 			maybePushNewContextObject(aContext);
-			try
-			{
-				while (aContext.isNotEndObject(name))
-				{
-					for (ObjectHandler _h : handlers)
-					{
-						if (_h.read(aContext))
-						{
+			aContext.next(); // advance past BEGIN_OBJECT
+			try {
+				while (aContext.isNotEndObject()) {
+					for (JsonHandler _h : handlers) {
+						if (_h.read(aContext)) {
 							break;
 						}
 					}
-					aContext.next();
+
+					if (aContext.peek() == JsonToken.END_OBJECT) {
+						aContext.next();
+						break;
+					} else {
+						aContext.next();
+					}
+
+					if (!aContext.hasNext())
+						break;
 				}
 				return true;
-			}
-			catch (ParsingException anExc)
-			{
+			} catch (ParsingException anExc) {
 				throw anExc;
-			}
-			catch (Exception anExc)
-			{
+			} catch (Exception anExc) {
 				throw new ParsingException(anExc);
-			}
-			finally {
+			} finally {
 				maybePopContext(aContext);
 			}
-		} else if (aContext.isStringNamed(name)) {
-System.out.println("string named " + name);
-			for (ObjectHandler _h : handlers)
-			{
-				if (_h.read(aContext))
-				{
-					aContext.next();
-					return true;
-				}
-			}
-			aContext.next();
-			return false;
 		} else {
-			aContext.next();
 			return false;
 		}
 	}
 
-	public ObjectHandler<T> with(ObjectHandler... aHandlers) {
+	public ObjectHandler<T> with(JsonHandler... aHandlers) {
 		if (handlers == null) {
-			handlers = new ArrayList<ObjectHandler>();
+			handlers = new ArrayList<JsonHandler>();
 		}
 		handlers.addAll(0, Arrays.asList(aHandlers));
 
 		return this;
 	}
 
-	private void maybePopContext(Context aContext) {
+	protected void maybePopContext(Context aContext) {
 		if (type != null) {
 			aContext.pop();
 		}
 	}
 
-	private void maybePushNewContextObject(Context aContext) {
+	protected void maybePushNewContextObject(Context aContext) {
 		if (type != null) {
 			Object _ctx = aContext.peek();
 			T _nestedCtx = newContextObject();
@@ -99,7 +93,6 @@ System.out.println("string named " + name);
 			getMutator(_ctx.getClass(), type, name).apply(_ctx, _nestedCtx);
 
 			aContext.push(_nestedCtx);
-System.out.println("pushed " + _nestedCtx);
 		}
 	}
 
@@ -144,5 +137,10 @@ System.out.println("pushed " + _nestedCtx);
 				throw new ParsingException(anExc);
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "object-handler:" + System.identityHashCode(this);
 	}
 }
