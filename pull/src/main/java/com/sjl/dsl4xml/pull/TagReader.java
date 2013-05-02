@@ -176,7 +176,10 @@ public class TagReader<T> implements ContentReader {
 					method.invoke(aTo, aWith);
 				}
 			} catch (Exception anExc) {
-				throw new ParsingException(anExc);
+                throw new ParsingException(
+                    "invoking " + method.getName() +
+                    " on " + aTo.getClass().getName() +
+                    " with " + aWith.getClass().getName(), anExc);
 			}
 		}
 	}

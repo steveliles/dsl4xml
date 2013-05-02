@@ -17,7 +17,7 @@ public class TagHandler<R> implements Handler<R> {
 	private AttributesHandler attributes;
 	private TextHandler text;
 	private IgnoreHandler<R> ignore;
-	private ContextMutator<R> mutator;
+	private ContextMutator mutator;
 	
 	public TagHandler(String aTagName, Class<R> aModelType) {
 		tagName = aTagName;
@@ -73,7 +73,7 @@ public class TagHandler<R> implements Handler<R> {
 				R _model = newContextObject();
 				aCtx.push(_model);
 				if (_parent != null) {
-					ContextMutator<R> _m = getMutator(_parent.getClass(), modelType, tagName);
+					ContextMutator _m = getMutator(_parent.getClass(), modelType, tagName);
 					_m.apply(_parent, _model);
 				}
 			}
@@ -139,34 +139,42 @@ public class TagHandler<R> implements Handler<R> {
 	private R newContextObject() {
 		return Classes.newInstance(modelType);
 	}
-	
-	private ContextMutator<R> getMutator(Class<?> aFor, Class<R> aWith, String aTagName) {
-		if (mutator == null) {
-			mutator = new ContextMutator<R>(aFor, aWith, aTagName);
-		}
-		return mutator;
-	}
 
-	private static class ContextMutator<R> {
-		private Method method;
-		
-		public ContextMutator(Class<?> aFor, Class<R> aWith, String aTagName) {
-			method = Classes.getMutatorMethod(aFor, aWith.getSimpleName(), aTagName);
-		}
-		
-		public void apply(Object aTo, R aWith) {
-			try {
-				method.invoke(aTo, aWith);
-			} catch (Exception anExc) {
-				throw new ParsingException(
-					"invoking " + method.getName() + 
-					" on " + aTo.getClass().getName() + 
-					" with " + aWith.getClass().getName(), anExc);
-			}
-		}
-	}
-	
+    private ContextMutator getMutator(Class<?> aFor, Class<R> aWith, String aTagName) {
+        if (mutator == null) {
+            mutator = new ContextMutator(aFor, aWith, aTagName);
+        }
+        return mutator;
+    }
+
 	public String toString() {
 		return tagName;
 	}
+
+    private class ContextMutator {
+        private Method method;
+        private String tag;
+        private boolean twoArgMutator;
+
+        public ContextMutator(Class<?> aFor, Class<R> aWith, String aTagName) {
+            method = Classes.getMutatorMethod(aFor, aWith.getSimpleName(), aTagName);
+            twoArgMutator = (method.getParameterTypes().length == 2);
+            tag = aTagName;
+        }
+
+        public void apply(Object aTo, R aWith) {
+            try {
+                if (twoArgMutator) {
+                    method.invoke(aTo, tag, aWith);
+                } else {
+                    method.invoke(aTo, aWith);
+                }
+            } catch (Exception anExc) {
+                throw new ParsingException(
+                    "invoking " + method.getName() +
+                    " on " + aTo.getClass().getName() +
+                    " with " + aWith.getClass().getName(), anExc);
+            }
+        }
+    }
 }

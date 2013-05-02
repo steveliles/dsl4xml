@@ -169,8 +169,8 @@ public abstract class DynamicImplementationTestBase
 
 		Assert.assertEquals("joe bloggs", _person.getName());
 		Assert.assertEquals(
-		new SimpleDateFormat("yyyyMMdd").parse("19770526"),
-		_person.getDateOfBirth());
+            new SimpleDateFormat("yyyyMMdd").parse("19770526"),
+            _person.getDateOfBirth());
 		Assert.assertEquals(3, _person.getNumberOfDependents());
 	}
 

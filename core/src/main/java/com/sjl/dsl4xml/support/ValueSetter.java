@@ -9,9 +9,10 @@ public class ValueSetter {
 	private Converter<?> converter;
 	private boolean twoArgSetter;
 
+private Method _getter;
 	public ValueSetter(HasConverters aConverters, Class<?> aClass, String... aMaybeNames) {
 		method = getMethod(aClass, aMaybeNames);
-		Method _getter = Classes.getAccessorMethod(aClass, aMaybeNames);
+		_getter = Classes.getAccessorMethod(aClass, aMaybeNames);
 		if (_getter != null) {
 			converter = aConverters.getConverter(_getter.getReturnType());
 		} else {
@@ -29,7 +30,10 @@ public class ValueSetter {
 			}
 		} catch (ParsingException anExc) {
 			throw anExc;
-		} catch (Exception anExc) {				
+        } catch (IllegalArgumentException anExc) {
+System.out.println(_getter);
+            throw new ParsingException("Tried to invoke " + method + " on " + anOn + " with " + aWith + " converted by " + converter, anExc);
+		} catch (Exception anExc) {
 			throw new RuntimeException(anExc);
 		}
 	}
@@ -42,7 +46,7 @@ public class ValueSetter {
 		Method _m = Classes.getMutatorMethod(aClass, aMaybeNames);
 		
 		Class<?>[] _params = _m.getParameterTypes();
-		if ((_params.length == 1) || ("set".equals(_m.getName()) && _params.length==2)) {
+		if ((_params.length == 1) || (Classes.MAGIC_SET.equals(_m.getName()) && _params.length==2)) {
 			return _m;
 		} else {
 			throw new NoSuitableMethodException("Mutator method " + aClass.getSimpleName() + "." + _m.getName() + " should accept 1 param, but wants " + _params.length);

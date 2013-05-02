@@ -5,5 +5,5 @@ package com.sjl.dsl4xml.support;
  */
 public interface Mutable
 {
-	public void set(String aPropertyName, Object aValue);
+	public void __magic_set(String aPropertyName, Object aValue);
 }
