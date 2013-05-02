@@ -402,3 +402,96 @@ Mapping:
 	);
 
 I have not tested dynamic implementation on Android yet, and cannot speak to its usability or performance.
+
+### JSON Parsing with runtime class-generation
+
+Parsing JSON is very similar.
+
+1. Make sure the dsl4xml-gson-json.jar is on your classpath (see maven dependencies above).
+2. Statically import the json implementation (currently there is only a GSON based implementation - GsonDocumentReader).
+3. Describe your json format (see "Mapping" section below) to produce a re-usable GsonDocumentReader.
+4. Parse your documents by invoking gsonDocumentReader.read(java.io.Reader).
+
+There are a few other differences when parsing JSON rather than XML, notably:
+
+* JSON doesn't have attributes, so there are no static attribute-related methods.
+* JSON includes the notion of arrays, so there is a static `array(name, type)` method.
+* Leaf-level properties (strings, numbers, booleans) should be described using the `property(name)` static method.
+
+JSON:
+
+	{
+       "id":{
+    	 "serializedForm":"5e39dcc6-d4e3-5067-0058-aec52c70f0d3"
+       },
+       "registrationDate":"2013-05-01",
+       "person":{
+          "id":{
+            "serializedForm":"5e39dcc6-d4e3-5067-0058-aec52c70f0d3"
+          },
+          "firstname":"Steve",
+          "lastname":"Liles",
+          "email":null,
+          "title":null
+       },
+       "social":{
+          "providerId":"twitter",
+          "providerUserId":"xxxxxxxx",
+          "imageUrl":"http://a0.twimg.com/profile_images/1635413135/viking-8_normal.png"
+       },
+       "pointsAccrued":50
+    }
+
+Interfaces:
+
+    interface Member {
+		interface Identifier {
+			public String toSerializedForm();
+		}
+		interface Person {
+			public Identifier getId();
+			public String getTitle();
+			public String getFirstname();
+			public String getLastname();
+			public String getEmail();
+		}
+		interface Social {
+			public String getProviderId();
+			public String getProviderUserId();
+			public String getImageUrl();
+		}
+		public Identifier getId();
+		public Date getRegistrationDate();
+		public Person getPerson();
+		public Social getSocial();
+		public int getPointsAccrued();
+	}
+
+Mapping:
+
+	import static com.sjl.dsl4xml.GsonDocumentReader.*;
+	import com.sjl.dsl4xml.GsonDocumentReader;
+
+	GsonDocumentReader<Member> _reader = mappingOf(Member.class).to(
+		object("id", Member.Identifier.class).with(
+			property("serializedForm")
+		),
+		property("registrationDate"),
+		object("person", Member.Person.class).with(
+			object("id", Member.Identifier.class).with(
+				property("serializedForm")
+			),
+			property("firstname"),
+			property("lastname"),
+			property("email"),
+			property("title")
+		),
+		object("social", Member.Social.class).with(
+			property("providerId"),
+			property("providerUserId"),
+			property("imageUrl")
+		),
+		property("pointsAccrued")
+	);
+
+	Member _member = _reader.read(new InputStreamReader(...));
