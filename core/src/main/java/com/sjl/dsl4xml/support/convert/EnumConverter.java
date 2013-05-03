@@ -25,6 +25,6 @@ public class EnumConverter<T extends java.lang.Enum<T>> implements Converter<T> 
 
 	@Override
 	public T convert(String aValue) {
-		return Enum.valueOf(enumClass, aValue);
+		return (aValue == null) ? null : Enum.valueOf(enumClass, aValue);
 	}
 }
