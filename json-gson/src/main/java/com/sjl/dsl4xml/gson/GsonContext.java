@@ -182,8 +182,6 @@ public class GsonContext implements Context
 		return !(token == JsonToken.END_OBJECT);
 	}
 
-
-
 	@Override
 	public boolean isStartArrayNamed(String aName) {
 		return (
