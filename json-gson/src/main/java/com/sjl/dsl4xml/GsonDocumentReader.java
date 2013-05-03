@@ -3,6 +3,7 @@ package com.sjl.dsl4xml;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.sjl.dsl4xml.gson.*;
+import com.sjl.dsl4xml.support.Factory;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -26,6 +27,14 @@ public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
 
 	public static <R> ObjectHandler<R> object(Class<R> aContextType) {
 		return new ObjectHandler<R>(aContextType);
+	}
+
+	public static <I, R> ObjectHandler<I> object(String aName, Factory<I,R> aFactory) {
+		return new ObjectHandler<I>(aName, aFactory);
+	}
+
+	public static <I, R> ObjectHandler<I> object(Factory<I,R> aFactory) {
+		return new ObjectHandler<I>(aFactory);
 	}
 
 	public static <R> PropertyHandler<R> property(String aName) {

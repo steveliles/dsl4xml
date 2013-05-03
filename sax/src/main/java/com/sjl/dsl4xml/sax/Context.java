@@ -48,11 +48,11 @@ public class Context implements HasConverters {
 	}
 	
 	public Object peek() {
-		return (ctx == null) ? null : ctx.peek();
+		return (ctx == null) ? null : (ctx.isEmpty()) ? null : ctx.peek();
 	}
 	
 	public Object pop() {	
-		return (ctx == null) ? null : ctx.pop();
+		return (ctx == null) ? null : (ctx.isEmpty()) ? null : ctx.pop();
 	}
 	
 	public Object getResult() {

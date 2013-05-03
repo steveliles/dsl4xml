@@ -11,6 +11,7 @@ public class TagHandler<R> implements Handler<R> {
 	
 	private String tagName;
 	private Class<R> modelType;
+	private Factory<R,?> factory;
 	
 	private TagHandler<?> parent;
 	private TagHandler<?>[] tags;
@@ -24,9 +25,16 @@ public class TagHandler<R> implements Handler<R> {
 		modelType = aModelType;
 		parent = this;
 	}
-	
+
+	public TagHandler(String aTagName, Factory<R,?> aFactory) {
+		tagName = aTagName;
+		factory = aFactory;
+		parent = this;
+	}
+
 	public TagHandler(String aTagName) {
 		tagName = aTagName;
+		parent = this;
 	}
 	
 	public TagHandler<R> with(AttributesHandler anAttributes, TagHandler<?>... aTags) {
@@ -69,13 +77,11 @@ public class TagHandler<R> implements Handler<R> {
 	public TagHandler<?> moveDown(String aQName, Attributes anAttributes, Context aCtx) {
 		try {
 			if (modelType != null) {
-				Object _parent = aCtx.peek();
-				R _model = newContextObject();
+				R _model = Classes.newInstance(modelType);
 				aCtx.push(_model);
-				if (_parent != null) {
-					ContextMutator _m = getMutator(_parent.getClass(), modelType, tagName);
-					_m.apply(_parent, _model);
-				}
+			} else if (factory != null) {
+				R _model = factory.newIntermediary();
+				aCtx.push(_model);
 			}
 			
 			if (attributes != null)
@@ -111,8 +117,27 @@ public class TagHandler<R> implements Handler<R> {
 			text.complete(aCtx);
 		}
 		if (modelType != null) {
-			aCtx.pop();
-		}			
+			R _model = (R) aCtx.pop();
+
+			if (parent != null) {
+				Object _parent = aCtx.peek();
+				if (_parent != null) {
+					ContextMutator _m = getMutator(_parent.getClass(), modelType, tagName);
+					_m.apply(_parent, _model);
+				}
+			}
+		} else if (factory != null) {
+			R _model = (R) aCtx.pop();
+
+			if (parent != null) {
+				Object _parent = aCtx.peek();
+				if (_parent != null) {
+					Object _result = factory.newTarget(_model);
+					ContextMutator _m = getMutator(_parent.getClass(), _result.getClass(), tagName);
+					_m.apply(_parent, _result);
+				}
+			}
+		}
 		return parent;
 	}
 
@@ -135,12 +160,8 @@ public class TagHandler<R> implements Handler<R> {
 			return ignore;
 		}
 	}
-	
-	private R newContextObject() {
-		return Classes.newInstance(modelType);
-	}
 
-    private ContextMutator getMutator(Class<?> aFor, Class<R> aWith, String aTagName) {
+    private ContextMutator getMutator(Class<?> aFor, Class<?> aWith, String aTagName) {
         if (mutator == null) {
             mutator = new ContextMutator(aFor, aWith, aTagName);
         }
@@ -156,13 +177,13 @@ public class TagHandler<R> implements Handler<R> {
         private String tag;
         private boolean twoArgMutator;
 
-        public ContextMutator(Class<?> aFor, Class<R> aWith, String aTagName) {
+        public ContextMutator(Class<?> aFor, Class<?> aWith, String aTagName) {
             method = Classes.getMutatorMethod(aFor, aWith.getSimpleName(), aTagName);
             twoArgMutator = (method.getParameterTypes().length == 2);
             tag = aTagName;
         }
 
-        public void apply(Object aTo, R aWith) {
+        public void apply(Object aTo, Object aWith) {
             try {
                 if (twoArgMutator) {
                     method.invoke(aTo, tag, aWith);
