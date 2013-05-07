@@ -29,7 +29,7 @@ public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
 	}
 	
 	/**
-	 * @param array of attribute names
+	 * @param anAttributeNames array of attribute names
 	 * @return a NamedAttributesReader that looks up attribute values by name.
 	 * Useful if some attributes are being ignored.
 	 */
@@ -52,7 +52,7 @@ public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
 	}
 	
 	/**
-	 * @param array of setter-method names (without the prefix)
+	 * @param aSetterMethodNames array of setter-method names (without the prefix)
 	 * @return an OrderedAttributesReader that should be marginally quicker 
 	 * than a NamedAttributesReader due to attribute value lookup by index
 	 * rather than by name. 

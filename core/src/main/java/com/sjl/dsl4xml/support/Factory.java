@@ -7,16 +7,11 @@ package com.sjl.dsl4xml.support;
  *
  * @author steve
 
- * @param <I> the Intermediate representation to use during the parse phase
+ * @param <I> the Intermediate representation used during the parse phase
  * @param <T> the Target representation to return from the result object
  */
 public interface Factory<I,R>
 {
-	/**
-	 * @return the Intermediate object which will be populated during the parsing phase
-	 */
-	public I newIntermediary();
-
 	/**
 	 * Invoked at the end of the parsing phase to create the final target representation.
 	 *

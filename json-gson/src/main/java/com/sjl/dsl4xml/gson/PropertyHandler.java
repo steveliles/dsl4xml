@@ -9,10 +9,16 @@ import com.sjl.dsl4xml.support.ValueSetter;
 public class PropertyHandler<T> implements JsonHandler
 {
 	private String name;
+	private Class<T> type;
 	private ValueSetter setter;
 
 	public PropertyHandler(String aName) {
 		name = aName;
+	}
+
+	public PropertyHandler(String aName, Class<T> aClass) {
+		name = aName;
+		type = aClass;
 	}
 
 	@Override
@@ -40,7 +46,13 @@ public class PropertyHandler<T> implements JsonHandler
 
 	private ValueSetter getSetter(Context aContext, Class<?> aClass, String aFieldName) {
 		if (setter == null) {
-			setter = new ValueSetter(aContext, aClass, aFieldName);
+			if (type != null) {
+				// use the user supplied type info
+				setter = new ValueSetter(aContext, aClass, type, aFieldName);
+			} else {
+				// infer the type from the context class
+				setter = new ValueSetter(aContext, aClass, aFieldName);
+			}
 		}
 		return setter;
 	}

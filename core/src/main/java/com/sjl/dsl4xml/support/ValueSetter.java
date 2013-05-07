@@ -5,35 +5,48 @@ import java.lang.reflect.*;
 import com.sjl.dsl4xml.*;
 
 public class ValueSetter {
-	private Method method;
+
+	private Method setter;
 	private Converter<?> converter;
 	private boolean twoArgSetter;
+	private Method getter;
 
-private Method _getter;
-	public ValueSetter(HasConverters aConverters, Class<?> aClass, String... aMaybeNames) {
-		method = getMethod(aClass, aMaybeNames);
-		_getter = Classes.getAccessorMethod(aClass, aMaybeNames);
-		if (_getter != null) {
-			converter = aConverters.getConverter(_getter.getReturnType());
+	public ValueSetter(HasConverters aConverters, Class<?> aContextType, String... aMaybeNames) {
+		this(aConverters, aContextType, null, aMaybeNames);
+	}
+
+	public ValueSetter(HasConverters aConverters, Class<?> aContextType, Class<?> aValueType, String... aMaybeNames) {
+		setter = getMethod(aContextType, aMaybeNames);
+		getter = Classes.getAccessorMethod(aContextType, aMaybeNames);
+		if (getter != null) {
+			if (aValueType != null) {
+				converter = aConverters.getConverter(aValueType);
+			} else {
+				converter = aConverters.getConverter(getter.getReturnType());
+			}
 		} else {
-			converter = aConverters.getConverter(method.getParameterTypes()[0]);
+			if (aValueType != null) {
+				converter = aConverters.getConverter(aValueType);
+			} else {
+				converter = aConverters.getConverter(setter.getParameterTypes()[0]);
+			}
 		}
-		twoArgSetter = (method.getParameterTypes().length == 2);
+		twoArgSetter = (setter.getParameterTypes().length == 2);
 	}
 	
 	public void invoke(String aKey, Object anOn, String aWith) {
 		try {
 			if (twoArgSetter) {
-				method.invoke(anOn, aKey, converter.convert(aWith));
+				setter.invoke(anOn, aKey, converter.convert(aWith));
 			} else {
-				method.invoke(anOn, converter.convert(aWith));
+				setter.invoke(anOn, converter.convert(aWith));
 			}
 		} catch (ParsingException anExc) {
 			throw anExc;
         } catch (IllegalArgumentException anExc) {
             throw new ParsingException(
                 anExc.getMessage() +
-                " while trying to invoke " + method +
+                " while trying to invoke " + setter +
                 " on " + anOn +
                 " with " + ((aKey != null) ? aKey + " and " : "") + aWith +
                 " converted by " + converter, anExc);
@@ -43,17 +56,17 @@ private Method _getter;
 	}
 	
 	public String toString() {
-		return method.getDeclaringClass().getSimpleName() + "." + method.getName();
+		return setter.getDeclaringClass().getSimpleName() + "." + setter.getName();
 	}
 	
-	private Method getMethod(Class<?> aClass, String... aMaybeNames) {
-		Method _m = Classes.getMutatorMethod(aClass, aMaybeNames);
+	private Method getMethod(Class<?> aContextType, String... aMaybeNames) {
+		Method _m = Classes.getMutatorMethod(aContextType, aMaybeNames);
 		
 		Class<?>[] _params = _m.getParameterTypes();
 		if ((_params.length == 1) || (Classes.MAGIC_SET.equals(_m.getName()) && _params.length==2)) {
 			return _m;
 		} else {
-			throw new NoSuitableMethodException("Mutator method " + aClass.getSimpleName() + "." + _m.getName() + " should accept 1 param, but wants " + _params.length);
+			throw new NoSuitableMethodException("Mutator method " + aContextType.getSimpleName() + "." + _m.getName() + " should accept 1 param, but wants " + _params.length);
 		}
 	}
 }

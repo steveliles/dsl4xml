@@ -26,8 +26,9 @@ public class TagHandler<R> implements Handler<R> {
 		parent = this;
 	}
 
-	public TagHandler(String aTagName, Factory<R,?> aFactory) {
+	public TagHandler(String aTagName, Class<R> aModelType, Factory<R,?> aFactory) {
 		tagName = aTagName;
+		modelType = aModelType;
 		factory = aFactory;
 		parent = this;
 	}
@@ -79,9 +80,6 @@ public class TagHandler<R> implements Handler<R> {
 			if (modelType != null) {
 				R _model = Classes.newInstance(modelType);
 				aCtx.push(_model);
-			} else if (factory != null) {
-				R _model = factory.newIntermediary();
-				aCtx.push(_model);
 			}
 			
 			if (attributes != null)
@@ -122,19 +120,14 @@ public class TagHandler<R> implements Handler<R> {
 			if (parent != null) {
 				Object _parent = aCtx.peek();
 				if (_parent != null) {
-					ContextMutator _m = getMutator(_parent.getClass(), modelType, tagName);
-					_m.apply(_parent, _model);
-				}
-			}
-		} else if (factory != null) {
-			R _model = (R) aCtx.pop();
-
-			if (parent != null) {
-				Object _parent = aCtx.peek();
-				if (_parent != null) {
-					Object _result = factory.newTarget(_model);
-					ContextMutator _m = getMutator(_parent.getClass(), _result.getClass(), tagName);
-					_m.apply(_parent, _result);
+					if (factory != null) {
+						Object _result = factory.newTarget(_model);
+						ContextMutator _m = getMutator(_parent.getClass(), _result.getClass(), tagName);
+						_m.apply(_parent, _result);
+					} else {
+						ContextMutator _m = getMutator(_parent.getClass(), modelType, tagName);
+						_m.apply(_parent, _model);
+					}
 				}
 			}
 		}

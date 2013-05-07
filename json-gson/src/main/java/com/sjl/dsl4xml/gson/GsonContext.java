@@ -33,24 +33,24 @@ public class GsonContext implements Context
 		converters = new ArrayList<Converter<?>>();
 
 		registerConverters(
-		new PrimitiveBooleanConverter(),
-		new DecimalToByteConverter(),
-		new DecimalToShortConverter(),
-		new DecimalToIntConverter(),
-		new DecimalToLongConverter(),
-		new PrimitiveCharConverter(),
-		new PrimitiveFloatConverter(),
-		new PrimitiveDoubleConverter(),
-		new BooleanConverter(),
-		new ByteConverter(),
-		new ShortConverter(),
-		new IntegerConverter(),
-		new LongConverter(),
-		new CharacterConverter(),
-		new FloatConverter(),
-		new DoubleConverter(),
-		new ClassConverter(),
-		new StringConverter()
+			new PrimitiveBooleanConverter(),
+			new DecimalToByteConverter(),
+			new DecimalToShortConverter(),
+			new DecimalToIntConverter(),
+			new DecimalToLongConverter(),
+			new PrimitiveCharConverter(),
+			new PrimitiveFloatConverter(),
+			new PrimitiveDoubleConverter(),
+			new BooleanConverter(),
+			new ByteConverter(),
+			new ShortConverter(),
+			new IntegerConverter(),
+			new LongConverter(),
+			new CharacterConverter(),
+			new FloatConverter(),
+			new DoubleConverter(),
+			new ClassConverter(),
+			new StringConverter()
 		);
 	}
 
@@ -142,7 +142,6 @@ public class GsonContext implements Context
 					} else {
 						name = null;
 					}
-					token = reader.peek();
 					break;
 				case STRING:
 					value = reader.nextString();
@@ -199,7 +198,7 @@ public class GsonContext implements Context
 	public boolean isPropertyNamed(String aName) {
 		return (
 			(token == JsonToken.BOOLEAN || token == JsonToken.STRING || token == JsonToken.NUMBER) &&
-			(aName.equals(name))
+			(aName == null || aName.isEmpty() || aName.equals(name))
 		);
 	}
 

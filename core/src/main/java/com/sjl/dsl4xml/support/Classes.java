@@ -27,7 +27,7 @@ public class Classes {
 		return getMethod(aClass, _names, false);
 	}
 
-	public static <T> Method getMutatorMethod(Class<T> aClass, String... aMaybeNames) {
+	public static <T> Method getMutatorMethod(Class<T> aContextClass, String... aMaybeNames) {
 	    Set<String> _names = new LinkedHashSet<String>();
 	    for (String _s : aMaybeNames) {
 	        String _suffix = removeHyphensAndUpperCaseFirstLetters(_s);	        
@@ -41,7 +41,7 @@ public class Classes {
 	    }
 		_names.add(MAGIC_SET); // always look for the magic set method for dynamic proxies
 	    
-	    return getMethod(aClass, _names, true);
+	    return getMethod(aContextClass, _names, true);
 	}
 	
 	private static String removeHyphensAndUpperCaseFirstLetters(String aString) {
@@ -57,11 +57,11 @@ public class Classes {
 		return _sb.toString();
 	}
 	
-	private static <T> Method getMethod(Class<T> aClass, Collection<String> aNames, boolean aThrowExceptionIfNotFound) {
+	private static <T> Method getMethod(Class<T> aContextClass, Collection<String> aNames, boolean aThrowExceptionIfNotFound) {
         List<Method> _methods = new ArrayList<Method>();
         List<Method> _twoArgMethods = new ArrayList<Method>();
-        for (Method _m : aClass.getMethods()) {
-            if (_m.getParameterTypes().length <= 1) {
+        for (Method _m : aContextClass.getMethods()) {
+	        if (_m.getParameterTypes().length <= 1) {
                 _methods.add(_m);
             } else if (_m.getParameterTypes().length == 2) {
                 _twoArgMethods.add(_m);
@@ -80,8 +80,8 @@ public class Classes {
 		
 	    if (aThrowExceptionIfNotFound) {
 		    String _classname =
-			    (aClass.isAnonymousClass() || aClass.isSynthetic() || aClass.getName().matches(".*\\$Proxy.*")) ?
-			        asString(aClass, aClass.getInterfaces()) : aClass.getName();
+			    (aContextClass.isAnonymousClass() || aContextClass.isSynthetic() || aContextClass.getName().matches(".*\\$Proxy.*")) ?
+			        asString(aContextClass, aContextClass.getInterfaces()) : aContextClass.getName();
 
 	       String _msg = "No suitable method found in class " + _classname + ", tried ";
 	       for (String _name : aNames) {

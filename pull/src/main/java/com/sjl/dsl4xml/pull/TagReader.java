@@ -11,6 +11,7 @@ public class TagReader<T> implements ContentReader {
 	private String namespace;
 	private String tagName;
 	private Class<T> type;
+	private Factory<T,?> factory;
 	private ContextMutator mutator;
 	private AttributesReader attributes;
 	private List<XmlReader> mappers;
@@ -33,6 +34,19 @@ public class TagReader<T> implements ContentReader {
 		namespace = aNamespace;
 		tagName = aTagName;
 		type = aType;
+	}
+
+	public TagReader(String aTagName, Class<T> aType, Factory<T,?> aFactory) {
+		tagName = aTagName;
+		type = aType;
+		factory = aFactory;
+	}
+
+	public TagReader(String aNamespace, String aTagName, Class<T> aType, Factory<T,?> aFactory) {
+		namespace = aNamespace;
+		tagName = aTagName;
+		type = aType;
+		factory = aFactory;
 	}
 	
 	public TagReader<T> withPCData() {
@@ -123,17 +137,23 @@ public class TagReader<T> implements ContentReader {
 
 	private void maybePopContext(ReadingContext aContext) {
 		if (type != null) {
-			aContext.pop();
+			T _intermediate = aContext.pop();
+			Object _parent = aContext.peek();
+
+			if (factory != null) {
+				Object _result = factory.newTarget(_intermediate);
+				ContextMutator _m = getMutator(_parent.getClass(), _result.getClass(), tagName);
+				_m.apply(_parent, _result);
+			} else {
+				getMutator(_parent.getClass(), type, tagName).apply(_parent, _intermediate);
+			}
+
 		}
 	}
 
 	private void maybePushNewContextObject(ReadingContext aContext) {
 		if (type != null) {
-			Object _ctx = aContext.peek();
 			T _nestedCtx = newContextObject();
-			
-			getMutator(_ctx.getClass(), type, tagName).apply(_ctx, _nestedCtx);
-			
 			aContext.push(_nestedCtx);
 		}
 	}
@@ -150,7 +170,7 @@ public class TagReader<T> implements ContentReader {
 		}
 	}
 	
-	private ContextMutator getMutator(Class<?> aFor, Class<T> aWith, String aTagName) {
+	private ContextMutator getMutator(Class<?> aFor, Class<?> aWith, String aTagName) {
 		if (mutator == null) {
 			mutator = new ContextMutator(aFor, aWith, aTagName);
 		}
@@ -162,13 +182,13 @@ public class TagReader<T> implements ContentReader {
 		private String tag;
 		private boolean twoArgMutator;
 		
-		public ContextMutator(Class<?> aFor, Class<T> aWith, String aTagName) {
+		public ContextMutator(Class<?> aFor, Class<?> aWith, String aTagName) {
 			method = Classes.getMutatorMethod(aFor, aWith.getSimpleName(), aTagName);
 			twoArgMutator = (method.getParameterTypes().length == 2);
 			tag = aTagName;
 		}
 		
-		public void apply(Object aTo, T aWith) {
+		public void apply(Object aTo, Object aWith) {
 			try {
 				if (twoArgMutator) {
 					method.invoke(aTo, tag, aWith);

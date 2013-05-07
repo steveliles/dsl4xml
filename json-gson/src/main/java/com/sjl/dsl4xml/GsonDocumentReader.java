@@ -3,10 +3,11 @@ package com.sjl.dsl4xml;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.sjl.dsl4xml.gson.*;
+import com.sjl.dsl4xml.support.Converter;
 import com.sjl.dsl4xml.support.Factory;
 
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.util.List;
 
 /**
  * @author steve
@@ -17,10 +18,6 @@ public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
 		return new GsonDocumentReader<R>(aClass);
 	}
 
-	public static <R> ObjectHandler<R> object(String aName) {
-		return new ObjectHandler<R>(aName);
-	}
-
 	public static <R> ObjectHandler<R> object(String aName, Class<R> aContextType) {
 		return new ObjectHandler<R>(aName, aContextType);
 	}
@@ -29,20 +26,28 @@ public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
 		return new ObjectHandler<R>(aContextType);
 	}
 
-	public static <I, R> ObjectHandler<I> object(String aName, Factory<I,R> aFactory) {
-		return new ObjectHandler<I>(aName, aFactory);
+	public static <I,R> PostConstructingObjectHandler<I,R> object(String aName, Class<I> aContextType, Factory<I,R> aFactory) {
+		return new PostConstructingObjectHandler<I,R>(aName, aContextType, aFactory);
 	}
 
-	public static <I, R> ObjectHandler<I> object(Factory<I,R> aFactory) {
-		return new ObjectHandler<I>(aFactory);
+	public static <I,R> PostConstructingObjectHandler<I,R> object(Class<I> aContextType, Factory<I,R> aFactory) {
+		return new PostConstructingObjectHandler<I,R>(aContextType, aFactory);
 	}
 
 	public static <R> PropertyHandler<R> property(String aName) {
 		return new PropertyHandler<R>(aName);
 	}
 
-	public static <R> ArrayHandler<R> array(String aName, Class<R> aClass) {
-		return new ArrayHandler<R>(aName, aClass);
+	public static <R> PreConstructingArrayHandler<R> array(String aName, Class<R> aClass) {
+		return new PreConstructingArrayHandler<R>(aName, aClass);
+	}
+
+	public static <I,R> PostConstructingArrayHandler<I,R> array(String aName, Factory<List<I>,R> aFactory) {
+		return new PostConstructingArrayHandler<I,R>(aName, aFactory);
+	}
+
+	public static <R> UnNamedPropertyHandler<R> unNamedProperty(Class<R> aType) {
+		return new UnNamedPropertyHandler<R>(aType);
 	}
 
 	private JsonHandler[] handlers = new JsonHandler[]{};
