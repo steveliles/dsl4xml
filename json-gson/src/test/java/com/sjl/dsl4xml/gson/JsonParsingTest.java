@@ -186,27 +186,7 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesComplexMemberJsonToImmutableObjects() throws Exception {
-		GsonDocumentReader<Member2> _reader = mappingOf(Member2.class).to(
-			object("id", Member2.Identifier.class, new ImmutableIdentifierFactory()).with(
-				property("serializedForm")
-			),
-			property("registrationDate"),
-			object("person", Member2.Person.class).with(
-				object("id", Member2.Identifier.class, new ImmutableIdentifierFactory()).with(
-					property("serializedForm")
-				),
-				property("firstname"),
-				property("lastname"),
-				property("email"),
-				property("title")
-			),
-			object("social", Member2.Social.class).with(
-				property("providerId"),
-				property("providerUserId"),
-				property("imageUrl")
-			),
-			property("pointsAccrued")
-		);
+		GsonDocumentReader<Member2> _reader = createMember2Reader();
 
 		_reader.registerConverters(new ThreadSafeDateConverter("yyyy-MM-dd"));
 
@@ -384,4 +364,44 @@ public class JsonParsingTest
 		Assert.assertEquals("second", _pc.getStrings().get(1));
 		Assert.assertEquals("third", _pc.getStrings().get(2));
 	}
+
+
+
+	@Test
+	public void skipsMissingObjects() {
+		GsonDocumentReader<Member2> _reader = createMember2Reader();
+
+		Member2 _result = _reader.read(new StringReader("{\"id\":{\"serializedForm\":\"1234\"}, \"pointsAccrued\":50}"));
+
+		Assert.assertNotNull(_result);
+		Assert.assertEquals("1234", _result.getId().toSerializedForm());
+		Assert.assertNull(_result.getRegistrationDate());
+		Assert.assertNull(_result.getPerson());
+		Assert.assertEquals(50, _result.getPointsAccrued());
+	}
+
+	private GsonDocumentReader<Member2> createMember2Reader() {
+		return mappingOf(Member2.class).to(
+			object("id", Member2.Identifier.class, new ImmutableIdentifierFactory()).with(
+				property("serializedForm")
+			),
+			property("registrationDate"),
+			object("person", Member2.Person.class).with(
+				object("id", Member2.Identifier.class, new ImmutableIdentifierFactory()).with(
+					property("serializedForm")
+				),
+				property("firstname"),
+				property("lastname"),
+				property("email"),
+				property("title")
+			),
+			object("social", Member2.Social.class).with(
+				property("providerId"),
+				property("providerUserId"),
+				property("imageUrl")
+			),
+			property("pointsAccrued")
+		);
+	}
+
 }

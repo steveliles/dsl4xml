@@ -16,6 +16,7 @@ import java.util.List;
 public class ObjectHandler<T> implements JsonHandler
 {
 	protected String name;
+	protected String alias;
 	protected List<JsonHandler> handlers;
 	private ContextMutator mutator;
 
@@ -33,6 +34,11 @@ public class ObjectHandler<T> implements JsonHandler
 	public ObjectHandler(Class<T> aContextType) {
 		name = "";
 		type = aContextType;
+	}
+
+	public ObjectHandler<T> alias(String anAlias){
+		alias = anAlias;
+		return this;
 	}
 
 	@Override
@@ -79,7 +85,7 @@ public class ObjectHandler<T> implements JsonHandler
 	protected void maybePopContext(Context aContext) {
 		Object _result = aContext.pop();
 		Object _ctx = aContext.peek();
-		getMutator(_ctx.getClass(), type, name).apply(_ctx, _result);
+		getMutator(_ctx.getClass(), type, (alias != null) ? alias : name).apply(_ctx, _result);
 	}
 
 	protected void maybePushNewContextObject(Context aContext) {
@@ -100,9 +106,9 @@ public class ObjectHandler<T> implements JsonHandler
 		}
 	}
 
-	protected ContextMutator getMutator(Class<?> aFor, Class<?> aWith, String aTagName) {
+	protected ContextMutator getMutator(Class<?> aFor, Class<?> aWith, String aMethodName) {
 		if (mutator == null) {
-			mutator = new ContextMutator(aFor, aWith, aTagName);
+			mutator = new ContextMutator(aFor, aWith, aMethodName);
 		}
 		return mutator;
 	}

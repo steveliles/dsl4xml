@@ -1,5 +1,6 @@
 package com.sjl.dsl4xml.gson;
 
+import com.sjl.dsl4xml.ParsingException;
 import com.sjl.dsl4xml.support.Factory;
 
 /**
@@ -25,7 +26,14 @@ extends ObjectHandler<I>
 		I _result = aContext.pop();
 		Object _converted = factory.newTarget(_result);
 
-		Object _ctx = aContext.peek();
-		getMutator(_ctx.getClass(), _converted.getClass(), name).apply(_ctx, _converted);
+		if (_converted != null) {
+			String _target = (alias != null) ? alias : name;
+
+			Object _ctx = aContext.peek();
+			if (_ctx == null)
+				throw new ParsingException("No context available to receive " + _target + " of type " + _converted.getClass() + " and value " + _converted);
+
+			getMutator(_ctx.getClass(), _converted.getClass(), _target).apply(_ctx, _converted);
+		}
 	}
 }
