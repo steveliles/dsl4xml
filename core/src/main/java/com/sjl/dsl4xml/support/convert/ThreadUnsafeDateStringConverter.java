@@ -15,7 +15,7 @@ import com.sjl.dsl4xml.support.StringConverter;
  * 
  * @author steve
  */
-public class ThreadUnsafeDateStringConverter implements StringConverter<Date> {
+public class ThreadUnsafeDateStringConverter extends StringConverter<Date> {
 
 	private DateFormat dateFormat;
 	

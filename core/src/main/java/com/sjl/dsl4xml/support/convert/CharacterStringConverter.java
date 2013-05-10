@@ -2,7 +2,7 @@ package com.sjl.dsl4xml.support.convert;
 
 import com.sjl.dsl4xml.support.StringConverter;
 
-public class CharacterStringConverter implements StringConverter<Character> {
+public class CharacterStringConverter extends StringConverter<Character> {
 
 	@Override
 	public boolean canConvertTo(Class<?> aClass) {

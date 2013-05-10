@@ -2,7 +2,7 @@ package com.sjl.dsl4xml.support.convert;
 
 import com.sjl.dsl4xml.support.StringConverter;
 
-public class PrimitiveByteStringConverter implements StringConverter<Byte> {
+public class PrimitiveByteStringConverter extends StringConverter<Byte> {
 
 	@Override
 	public boolean canConvertTo(Class<?> aClass) {

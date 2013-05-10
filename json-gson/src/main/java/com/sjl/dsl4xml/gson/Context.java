@@ -2,7 +2,7 @@ package com.sjl.dsl4xml.gson;
 
 import com.google.gson.stream.JsonToken;
 import com.sjl.dsl4xml.HasConverters;
-import com.sjl.dsl4xml.support.Converter;
+import com.sjl.dsl4xml.support.StringConverter;
 
 /**
  * @author steve
@@ -35,5 +35,5 @@ public interface Context extends HasConverters
 
 	String getValue();
 
-	void registerConverters(Converter<?>... converters);
+	void registerConverters(StringConverter<?>... converters);
 }

@@ -5,7 +5,7 @@ import com.sjl.dsl4xml.support.StringConverter;
 /**
  * @author steve
  */
-public class DecimalToByteStringConverter implements StringConverter<Byte>
+public class DecimalToByteStringConverter extends StringConverter<Byte>
 {
 	@Override
 	public boolean canConvertTo(Class<?> aClass) {

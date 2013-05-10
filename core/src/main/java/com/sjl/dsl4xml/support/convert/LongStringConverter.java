@@ -2,7 +2,7 @@ package com.sjl.dsl4xml.support.convert;
 
 import com.sjl.dsl4xml.support.StringConverter;
 
-public class LongStringConverter implements StringConverter<Long> {
+public class LongStringConverter extends StringConverter<Long> {
 
 	@Override
 	public boolean canConvertTo(Class<?> aClass) {

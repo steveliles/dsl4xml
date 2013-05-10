@@ -2,7 +2,7 @@ package com.sjl.dsl4xml.support.convert;
 
 import com.sjl.dsl4xml.support.StringConverter;
 
-public class FloatStringConverter implements StringConverter<Float> {
+public class FloatStringConverter extends StringConverter<Float> {
 
 	@Override
 	public boolean canConvertTo(Class<?> aClass) {

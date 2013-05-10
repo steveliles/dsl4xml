@@ -1,6 +1,8 @@
 package com.sjl.dsl4xml.support.convert;
 
-public class StringStringConverter implements com.sjl.dsl4xml.support.StringConverter<String> {
+import com.sjl.dsl4xml.support.StringConverter;
+
+public class StringStringConverter extends StringConverter<String> {
 
 	@Override
 	public boolean canConvertTo(Class<?> aClass) {

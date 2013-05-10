@@ -3,7 +3,6 @@ package com.sjl.dsl4xml;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.sjl.dsl4xml.gson.*;
-import com.sjl.dsl4xml.support.Converter;
 import com.sjl.dsl4xml.support.Factory;
 
 import java.io.*;

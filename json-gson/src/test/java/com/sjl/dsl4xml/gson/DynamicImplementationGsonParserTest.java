@@ -1,7 +1,7 @@
 package com.sjl.dsl4xml.gson;
 
 import com.sjl.dsl4xml.DocumentReader;
-import com.sjl.dsl4xml.support.convert.ThreadUnsafeDateConverter;
+import com.sjl.dsl4xml.support.convert.ThreadUnsafeDateStringConverter;
 
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class DynamicImplementationGsonParserTest extends DynamicImplementationTe
 			property("numberOfDependents")
 		);
 		
-		_r.registerConverters(new ThreadUnsafeDateConverter("yyyyMMdd"));
+		_r.registerConverters(new ThreadUnsafeDateStringConverter("yyyyMMdd"));
 		
 		return _r;
 	}

@@ -3,7 +3,6 @@ package com.sjl.dsl4xml.gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.sjl.dsl4xml.ParsingException;
-import com.sjl.dsl4xml.support.Converter;
 import com.sjl.dsl4xml.support.convert.*;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ import java.util.Stack;
 public class GsonContext implements Context
 {
 	private JsonReader reader;
-	private List<Converter<?>> converters;
+	private List<com.sjl.dsl4xml.support.StringConverter<?>> converters;
 	private Stack<Object> stack;
 	private Stack<String> names;
 	private String name;
@@ -30,27 +29,27 @@ public class GsonContext implements Context
 		reader = aReader;
 		stack = new Stack<Object>();
 		names = new Stack<String>();
-		converters = new ArrayList<Converter<?>>();
+		converters = new ArrayList<com.sjl.dsl4xml.support.StringConverter<?>>();
 
 		registerConverters(
-			new PrimitiveBooleanConverter(),
-			new DecimalToByteConverter(),
-			new DecimalToShortConverter(),
-			new DecimalToIntConverter(),
-			new DecimalToLongConverter(),
-			new PrimitiveCharConverter(),
-			new PrimitiveFloatConverter(),
-			new PrimitiveDoubleConverter(),
-			new BooleanConverter(),
-			new ByteConverter(),
-			new ShortConverter(),
-			new IntegerConverter(),
-			new LongConverter(),
-			new CharacterConverter(),
-			new FloatConverter(),
-			new DoubleConverter(),
-			new ClassConverter(),
-			new StringConverter()
+			new PrimitiveBooleanStringConverter(),
+			new DecimalToByteStringConverter(),
+			new DecimalToShortStringConverter(),
+			new DecimalToIntStringConverter(),
+			new DecimalToLongStringConverter(),
+			new PrimitiveCharStringConverter(),
+			new PrimitiveFloatStringConverter(),
+			new PrimitiveDoubleStringConverter(),
+			new BooleanStringConverter(),
+			new ByteStringConverter(),
+			new ShortStringConverter(),
+			new IntegerStringConverter(),
+			new LongStringConverter(),
+			new CharacterStringConverter(),
+			new FloatStringConverter(),
+			new DoubleStringConverter(),
+			new ClassStringConverter(),
+			new StringStringConverter()
 		);
 	}
 
@@ -72,18 +71,18 @@ public class GsonContext implements Context
 	}
 
 	@Override
-	public void registerConverters(Converter<?>... aConverters)
+	public void registerConverters(com.sjl.dsl4xml.support.StringConverter<?>... aConverters)
 	{
 		// push any registered converters on ahead of existing converters (allows simple override)
 		converters.addAll(0, Arrays.asList(aConverters));
 	}
 
 	@Override
-	public <T> Converter<T> getConverter(Class<T> aArgType)
+	public <T> com.sjl.dsl4xml.support.StringConverter<T> getConverter(Class<T> aArgType)
 	{
-		for (Converter<?> _c : converters) {
+		for (com.sjl.dsl4xml.support.StringConverter<?> _c : converters) {
 			if (_c.canConvertTo(aArgType)) {
-				return (Converter<T>) _c;
+				return (com.sjl.dsl4xml.support.StringConverter<T>) _c;
 			}
 		}
 		throw new RuntimeException("No converter registered that can convert to " + aArgType);

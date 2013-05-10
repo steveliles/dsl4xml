@@ -2,7 +2,7 @@ package com.sjl.dsl4xml.support.convert;
 
 import com.sjl.dsl4xml.support.StringConverter;
 
-public class PrimitiveDoubleStringConverter implements StringConverter<Double> {
+public class PrimitiveDoubleStringConverter extends StringConverter<Double> {
 
 	@Override
 	public boolean canConvertTo(Class<?> aClass) {

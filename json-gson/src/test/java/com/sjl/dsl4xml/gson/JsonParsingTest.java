@@ -3,7 +3,7 @@ package com.sjl.dsl4xml.gson;
 import static com.sjl.dsl4xml.GsonDocumentReader.*;
 import com.sjl.dsl4xml.GsonDocumentReader;
 import com.sjl.dsl4xml.support.Factory;
-import com.sjl.dsl4xml.support.convert.ThreadSafeDateConverter;
+import com.sjl.dsl4xml.support.convert.ThreadSafeDateStringConverter;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -60,7 +60,7 @@ public class JsonParsingTest
 			property("pointsAccrued")
 		);
 
-		_reader.registerConverters(new ThreadSafeDateConverter("yyyy-MM-dd"));
+		_reader.registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
 
 		Member1 _result = _reader.read(new InputStreamReader(getClass().getResourceAsStream("member-1.json")));
 
@@ -159,7 +159,7 @@ public class JsonParsingTest
 			property("pointsAccrued")
 		);
 
-		_reader.registerConverters(new ThreadSafeDateConverter("yyyy-MM-dd"));
+		_reader.registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
 
 		Member2 _result = _reader.read(new InputStreamReader(getClass().getResourceAsStream("member-2.json")));
 
@@ -188,7 +188,7 @@ public class JsonParsingTest
 	public void parsesComplexMemberJsonToImmutableObjects() throws Exception {
 		GsonDocumentReader<Member2> _reader = createMember2Reader();
 
-		_reader.registerConverters(new ThreadSafeDateConverter("yyyy-MM-dd"));
+		_reader.registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
 
 		Member2 _result = _reader.read(new InputStreamReader(getClass().getResourceAsStream("member-2.json")));
 
@@ -311,7 +311,7 @@ public class JsonParsingTest
 			)
 		);
 
-		_reader.registerConverters(new ThreadSafeDateConverter("yyyyMMddZ"));
+		_reader.registerConverters(new ThreadSafeDateStringConverter("yyyyMMddZ"));
 
 		Dates _t = _reader.read(new StringReader("{\"dates\":[\"20130507+0000\", \"20130508+0000\", \"20130509+0000\"]}"));
 

@@ -1,9 +1,11 @@
 package com.sjl.dsl4xml.support.convert;
 
+import com.sjl.dsl4xml.support.StringConverter;
+
 /**
  * @author steve
  */
-public class DecimalToLongStringConverter implements com.sjl.dsl4xml.support.StringConverter<Long>
+public class DecimalToLongStringConverter extends StringConverter<Long>
 {
 	@Override
 	public boolean canConvertTo(Class<?> aClass) {
