@@ -6,19 +6,19 @@ public class PrimitiveCharConverterTest {
 
 	@Test
 	public void canConvertPrimitiveChars() {
-		PrimitiveCharConverter _c = new PrimitiveCharConverter();
+		PrimitiveCharStringConverter _c = new PrimitiveCharStringConverter();
 		Assert.assertTrue(_c.canConvertTo(Character.TYPE));
 	}
 	
 	@Test
 	public void convertsSinglePrimitiveChar() {
-		PrimitiveCharConverter _c = new PrimitiveCharConverter();
+		PrimitiveCharStringConverter _c = new PrimitiveCharStringConverter();
 		Assert.assertTrue('s' == _c.convert("s"));
 	}
 	
 	@Test
 	public void convertsFirstPrimitiveCharIfMultiple() {
-		PrimitiveCharConverter _c = new PrimitiveCharConverter();
+		PrimitiveCharStringConverter _c = new PrimitiveCharStringConverter();
 		Assert.assertTrue('s' == _c.convert("steve"));
 	}
 	

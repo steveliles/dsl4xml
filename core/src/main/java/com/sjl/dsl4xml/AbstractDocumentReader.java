@@ -7,7 +7,7 @@ import com.sjl.dsl4xml.support.*;
 
 public abstract class AbstractDocumentReader<T> implements DocumentReader<T> {
 
-	protected Converter<?>[] converters;
+	protected StringConverter<?>[] converters;
 	protected Class<T> resultType;
 	
 	public AbstractDocumentReader(Class<T> aClass) {
@@ -17,12 +17,12 @@ public abstract class AbstractDocumentReader<T> implements DocumentReader<T> {
 	public abstract T read(Reader aReader)
 	throws ParsingException;
 	
-	public void registerConverters(Converter<?>... aConverters) {
-		List<Converter<?>> _converters = new ArrayList<Converter<?>>();
+	public void registerConverters(StringConverter<?>... aConverters) {
+		List<StringConverter<?>> _converters = new ArrayList<StringConverter<?>>();
 		_converters.addAll(Arrays.asList(aConverters));
 		if (converters != null)
 			_converters.addAll(Arrays.asList(converters));
-		converters = _converters.toArray(new Converter<?>[_converters.size()]);
+		converters = _converters.toArray(new StringConverter<?>[_converters.size()]);
 	}
 
 	public T read(InputStream anInputStream, String aCharSet) {

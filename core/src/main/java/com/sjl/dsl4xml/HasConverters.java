@@ -4,8 +4,8 @@ import com.sjl.dsl4xml.support.*;
 
 public interface HasConverters {
 
-    public abstract void registerConverters(Converter<?>... aConverters);
+    public abstract void registerConverters(StringConverter<?>... aConverters);
 	
-	public abstract <T> Converter<T> getConverter(Class<T> aArgType);
+	public abstract <T> StringConverter<T> getConverter(Class<T> aArgType);
 	
 }

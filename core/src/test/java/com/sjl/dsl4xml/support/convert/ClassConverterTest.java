@@ -8,7 +8,7 @@ public class ClassConverterTest {
 
 	@Test
 	public void canConvertClassNamesToClasses() {
-		ClassConverter _c = new ClassConverter();
+		ClassStringConverter _c = new ClassStringConverter();
 		Assert.assertEquals(
 			ClassConverterTest.class, 
 			_c.convert(ClassConverterTest.class.getCanonicalName())
@@ -17,7 +17,7 @@ public class ClassConverterTest {
 	
 	@Test
 	public void throwsAppropriateExceptionIfClassNotFound() {
-		ClassConverter _c = new ClassConverter();
+		ClassStringConverter _c = new ClassStringConverter();
 		try {
 			_c.convert("no.such.Class");
 			Assert.fail("Expected an exception");

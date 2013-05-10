@@ -3,36 +3,36 @@ package com.sjl.dsl4xml.sax;
 import java.util.*;
 
 import com.sjl.dsl4xml.*;
-import com.sjl.dsl4xml.support.*;
+import com.sjl.dsl4xml.support.StringConverter;
 import com.sjl.dsl4xml.support.convert.*;
 
 public class Context implements HasConverters {
 	private Stack<Object> ctx;
 	private Object result;
-	private List<Converter<?>> converters;
+	private List<StringConverter<?>> converters;
 	
-	public Context(Converter<?>... aConverters) {
-		converters = new ArrayList<Converter<?>>();
+	public Context(StringConverter<?>... aConverters) {
+		converters = new ArrayList<StringConverter<?>>();
 		
 		registerConverters(
-			new PrimitiveBooleanConverter(),
-			new PrimitiveByteConverter(),
-			new PrimitiveShortConverter(),
-			new PrimitiveIntConverter(),
-			new PrimitiveLongConverter(),
-			new PrimitiveCharConverter(),
-			new PrimitiveFloatConverter(),
-			new PrimitiveDoubleConverter(),
-			new BooleanConverter(),
-			new ByteConverter(),
-			new ShortConverter(),
-			new IntegerConverter(),
-			new LongConverter(),
-			new CharacterConverter(),
-			new FloatConverter(),
-			new DoubleConverter(),
-			new ClassConverter(),
-			new StringConverter()
+			new PrimitiveBooleanStringConverter(),
+			new PrimitiveByteStringConverter(),
+			new PrimitiveShortStringConverter(),
+			new PrimitiveIntStringConverter(),
+			new PrimitiveLongStringConverter(),
+			new PrimitiveCharStringConverter(),
+			new PrimitiveFloatStringConverter(),
+			new PrimitiveDoubleStringConverter(),
+			new BooleanStringConverter(),
+			new ByteStringConverter(),
+			new ShortStringConverter(),
+			new IntegerStringConverter(),
+			new LongStringConverter(),
+			new CharacterStringConverter(),
+			new FloatStringConverter(),
+			new DoubleStringConverter(),
+			new ClassStringConverter(),
+			new StringStringConverter()
 		);
 		
 		if (aConverters != null)
@@ -61,17 +61,17 @@ public class Context implements HasConverters {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> Converter<T> getConverter(Class<T> aArgType) {
-		for (Converter<?> _c : converters) {
+	public <T> StringConverter<T> getConverter(Class<T> aArgType) {
+		for (StringConverter<?> _c : converters) {
 			if (_c.canConvertTo(aArgType)) {
-				return (Converter<T>) _c;
+				return (StringConverter<T>) _c;
 			}
 		}
 		throw new RuntimeException("No converter registered that can convert to " + aArgType);
 	}
 
 	@Override
-	public void registerConverters(Converter<?>... aConverters) {
+	public void registerConverters(StringConverter<?>... aConverters) {
 		// push any registered converters on ahead of existing converters (allows simple override)
 		converters.addAll(0, Arrays.asList(aConverters));
 	}

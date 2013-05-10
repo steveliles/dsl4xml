@@ -6,25 +6,25 @@ public class StringConverterTest {
 
 	@Test
 	public void canConvertStrings() {
-		StringConverter _c = new StringConverter();
+		StringStringConverter _c = new StringStringConverter();
 		Assert.assertTrue(_c.canConvertTo(String.class));
 	}
 	
 	@Test
 	public void convertsTextToString() {
-		StringConverter _c = new StringConverter();
+		StringStringConverter _c = new StringStringConverter();
 		Assert.assertEquals("hello there", _c.convert("hello there"));
 	}
 	
 	@Test
 	public void convertsNullToNull() {
-		StringConverter _c = new StringConverter();
+		StringStringConverter _c = new StringStringConverter();
 		Assert.assertEquals(null, _c.convert(null));
 	}
 	
 	@Test
 	public void convertsEmptyStringToEmptyString() {
-		StringConverter _c = new StringConverter();
+		StringStringConverter _c = new StringStringConverter();
 		Assert.assertEquals("", _c.convert(""));
 	}
 	

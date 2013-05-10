@@ -31,7 +31,7 @@ public class TwitterFeedTest {
 			)
 		);
 		
-		_tweetsReader.registerConverters(new ThreadSafeDateConverter("yyyy-MM-dd'T'HH:mm:ss"));
+		_tweetsReader.registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd'T'HH:mm:ss"));
 		
 		return _tweetsReader;
 	}

@@ -6,19 +6,19 @@ public class CharacterConverterTest {
 
 	@Test
 	public void canConvertCharacters() {
-		CharacterConverter _c = new CharacterConverter();
+		CharacterStringConverter _c = new CharacterStringConverter();
 		Assert.assertTrue(_c.canConvertTo(Character.class));
 	}
 	
 	@Test
 	public void convertsSingleCharacter() {
-		CharacterConverter _c = new CharacterConverter();
+		CharacterStringConverter _c = new CharacterStringConverter();
 		Assert.assertEquals(new Character('s'), _c.convert("s"));
 	}
 	
 	@Test
 	public void convertsFirstCharacterIfMultiple() {
-		CharacterConverter _c = new CharacterConverter();
+		CharacterStringConverter _c = new CharacterStringConverter();
 		Assert.assertEquals(new Character('s'), _c.convert("steve"));
 	}
 	

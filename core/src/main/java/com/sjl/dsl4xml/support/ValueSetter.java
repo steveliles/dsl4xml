@@ -7,7 +7,7 @@ import com.sjl.dsl4xml.*;
 public class ValueSetter {
 
 	private Method setter;
-	private Converter<?> converter;
+	private StringConverter<?> converter;
 	private boolean twoArgSetter;
 	private Method getter;
 

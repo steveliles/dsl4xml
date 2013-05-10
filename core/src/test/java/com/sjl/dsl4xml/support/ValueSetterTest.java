@@ -9,7 +9,7 @@ public class ValueSetterTest {
 
 	private HasConverters converters;
 	private TestModel model;
-	private Converter<Integer> integerConverter;
+	private StringConverter<Integer> integerConverter;
 	private Mockery mockery;
 
 	@SuppressWarnings("unchecked")
@@ -18,7 +18,7 @@ public class ValueSetterTest {
 		mockery = new Mockery();
 		converters = mockery.mock(HasConverters.class);
 		model = mockery.mock(TestModel.class);
-		integerConverter = mockery.mock(Converter.class);
+		integerConverter = mockery.mock(StringConverter.class);
 	}
 	
 	@After

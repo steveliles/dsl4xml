@@ -64,7 +64,7 @@ public class DynamicImplementationPullParserTest extends DynamicImplementationTe
 			tag("numberOfDependents")
 		);
 		
-		_r.registerConverters(new ThreadUnsafeDateConverter("yyyyMMdd"));
+		_r.registerConverters(new ThreadUnsafeDateStringConverter("yyyyMMdd"));
 		
 		return _r;
 	}

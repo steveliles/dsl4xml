@@ -10,8 +10,8 @@ public class NamedAttributesReaderTest {
 
 	private ReadingContext ctx;
 	private TestModel model;
-	private Converter<String> strConverter;
-	private Converter<Integer> intConverter;
+	private StringConverter<String> strConverter;
+	private StringConverter<Integer> intConverter;
 	
 	private Mockery mockery;
 	
@@ -22,8 +22,8 @@ public class NamedAttributesReaderTest {
 		
 		ctx = mockery.mock(ReadingContext.class);
 		model = mockery.mock(TestModel.class);
-		strConverter = (Converter<String>)mockery.mock(Converter.class, "string-converter");
-		intConverter = (Converter<Integer>)mockery.mock(Converter.class, "int-converter");
+		strConverter = (StringConverter<String>)mockery.mock(StringConverter.class, "string-converter");
+		intConverter = (StringConverter<Integer>)mockery.mock(StringConverter.class, "int-converter");
 	}
 	
 	@After

@@ -16,7 +16,7 @@ public class Dsl4XmlContentHandler<R> extends DefaultHandler {
 		handler = aRootTagHandler;
 	}
 	
-	public void prepare(Converter<?>... aConverters) {
+	public void prepare(StringConverter<?>... aConverters) {
 		context = new Context(aConverters);
 		handler = root;
 	}

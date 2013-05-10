@@ -12,5 +12,5 @@ public interface DocumentReader<T> {
 	public abstract T read(InputStream anInputStream, String aCharSet)
 	throws ParsingException;
 	
-	public abstract void registerConverters(Converter<?>... aConverters);
+	public abstract void registerConverters(StringConverter<?>... aConverters);
 }

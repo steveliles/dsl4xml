@@ -6,31 +6,31 @@ public class PrimitiveShortConverterTest {
 
 	@Test
 	public void canConvertPrimitiveShorts() {
-		PrimitiveShortConverter _c = new PrimitiveShortConverter();
+		PrimitiveShortStringConverter _c = new PrimitiveShortStringConverter();
 		Assert.assertTrue(_c.canConvertTo(Short.TYPE));
 	}
 	
 	@Test
 	public void convertsSmallOrdinalValues() {
-		PrimitiveShortConverter _c = new PrimitiveShortConverter();
+		PrimitiveShortStringConverter _c = new PrimitiveShortStringConverter();
 		Assert.assertTrue((short)1 == _c.convert("1"));
 	}
 	
 	@Test
 	public void convertsLargeOrdinalValues() {
-		PrimitiveShortConverter _c = new PrimitiveShortConverter();
+		PrimitiveShortStringConverter _c = new PrimitiveShortStringConverter();
 		Assert.assertTrue(Short.MAX_VALUE == _c.convert("32767"));
 	}
 	
 	@Test
 	public void convertsLargeNegativeOrdinalValues() {
-		PrimitiveShortConverter _c = new PrimitiveShortConverter();
+		PrimitiveShortStringConverter _c = new PrimitiveShortStringConverter();
 		Assert.assertTrue(Short.MIN_VALUE == _c.convert("-32768"));
 	}
 	
 	@Test
 	public void throwsExceptionIfInputGreaterThanShortMaxValue() {
-		PrimitiveShortConverter _c = new PrimitiveShortConverter();
+		PrimitiveShortStringConverter _c = new PrimitiveShortStringConverter();
 		try {
 			_c.convert("32768");
 			Assert.fail("Expected an exception");
@@ -41,7 +41,7 @@ public class PrimitiveShortConverterTest {
 	
 	@Test
 	public void throwsExceptionOnNonNumericInput() {
-		PrimitiveShortConverter _c = new PrimitiveShortConverter();
+		PrimitiveShortStringConverter _c = new PrimitiveShortStringConverter();
 		try {
 			_c.convert("hello");
 			Assert.fail("Expected an exception");
@@ -52,13 +52,13 @@ public class PrimitiveShortConverterTest {
 	
 	@Test
 	public void convertsNullToZero() {
-		PrimitiveShortConverter _c = new PrimitiveShortConverter();
+		PrimitiveShortStringConverter _c = new PrimitiveShortStringConverter();
 		Assert.assertTrue((short)0 == _c.convert(null));
 	}
 	
 	@Test
 	public void convertsEmptyStringToZero() {
-		PrimitiveShortConverter _c = new PrimitiveShortConverter();
+		PrimitiveShortStringConverter _c = new PrimitiveShortStringConverter();
 		Assert.assertTrue((short)0 == _c.convert(""));
 	}
 	

@@ -79,7 +79,7 @@ public class NestedXmlWithConvertedTypesTest {
 			)
 		);
 		
-		_result.registerConverters(new ThreadUnsafeDateConverter("yyyyMMdd"));
+		_result.registerConverters(new ThreadUnsafeDateStringConverter("yyyyMMdd"));
 		
 		return _result;
 	}
