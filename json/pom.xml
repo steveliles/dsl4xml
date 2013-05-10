@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.sjl.dsl4xml</groupId>
-  <artifactId>dsl4xml</artifactId>
+  <artifactId>dsl4xml-json</artifactId>
   <version>0.1.8-SNAPSHOT</version>
 
-  <name>dsl4xml</name>
+  <name>dsl4xml-pom</name>
   <packaging>pom</packaging>
   <url>http://maven.apache.org</url>
 
@@ -15,12 +15,12 @@
   </properties>
 
   <modules>
-    <module>support</module>
-    <module>json</module>
-    <module>xml</module>
+    <module>json-dsl</module>
+    <module>gson</module>
   </modules>
   
   <dependencies>
   </dependencies>
   
 </project>
+
