@@ -8,7 +8,7 @@ import com.sjl.dsl4xml.*;
 
 public class ValueSetterTest {
 
-	private HasConverters converters;
+	private ConverterRegistry converters;
 	private TestModel model;
 	private StringConverter<Integer> integerConverter;
 	private Mockery mockery;
@@ -18,7 +18,7 @@ public class ValueSetterTest {
 	public void setup() {
         mockery = new Mockery();
         mockery.setImposteriser(ClassImposteriser.INSTANCE);
-		converters = mockery.mock(HasConverters.class);
+		converters = mockery.mock(ConverterRegistry.class);
 		model = mockery.mock(TestModel.class);
 		integerConverter = mockery.mock(StringConverter.class);
 	}

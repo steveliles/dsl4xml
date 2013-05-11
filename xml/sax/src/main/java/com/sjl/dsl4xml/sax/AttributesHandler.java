@@ -14,7 +14,7 @@ public class AttributesHandler {
 		mutators = new ValueSetter[anAttributeNames.length];
 	}
 	
-	public boolean handle(HasConverters aHasConverters, Object aCtx, Attributes anAttributes) {
+	public boolean handle(ConverterRegistry aHasConverters, Object aCtx, Attributes anAttributes) {
 		if (aCtx != null) {
 			for (int i=0; i<attributeNames.length; i++) {
 				ValueSetter _vs = getValueSetter(i, aHasConverters, aCtx.getClass());
@@ -24,7 +24,7 @@ public class AttributesHandler {
 		return false;
 	}
 	
-	private ValueSetter getValueSetter(int anIndex, HasConverters aHasConverters, Class<?> aCurrentContextClass) {
+	private ValueSetter getValueSetter(int anIndex, ConverterRegistry aHasConverters, Class<?> aCurrentContextClass) {
 		if (mutators[anIndex] == null) {
 			mutators[anIndex] = new ValueSetter(aHasConverters, aCurrentContextClass, attributeNames[anIndex]);
 		}

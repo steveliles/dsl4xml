@@ -4,7 +4,7 @@ import org.xmlpull.v1.*;
 
 import com.sjl.dsl4xml.*;
 
-public interface ReadingContext extends HasConverters {
+public interface ReadingContext extends ConverterRegistry {
 
 	public abstract <T> T peek();
 

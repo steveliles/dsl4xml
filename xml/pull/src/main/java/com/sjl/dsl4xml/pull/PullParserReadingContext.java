@@ -42,7 +42,7 @@ public final class PullParserReadingContext implements ReadingContext {
 	}
 	
 	@Override
-	public void registerConverters(StringConverter<?>... aConverters) {
+	public void registerConverters(TypeSafeConverter<?,?>... aConverters) {
 		// push any registered converters on ahead of existing converters (allows simple override)
 		converters.addAll(0, Arrays.asList(aConverters));
 	}

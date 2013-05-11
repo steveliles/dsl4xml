@@ -1,13 +1,13 @@
 package com.sjl.dsl4xml.gson;
 
 import com.google.gson.stream.JsonToken;
-import com.sjl.dsl4xml.HasConverters;
+import com.sjl.dsl4xml.ConverterRegistry;
 import com.sjl.dsl4xml.support.StringConverter;
 
 /**
  * @author steve
  */
-public interface Context extends HasConverters
+public interface Context extends ConverterRegistry
 {
 	void push(Object aContext);
 
@@ -34,6 +34,4 @@ public interface Context extends HasConverters
 	void removeUnusedArrayEntry();
 
 	String getValue();
-
-	void registerConverters(StringConverter<?>... converters);
 }

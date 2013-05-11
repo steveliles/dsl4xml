@@ -73,7 +73,7 @@ public class GsonContext implements Context
 	}
 
 	@Override
-	public void registerConverters(com.sjl.dsl4xml.support.StringConverter<?>... aConverters)
+	public void registerConverters(TypeSafeConverter<?,?>... aConverters)
 	{
 		// push any registered converters on ahead of existing converters (allows simple override)
 		converters.addAll(0, Arrays.asList(aConverters));

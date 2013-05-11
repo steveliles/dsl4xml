@@ -11,11 +11,11 @@ public class ValueSetter {
 	private boolean twoArgSetter;
 	private Method getter;
 
-	public ValueSetter(HasConverters aConverters, Class<?> aContextType, String... aMaybeNames) {
+	public ValueSetter(ConverterRegistry aConverters, Class<?> aContextType, String... aMaybeNames) {
 		this(aConverters, aContextType, null, aMaybeNames);
 	}
 
-	public ValueSetter(HasConverters aConverters, Class<?> aContextType, Class<?> aValueType, String... aMaybeNames) {
+	public ValueSetter(ConverterRegistry aConverters, Class<?> aContextType, Class<?> aValueType, String... aMaybeNames) {
 		setter = getMethod(aContextType, aMaybeNames);
 		getter = Classes.getAccessorMethod(aContextType, aMaybeNames);
 		if (getter != null) {

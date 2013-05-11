@@ -308,8 +308,9 @@ public class JsonDocumentDefinitionTest {
             }
         };
 
-        // this assumes the converter is registered in the DocumentReader
         DocumentDefinition<Immutable> _either = new JsonDocumentDefinition<Immutable>(){{
+            converting(Uncommon.class).to(Immutable.class).using(uncommonToImmutable);
+
             mapping(Immutable.class).via(Uncommon.class).with(
                 property("first"),
                 property("second")
@@ -323,6 +324,43 @@ public class JsonDocumentDefinitionTest {
                 via(Uncommon.class, uncommonToImmutable).with(
                     property("first"),
                     property("second")
+            );
+        }};
+    }
+
+    interface Immutables {
+        Immutable first();
+        Immutable second();
+    }
+
+    public void immutableNonRootTypes() {
+        DocumentDefinition<Immutables> _d = new JsonDocumentDefinition<Immutables>(){{
+            converting(Interface.class).to(Immutable.class).using(
+                new Converter<Interface, Immutable>(){
+                    public Immutable convert(Interface aFrom) {
+                        return new Immutable(aFrom.getFirst(), aFrom.getSecond());
+                    }
+                }
+            );
+            converting(Uncommon.class).to(Immutable.class).using(
+                new Converter<Uncommon, Immutable>(){
+                    public Immutable convert(Uncommon aFrom) {
+                        return new Immutable(aFrom.getFirst(), aFrom.getSecond());
+                    }
+                }
+            );
+
+            mapping(Immutables.class).with(
+                // via a class that is interface compatible,
+                object(Immutable.class).via(Interface.class).with(
+                    property("first"),
+                    property("second")
+                ),
+                // and again, this time via a class that is not interface compatible
+                object(Immutable.class).via(Uncommon.class).with(
+                    property("first"),
+                    property("second")
+                )
             );
         }};
     }

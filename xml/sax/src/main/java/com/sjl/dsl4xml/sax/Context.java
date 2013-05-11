@@ -6,7 +6,7 @@ import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.StringConverter;
 import com.sjl.dsl4xml.support.convert.*;
 
-public class Context implements HasConverters {
+public class Context implements ConverterRegistry {
 	private Stack<Object> ctx;
 	private Object result;
 	private List<TypeSafeConverter<?,?>> converters;
@@ -73,7 +73,7 @@ public class Context implements HasConverters {
 	}
 
 	@Override
-	public void registerConverters(StringConverter<?>... aConverters) {
+	public void registerConverters(TypeSafeConverter<?,?>... aConverters) {
 		// push any registered converters on ahead of existing converters (allows simple override)
 		converters.addAll(0, Arrays.asList(aConverters));
 	}

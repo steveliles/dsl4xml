@@ -6,6 +6,15 @@ import java.util.List;
 
 public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
 
+    {
+        // TODO: initialise string/number/boolean converters
+    }
+
+    @Override
+    public <F,Object> ConverterRegistration<F,Object> converting(Class<F> aToConvert) {
+        return null;
+    }
+
     @Override
     public Name alias(String aName, String anAlias) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
