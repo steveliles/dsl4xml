@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DocumentDefinition<T> {
 
-    public <F,Object> ConverterRegistration<F,Object> converting(Class<F> aToConvert);
+    public <F> ConverterRegistration<F,Object> converting(Class<F> aToConvert);
 
     public Name alias(String aNameInDocument, String aNameInJavaType);
 
