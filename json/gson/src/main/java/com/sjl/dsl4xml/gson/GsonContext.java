@@ -2,6 +2,7 @@ package com.sjl.dsl4xml.gson;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
+import com.sjl.dsl4xml.Converter;
 import com.sjl.dsl4xml.ParsingException;
 import com.sjl.dsl4xml.TypeSafeConverter;
 import com.sjl.dsl4xml.support.StringConverter;
@@ -89,6 +90,7 @@ public class GsonContext implements Context
                 return (TypeSafeConverter<F,T>) _c;
             }
         }
+
         throw new RuntimeException("No converter registered that can convert from " + aFromType + " to " + aToType);
     }
 

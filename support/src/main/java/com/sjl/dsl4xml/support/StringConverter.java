@@ -6,6 +6,6 @@ public abstract class StringConverter<T> implements TypeSafeConverter<String,T> 
 
     @Override
     public boolean canConvertFrom(Class<?> aClass) {
-        return aClass.isAssignableFrom(CharSequence.class);
+        return CharSequence.class.isAssignableFrom(aClass);
     }
 }
