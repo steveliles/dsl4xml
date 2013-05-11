@@ -6,49 +6,47 @@ import java.util.List;
 
 public interface DocumentDefinition<T> {
 
-    public Name alias(String aName, String anAlias);
+    public Name alias(String aNameInDocument, String aNameInJavaType);
 
-    public Document<T> mapping(Class<T> aType);
+    public Document<T> mapping(Class<? extends T> aType);
 
-    public <I> Document<T> mapping(Class<I> anIntermediateType, Class<T> aTargetType);
+    public <R> NamedObject<R> object(String aName);
 
-    public <I> Document<T> mapping(Class<I> anIntermediateType, Converter<I,T> aConverter);
+    public <R> NamedObject<R> object(Name aName);
 
-    public <R> JSONObject<R> object(String aName);
+    public <R> NamedObject<R> object(String aName, Class<R> aType);
 
-    public <R> JSONObject<R> object(Name aName);
+    public <R> NamedObject<R> object(Name aName, Class<R> aType);
 
-    public <R> JSONObject<R> object(String aName, Class<R> aType);
+    public <R> UnNamedObject<R> object(Class<R> aType);
 
-    public <R> JSONObject<R> object(Name aName, Class<R> aType);
+    public <R> NamedArray<R> array(String aName);
 
-    public <I,R> JSONObject<R> object(String aName, Class<I> anIntermediateType, Class<R> aTargetType);
+    public <R> NamedArray<R> array(Name aName);
 
-    public <I,R> JSONObject<R> object(Name aName, Class<I> anIntermediateType, Class<R> aTargetType);
+    public <R> NamedArray<R> array(String aName, Converter<List,R> aConverter);
 
-    public <I,R> JSONObject<R> object(String aName, Class<I> anIntermediateType, Converter<I,R> aConverter);
+    public <R> NamedArray<R> array(Name aName, Converter<List,R> aConverter);
 
-    public <I,R> JSONObject<R> object(Name aName, Class<I> anIntermediateType, Converter<I,R> aConverter);
+    public <R> UnNamedArray<R> array();
 
-    public <R> JSONArray<R> array(String aName);
+    public <R> UnNamedArray<R> array(Converter<List,R> aConverter);
 
-    public <R> JSONArray<R> array(Name aName);
+    public <R> UnNamedProperty<R> property(Class<R> aClass);
 
-    public <R> JSONArray<R> array(String aName, Converter<List,R> aConverter);
+    public <R> NamedProperty<R> property(String aName);
 
-    public <R> JSONArray<R> array(Name aName, Converter<List,R> aConverter);
+    public <R> NamedProperty<R> property(Name aName);
 
-    public <R> JSONProperty<R> property(Class<R> aClass);
+    public <R> NamedProperty<R> number(String aName);
 
-    public <R> JSONProperty<R> property(String aName);
+    public <R> NamedProperty<R> number(Name aName);
 
-    public <R> JSONProperty<R> property(Name aName);
+    public <R> UnNamedProperty<R> number();
 
-    public <R> JSONProperty<R> number(String aName);
+    public <R> NamedProperty<R> bool(String aName);
 
-    public <R> JSONProperty<R> number(Name aName);
+    public <R> NamedProperty<R> bool(Name aName);
 
-    public <R> JSONProperty<R> bool(String aName);
-
-    public <R> JSONProperty<R> bool(Name aName);
+    public <R> UnNamedProperty<R> bool();
 }

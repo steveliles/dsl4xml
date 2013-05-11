@@ -12,12 +12,12 @@ public final class PullParserReadingContext implements ReadingContext {
 
 	private XmlPullParser parser;
 	private Stack<Object> stack;
-	private List<StringConverter<?>> converters;
+	private List<TypeSafeConverter<?,?>> converters;
 	
 	public PullParserReadingContext(XmlPullParser aParser) {
 		stack = new Stack<Object>();
 		parser = aParser;
-		converters = new ArrayList<StringConverter<?>>();
+		converters = new ArrayList<TypeSafeConverter<?,?>>();
 		
 		registerConverters(
 			new PrimitiveBooleanStringConverter(),
@@ -146,17 +146,19 @@ public final class PullParserReadingContext implements ReadingContext {
 		}
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> StringConverter<T> getConverter(Class<T> aArgType) {
-		for (StringConverter<?> _c : converters) {
-			if (_c.canConvertTo(aArgType)) {
-				return (StringConverter<T>) _c;
-			}
-		}
-		throw new RuntimeException("No converter registered that can convert to " + aArgType);
-	}
-	
+    public <T> StringConverter<T> getConverter(Class<T> aTo) {
+        return (StringConverter<T>) getConverter(String.class, aTo);
+    }
+
+    public <F,T> TypeSafeConverter<F,T> getConverter(Class<F> aFromType, Class<T> aToType) {
+        for (TypeSafeConverter<?,?> _c : converters) {
+            if ((_c.canConvertFrom(aFromType)) && (_c.canConvertTo(aToType))) {
+                return (TypeSafeConverter<F,T>) _c;
+            }
+        }
+        throw new RuntimeException("No converter registered that can convert from " + aFromType + " to " + aToType);
+    }
+
 	private boolean isMatchingNamespace(String aWantedPrefix, String aCurrentPrefix) {
 		if ((aWantedPrefix == null) || ("".equals(aWantedPrefix))) {
 			return (aCurrentPrefix == null);

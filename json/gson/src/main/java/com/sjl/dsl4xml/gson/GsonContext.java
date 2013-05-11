@@ -3,6 +3,8 @@ package com.sjl.dsl4xml.gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.sjl.dsl4xml.ParsingException;
+import com.sjl.dsl4xml.TypeSafeConverter;
+import com.sjl.dsl4xml.support.StringConverter;
 import com.sjl.dsl4xml.support.convert.*;
 
 import java.io.IOException;
@@ -17,7 +19,7 @@ import java.util.Stack;
 public class GsonContext implements Context
 {
 	private JsonReader reader;
-	private List<com.sjl.dsl4xml.support.StringConverter<?>> converters;
+	private List<TypeSafeConverter<?,?>> converters;
 	private Stack<Object> stack;
 	private Stack<String> names;
 	private String name;
@@ -29,7 +31,7 @@ public class GsonContext implements Context
 		reader = aReader;
 		stack = new Stack<Object>();
 		names = new Stack<String>();
-		converters = new ArrayList<com.sjl.dsl4xml.support.StringConverter<?>>();
+		converters = new ArrayList<TypeSafeConverter<?,?>>();
 
 		registerConverters(
 			new PrimitiveBooleanStringConverter(),
@@ -77,16 +79,18 @@ public class GsonContext implements Context
 		converters.addAll(0, Arrays.asList(aConverters));
 	}
 
-	@Override
-	public <T> com.sjl.dsl4xml.support.StringConverter<T> getConverter(Class<T> aArgType)
-	{
-		for (com.sjl.dsl4xml.support.StringConverter<?> _c : converters) {
-			if (_c.canConvertTo(aArgType)) {
-				return (com.sjl.dsl4xml.support.StringConverter<T>) _c;
-			}
-		}
-		throw new RuntimeException("No converter registered that can convert to " + aArgType);
-	}
+    public <T> StringConverter<T> getConverter(Class<T> aTo) {
+        return (StringConverter<T>) getConverter(String.class, aTo);
+    }
+
+    public <F,T> TypeSafeConverter<F,T> getConverter(Class<F> aFromType, Class<T> aToType) {
+        for (TypeSafeConverter<?,?> _c : converters) {
+            if ((_c.canConvertFrom(aFromType)) && (_c.canConvertTo(aToType))) {
+                return (TypeSafeConverter<F,T>) _c;
+            }
+        }
+        throw new RuntimeException("No converter registered that can convert from " + aFromType + " to " + aToType);
+    }
 
 	@Override
 	public boolean hasNext() {

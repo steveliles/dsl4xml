@@ -9,10 +9,10 @@ import com.sjl.dsl4xml.support.convert.*;
 public class Context implements HasConverters {
 	private Stack<Object> ctx;
 	private Object result;
-	private List<StringConverter<?>> converters;
+	private List<TypeSafeConverter<?,?>> converters;
 	
-	public Context(StringConverter<?>... aConverters) {
-		converters = new ArrayList<StringConverter<?>>();
+	public Context(TypeSafeConverter<?,?>... aConverters) {
+		converters = new ArrayList<TypeSafeConverter<?,?>>();
 		
 		registerConverters(
 			new PrimitiveBooleanStringConverter(),
@@ -59,15 +59,17 @@ public class Context implements HasConverters {
 		return result;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> StringConverter<T> getConverter(Class<T> aArgType) {
-		for (StringConverter<?> _c : converters) {
-			if (_c.canConvertTo(aArgType)) {
-				return (StringConverter<T>) _c;
+    public <T> StringConverter<T> getConverter(Class<T> aTo) {
+        return (StringConverter<T>) getConverter(String.class, aTo);
+    }
+
+	public <F,T> TypeSafeConverter<F,T> getConverter(Class<F> aFromType, Class<T> aToType) {
+		for (TypeSafeConverter<?,?> _c : converters) {
+			if ((_c.canConvertFrom(aFromType)) && (_c.canConvertTo(aToType))) {
+				return (TypeSafeConverter<F,T>) _c;
 			}
 		}
-		throw new RuntimeException("No converter registered that can convert to " + aArgType);
+		throw new RuntimeException("No converter registered that can convert from " + aFromType + " to " + aToType);
 	}
 
 	@Override
