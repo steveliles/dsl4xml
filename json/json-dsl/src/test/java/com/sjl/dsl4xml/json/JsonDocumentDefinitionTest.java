@@ -46,8 +46,8 @@ public class JsonDocumentDefinitionTest {
     public void jsonTypedProperties() {
         DocumentDefinition<Typed> _d = new JsonDocumentDefinition<Typed>(){{
             mapping(Typed.class).with(
-                number("integer"),
-                number("float"),
+                number("integer", Integer.class),
+                number("float", Float.class),
                 bool("boolean")
             );
         }};

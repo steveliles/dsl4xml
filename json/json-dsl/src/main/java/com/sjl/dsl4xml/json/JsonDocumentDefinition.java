@@ -74,6 +74,16 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private Converter<?,? extends T> converter;
 
             @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)intermediate;
+            }
+
+            @Override
+            public Class<? extends T> getTargetType() {
+                return aType;
+            }
+
+            @Override
             public Document<T> with(Content<?>... aContent) {
                 content = Arrays.asList(aContent);
                 return this;
@@ -106,16 +116,26 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     }
 
     @Override
-    public <R> NamedObject<R> object(String aName, Class<R> aType) {
+    public <R> NamedObject<R> object(String aName, Class<? extends R> aType) {
         return object(alias(aName, aName), aType);
     }
 
     @Override
-    public <R> NamedObject<R> object(final Name aName, final Class<R> aType) {
+    public <R> NamedObject<R> object(final Name aName, final Class<? extends R> aType) {
         return new NamedObject<R>(){
             private List<Content<?>> content;
             private Class<?> intermediate;
             private Converter<?,R> converter;
+
+            @Override
+            public Class<? extends R> getTargetType() {
+                return aType;
+            }
+
+            @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)intermediate;
+            }
 
             @Override
             public <I> NamedObject<I> via(Class<I> anIntermediateType) {
@@ -145,16 +165,26 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     }
 
     @Override
-    public <R> UnNamedObject<R> object(final Class<R> aType) {
+    public <R> UnNamedObject<R> object(final Class<? extends R> aType) {
         return new UnNamedObject<R>(){
             private List<Content<?>> content;
             private Converter<?,R> converter;
             private Class<?> intermediate;
 
             @Override
+            public Class<? extends R> getTargetType() {
+                return aType;
+            }
+
+            @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)intermediate;
+            }
+
+            @Override
             public <I> UnNamedObject<I> via(Class<I> anIntermediateType) {
                 intermediate = anIntermediateType;
-                converter = getConverter(intermediate, aType);
+                converter = (Converter<?,R>) getConverter(intermediate, aType);
                 return (UnNamedObject<I>)this;
             }
 
@@ -189,36 +219,54 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     }
 
     @Override
-    public <R> NamedArray<R> array(String aName, Converter<List, R> aConverter) {
+    public <R> NamedArray<R> array(String aName, Converter<List, ? extends R> aConverter) {
         return array(alias(aName, aName), aConverter);
     }
 
     @Override
-    public <R> NamedArray<R> array(Name aName, Converter<List, R> aConverter) {
+    public <R> NamedArray<R> array(final Name aName, final Converter<List, ? extends R> aConverter) {
         return new NamedArray(){
+            private UnNamedObject<?> obj;
+            private UnNamedProperty<?> property;
+            private UnNamedArray<?> array;
+
             @Override
-            public NamedArray of(Class<?> aConvertableType) {
-                return null;  // TODO
+            public Class<?> getIntermediateType() {
+                return List.class;
             }
 
             @Override
-            public NamedArray of(UnNamedProperty<?> aContent) {
-                return null;  // TODO
+            public Class<R> getTargetType() {
+                return null;
             }
 
             @Override
-            public NamedArray of(UnNamedObject<?> aContent) {
-                return null;  // TODO
+            public NamedArray<R> of(Class<?> aConvertableType) {
+                obj = object(aConvertableType);
+                return this;
             }
 
             @Override
-            public NamedArray of(UnNamedArray<?> aContent) {
-                return null;  // TODO
+            public NamedArray<R> of(UnNamedProperty<?> aContent) {
+                property = aContent;
+                return this;
+            }
+
+            @Override
+            public NamedArray<R> of(UnNamedObject<?> aContent) {
+                obj = aContent;
+                return this;
+            }
+
+            @Override
+            public NamedArray<R> of(UnNamedArray<?> aContent) {
+                array = aContent;
+                return this;
             }
 
             @Override
             public Name getName() {
-                return null;  // TODO
+                return aName;
             }
         };
     }
@@ -234,78 +282,205 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     }
 
     @Override
-    public <R> UnNamedArray<R> array(Converter<List, R> aConverter) {
+    public <R> UnNamedArray<R> array(Converter<List, ? extends R> aConverter) {
         return new UnNamedArray<R>(){
+            private UnNamedObject<?> obj;
+            private UnNamedProperty<?> property;
+            private UnNamedArray<?> array;
+
+            @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)List.class;
+            }
+
+            @Override
+            public Class<? extends R> getTargetType() {
+                return null;
+            }
+
             @Override
             public UnNamedArray<R> of(Class<?> aConvertableType) {
-                return null;  // TODO
+                obj = object(aConvertableType);
+                return this;
             }
 
             @Override
             public UnNamedArray<R> of(UnNamedProperty<?> aContent) {
-                return null;  // TODO
+                property = aContent;
+                return this;
             }
 
             @Override
             public UnNamedArray<R> of(UnNamedObject<?> aContent) {
-                return null;  // TODO
+                obj = aContent;
+                return this;
             }
 
             @Override
             public UnNamedArray<R> of(UnNamedArray<?> aContent) {
-                return null;  // TODO
+                array = aContent;
+                return this;
             }
 
             @Override
             public Name getName() {
-                return null;  // TODO
+                return Name.MISSING;
             }
         };
     }
 
     @Override
-    public <R> UnNamedProperty<R> property(Class<R> aClass) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public <R> UnNamedProperty<R> property(final Class<? extends R> aClass) {
+        return new UnNamedProperty<R>(){
+            @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)String.class;
+            }
+
+            @Override
+            public Class<? extends R> getTargetType() {
+                return aClass;
+            }
+
+            @Override
+            public Name getName() {
+                return Name.MISSING;
+            }
+        };
     }
 
     @Override
     public <R> NamedProperty<R> property(String aName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return property(alias(aName, aName));
     }
 
     @Override
-    public <R> NamedProperty<R> property(Name aName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public <R> NamedProperty<R> property(final Name aName) {
+        return new NamedProperty<R>(){
+            @Override
+            public Class<? extends R> getTargetType() {
+                return null;
+            }
+
+            @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)String.class;
+            }
+
+            @Override
+            public Name getName() {
+                return aName;  // TODO
+            }
+        };
     }
 
     @Override
-    public <R> NamedProperty<R> number(String aName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public <R> NamedProperty<R> number(String aName, Class<R> aType) {
+        return property(alias(aName, aName));
     }
 
     @Override
-    public <R> NamedProperty<R> number(Name aName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public <R> NamedProperty<R> number(final Name aName, final Class<R> aType) {
+        return new NamedProperty<R>(){
+            private Class<?> intermediate;
+
+            @Override
+            public Class<? extends R> getTargetType() {
+                return aType;
+            }
+
+            @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)intermediate;
+            }
+
+            @Override
+            public Name getName() {
+                return aName;
+            }
+        };
     }
 
     @Override
-    public <R> UnNamedProperty<R> number() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public <R> UnNamedProperty<R> number(final Class<R> aType) {
+        return new UnNamedProperty<R>(){
+            private Class<?> intermediate;
+
+            @Override
+            public Class<? extends R> getTargetType() {
+                return aType;
+            }
+
+            @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)intermediate;
+            }
+
+            @Override
+            public Name getName() {
+                return Name.MISSING;
+            }
+        };
     }
 
     @Override
     public <R> NamedProperty<R> bool(String aName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return bool(alias(aName, aName));
     }
 
     @Override
-    public <R> NamedProperty<R> bool(Name aName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public <R> NamedProperty<R> bool(final Name aName) {
+        return (NamedProperty<R>)bool(aName, Boolean.class);
+    }
+
+    @Override
+    public <R> NamedProperty<R> bool(String aName, Class<R> aType) {
+        return bool(alias(aName, aName), aType);
+    }
+
+    @Override
+    public <R> NamedProperty<R> bool(final Name aName, final Class<R> aType) {
+        return new NamedProperty<R>(){
+            @Override
+            public Class<? extends R> getTargetType() {
+                return aType;
+            }
+
+            @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)Boolean.class;
+            }
+
+            @Override
+            public Name getName() {
+                return aName;
+            }
+        };
     }
 
     @Override
     public <R> UnNamedProperty<R> bool() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return (UnNamedProperty<R>)bool(Boolean.class);
+    }
+
+    @Override
+    public <R> UnNamedProperty<R> bool(final Class<R> aType) {
+        return new UnNamedProperty<R>() {
+            @Override
+            public Class<R> getTargetType() {
+                return aType;
+            }
+
+            @Override
+            public <I> Class<I> getIntermediateType() {
+                return (Class<I>)Boolean.class;
+            }
+
+            @Override
+            public Name getName() {
+                return Name.MISSING;
+            }
+        };
     }
 
     private <F> ConverterRegistration<F,Object> newConverterRegistration(final Class<F> aFrom) {
