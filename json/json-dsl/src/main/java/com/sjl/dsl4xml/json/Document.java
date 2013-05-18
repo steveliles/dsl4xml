@@ -2,11 +2,7 @@ package com.sjl.dsl4xml.json;
 
 import com.sjl.dsl4xml.Converter;
 
-public interface Document<T> {
-
-    public Class<? extends T> getTargetType();
-
-    public <I> Class<I> getIntermediateType();
+public interface Document<T> extends Definition<T> {
 
     public Document<T> with(Content<?> ... aContent);
 

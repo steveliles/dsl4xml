@@ -2,6 +2,7 @@ package com.sjl.dsl4xml.json;
 
 import com.sjl.dsl4xml.Converter;
 import com.sjl.dsl4xml.TypeSafeConverter;
+import com.sjl.dsl4xml.support.Classes;
 import com.sjl.dsl4xml.support.StringConverter;
 import com.sjl.dsl4xml.support.convert.*;
 
@@ -43,7 +44,9 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     @Override
     public <F> ConverterRegistration<F,Object> converting(Class<F> aToConvert) {
         if (document != null)
-            throw new IllegalStateException("document already defined - too late to register converters!");
+            throw new IllegalStateException(
+                "document already defined - too late to register general converters. Either register converters " +
+                "before .mapping(class) or use .via(class, converter) to nominate a converter per object mapping.");
 
         return newConverterRegistration(aToConvert);
     }
@@ -71,17 +74,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
         return document = new Document<T>(){
             private Class<?> intermediate;
             private List<Content<?>> content;
-            private Converter<?,? extends T> converter;
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)intermediate;
-            }
-
-            @Override
-            public Class<? extends T> getTargetType() {
-                return aType;
-            }
+            private Converter<Object,Object> converter;
 
             @Override
             public Document<T> with(Content<?>... aContent) {
@@ -92,15 +85,39 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             @Override
             public <I> Document<I> via(Class<I> anIntermediateType) {
                 intermediate = anIntermediateType;
-                converter = getConverter(anIntermediateType, aType);
+                converter = (Converter<Object,Object>)getConverter(anIntermediateType, aType);
                 return (Document<I>)this;
             }
 
             @Override
             public <I> Document<I> via(Class<I> anIntermediateType, Converter<I, ? extends T> aConverter) {
                 intermediate = anIntermediateType;
-                converter = aConverter;
+                converter = (Converter<Object,Object>)aConverter;
                 return (Document<I>)this;
+            }
+
+            @Override
+            public Builder<T> newBuilder() {
+                return new Builder<T>(){
+                    private Object prepared;
+
+                    @Override
+                    public void prepare() {
+                        Class<?> _toPrepare = (intermediate != null) ? intermediate : aType;
+                        prepared = Classes.newInstance(_toPrepare);
+                    }
+
+                    @Override
+                    public void setValue(String aName, Object aValue) {
+                        // TODO: set value to prepared
+                    }
+
+                    @Override
+                    public T build() {
+
+                        return (T)((converter != null) ? converter.convert(prepared) : prepared);
+                    }
+                };
             }
         };
     }
@@ -225,10 +242,11 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
 
     @Override
     public <R> NamedArray<R> array(final Name aName, final Converter<List, ? extends R> aConverter) {
-        return new NamedArray(){
+        return new NamedArray<R>(){
             private UnNamedObject<?> obj;
             private UnNamedProperty<?> property;
             private UnNamedArray<?> array;
+            private Converter<List,? extends R> converter;
 
             @Override
             public Class<?> getIntermediateType() {
@@ -287,6 +305,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private UnNamedObject<?> obj;
             private UnNamedProperty<?> property;
             private UnNamedArray<?> array;
+            private Converter<List,? extends R> converter;
 
             @Override
             public <I> Class<I> getIntermediateType() {
@@ -332,6 +351,8 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     @Override
     public <R> UnNamedProperty<R> property(final Class<? extends R> aClass) {
         return new UnNamedProperty<R>(){
+            private StringConverter<? extends R> converter = getConverter(aClass);
+
             @Override
             public <I> Class<I> getIntermediateType() {
                 return (Class<I>)String.class;
@@ -497,6 +518,22 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             @Override
             public ConverterRegistration<F, Object> using(Converter<F, Object> aConverter) {
                 converter = aConverter;
+                converters.add(new TypeSafeConverter<F,Object>(){
+                    @Override
+                    public boolean canConvertFrom(Class<?> aClass) {
+                        return aFrom.isAssignableFrom(aClass);
+                    }
+
+                    @Override
+                    public boolean canConvertTo(Class<?> aClass) {
+                        return to.isAssignableFrom(aClass);
+                    }
+
+                    @Override
+                    public Object convert(F aFrom) {
+                        return converter.convert(aFrom);
+                    }
+                });
                 return this;
             }
 
