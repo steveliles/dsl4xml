@@ -10,7 +10,7 @@ public interface DocumentDefinition<T> {
 
     public Name alias(String aNameInDocument, String aNameInJavaType);
 
-    public Document<T> mapping(Class<? extends T> aType);
+    public Document<? extends T> mapping(Class<? extends T> aType);
 
     public <R> NamedObject<R> object(String aName);
 

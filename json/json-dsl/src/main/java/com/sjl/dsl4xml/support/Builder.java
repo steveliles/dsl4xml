@@ -1,5 +1,6 @@
-package com.sjl.dsl4xml.json;
+package com.sjl.dsl4xml.support;
 
+// TODO - extract to dsl4 support
 public interface Builder<T> {
 
     public void prepare();

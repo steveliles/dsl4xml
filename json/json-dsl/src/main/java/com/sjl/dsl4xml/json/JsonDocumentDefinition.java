@@ -2,8 +2,7 @@ package com.sjl.dsl4xml.json;
 
 import com.sjl.dsl4xml.Converter;
 import com.sjl.dsl4xml.TypeSafeConverter;
-import com.sjl.dsl4xml.support.Classes;
-import com.sjl.dsl4xml.support.StringConverter;
+import com.sjl.dsl4xml.support.*;
 import com.sjl.dsl4xml.support.convert.*;
 
 import java.util.ArrayList;
@@ -74,7 +73,8 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
         return document = new Document<T>(){
             private Class<?> intermediate;
             private List<Content<?>> content;
-            private Converter<Object,Object> converter;
+            private Converter<Object,T> converter;
+            private Reflector reflector = new ThreadSafeCachingReflector();
 
             @Override
             public Document<T> with(Content<?>... aContent) {
@@ -85,39 +85,25 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             @Override
             public <I> Document<I> via(Class<I> anIntermediateType) {
                 intermediate = anIntermediateType;
-                converter = (Converter<Object,Object>)getConverter(anIntermediateType, aType);
+                converter = (Converter<Object,T>)getConverter(anIntermediateType, aType);
                 return (Document<I>)this;
             }
 
             @Override
-            public <I> Document<I> via(Class<I> anIntermediateType, Converter<I, ? extends T> aConverter) {
+            public <I> Document<I> via(Class<I> anIntermediateType, Converter<I,? extends T> aConverter) {
                 intermediate = anIntermediateType;
-                converter = (Converter<Object,Object>)aConverter;
+                converter = (Converter<Object,T>)aConverter;
                 return (Document<I>)this;
             }
 
             @Override
+            @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
-                return new Builder<T>(){
-                    private Object prepared;
-
-                    @Override
-                    public void prepare() {
-                        Class<?> _toPrepare = (intermediate != null) ? intermediate : aType;
-                        prepared = Classes.newInstance(_toPrepare);
-                    }
-
-                    @Override
-                    public void setValue(String aName, Object aValue) {
-                        // TODO: set value to prepared
-                    }
-
-                    @Override
-                    public T build() {
-
-                        return (T)((converter != null) ? converter.convert(prepared) : prepared);
-                    }
-                };
+                if (intermediate != null) {
+                    return new ReflectiveBuilder(aType, reflector);
+                } else {
+                    return new ReflectiveBuilderWithIntermediate(aType, intermediate, converter, reflector);
+                }
             }
         };
     }
