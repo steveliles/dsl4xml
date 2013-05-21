@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.json;
 
-public interface UnNamedArray<T> extends Content<T> {
+public interface UnNamedArray<T> extends Content<T>, Definition<T> {
 
     /**
      * Specify a simple property type for this array. This is a shortcut for of(UnNamedProperty(aConvertableType))
@@ -11,7 +11,7 @@ public interface UnNamedArray<T> extends Content<T> {
      */
     public UnNamedArray<T> of (Class<?> aConvertableType);
 
-    public UnNamedArray<T> of(UnNamedProperty<?> aContent);
+    public UnNamedArray<T> of(UnNamedProperty<?,?> aContent);
 
     public UnNamedArray<T> of(UnNamedObject<?> aContent);
 

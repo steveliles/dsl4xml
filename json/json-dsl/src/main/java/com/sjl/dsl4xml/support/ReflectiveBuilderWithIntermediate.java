@@ -48,7 +48,6 @@ public class ReflectiveBuilderWithIntermediate<I,T> implements Builder<T> {
         } catch (InvocationTargetException anExc) {
             throw new ParsingException("Problem while invoking " + _m.getName() + " on " + intermediate.getName(), anExc);
         }
-
     }
 
     @Override

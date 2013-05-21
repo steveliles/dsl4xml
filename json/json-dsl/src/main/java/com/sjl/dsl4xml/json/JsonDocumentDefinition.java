@@ -129,16 +129,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private List<Content<?>> content;
             private Class<?> intermediate;
             private Converter<?,R> converter;
-
-            @Override
-            public Class<? extends R> getTargetType() {
-                return aType;
-            }
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)intermediate;
-            }
+            private Reflector reflector = new ThreadSafeCachingReflector();
 
             @Override
             public <I> NamedObject<I> via(Class<I> anIntermediateType) {
@@ -164,6 +155,16 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             public Name getName() {
                 return aName;
             }
+
+            @Override
+            @SuppressWarnings("rawtypes")
+            public Builder<T> newBuilder() {
+                if (intermediate != null) {
+                    return new ReflectiveBuilder(aType, reflector);
+                } else {
+                    return new ReflectiveBuilderWithIntermediate(aType, intermediate, converter, reflector);
+                }
+            }
         };
     }
 
@@ -173,16 +174,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private List<Content<?>> content;
             private Converter<?,R> converter;
             private Class<?> intermediate;
-
-            @Override
-            public Class<? extends R> getTargetType() {
-                return aType;
-            }
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)intermediate;
-            }
+            private Reflector reflector = new ThreadSafeCachingReflector();
 
             @Override
             public <I> UnNamedObject<I> via(Class<I> anIntermediateType) {
@@ -208,6 +200,16 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             public Name getName() {
                 return Name.MISSING;
             }
+
+            @Override
+            @SuppressWarnings("rawtypes")
+            public Builder<T> newBuilder() {
+                if (intermediate != null) {
+                    return new ReflectiveBuilder(aType, reflector);
+                } else {
+                    return new ReflectiveBuilderWithIntermediate(aType, intermediate, converter, reflector);
+                }
+            }
         };
     }
 
@@ -230,19 +232,10 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     public <R> NamedArray<R> array(final Name aName, final Converter<List, ? extends R> aConverter) {
         return new NamedArray<R>(){
             private UnNamedObject<?> obj;
-            private UnNamedProperty<?> property;
+            private UnNamedProperty<?,?> property;
             private UnNamedArray<?> array;
             private Converter<List,? extends R> converter;
-
-            @Override
-            public Class<?> getIntermediateType() {
-                return List.class;
-            }
-
-            @Override
-            public Class<R> getTargetType() {
-                return null;
-            }
+            private Reflector reflector = new ThreadSafeCachingReflector();
 
             @Override
             public NamedArray<R> of(Class<?> aConvertableType) {
@@ -251,7 +244,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             }
 
             @Override
-            public NamedArray<R> of(UnNamedProperty<?> aContent) {
+            public NamedArray<R> of(UnNamedProperty<?,?> aContent) {
                 property = aContent;
                 return this;
             }
@@ -272,6 +265,12 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             public Name getName() {
                 return aName;
             }
+
+            @Override
+            @SuppressWarnings("rawtypes")
+            public Builder<T> newBuilder() {
+                return new ReflectiveBuilderWithIntermediate(Object.class, List.class, converter, reflector);
+            }
         };
     }
 
@@ -289,19 +288,10 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     public <R> UnNamedArray<R> array(Converter<List, ? extends R> aConverter) {
         return new UnNamedArray<R>(){
             private UnNamedObject<?> obj;
-            private UnNamedProperty<?> property;
+            private UnNamedProperty<?,?> property;
             private UnNamedArray<?> array;
             private Converter<List,? extends R> converter;
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)List.class;
-            }
-
-            @Override
-            public Class<? extends R> getTargetType() {
-                return null;
-            }
+            private Reflector reflector = new ThreadSafeCachingReflector();
 
             @Override
             public UnNamedArray<R> of(Class<?> aConvertableType) {
@@ -310,7 +300,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             }
 
             @Override
-            public UnNamedArray<R> of(UnNamedProperty<?> aContent) {
+            public UnNamedArray<R> of(UnNamedProperty<?,?> aContent) {
                 property = aContent;
                 return this;
             }
@@ -331,161 +321,141 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             public Name getName() {
                 return Name.MISSING;
             }
+
+            @Override
+            @SuppressWarnings("rawtypes")
+            public Builder<T> newBuilder() {
+                return new ReflectiveBuilderWithIntermediate(Object.class, List.class, converter, reflector);
+            }
         };
     }
 
     @Override
-    public <R> UnNamedProperty<R> property(final Class<? extends R> aClass) {
-        return new UnNamedProperty<R>(){
-            private StringConverter<? extends R> converter = getConverter(aClass);
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)String.class;
-            }
-
-            @Override
-            public Class<? extends R> getTargetType() {
-                return aClass;
-            }
+    public <R> UnNamedProperty<String,R> property(final Class<? extends R> aType) {
+        return new UnNamedProperty<String,R>(){
+            private StringConverter<? extends R> converter = getConverter(aType);
 
             @Override
             public Name getName() {
                 return Name.MISSING;
             }
+
+            public R build(String aValue) {
+                return converter.convert(aValue);
+            }
         };
     }
 
     @Override
-    public <R> NamedProperty<R> property(String aName) {
+    public <R> NamedProperty<String,R> property(String aName) {
         return property(alias(aName, aName));
     }
 
     @Override
-    public <R> NamedProperty<R> property(final Name aName) {
-        return new NamedProperty<R>(){
-            @Override
-            public Class<? extends R> getTargetType() {
-                return null;
-            }
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)String.class;
-            }
+    public <R> NamedProperty<String,R> property(final Name aName) {
+        return new NamedProperty<String,R>(){
+            private Converter<String,R> converter; // TODO: need to figure this out from the context!
 
             @Override
             public Name getName() {
                 return aName;  // TODO
             }
+
+            @Override
+            public R build(String aValue) {
+                throw new UnsupportedOperationException("TODO");
+            }
         };
     }
 
     @Override
-    public <R> NamedProperty<R> number(String aName, Class<R> aType) {
-        return property(alias(aName, aName));
+    public <R> NamedProperty<Number,R> number(String aName, Class<R> aType) {
+        return number(alias(aName, aName), aType);
     }
 
     @Override
-    public <R> NamedProperty<R> number(final Name aName, final Class<R> aType) {
-        return new NamedProperty<R>(){
-            private Class<?> intermediate;
-
-            @Override
-            public Class<? extends R> getTargetType() {
-                return aType;
-            }
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)intermediate;
-            }
+    public <R> NamedProperty<Number,R> number(final Name aName, final Class<R> aType) {
+        return new NamedProperty<Number,R>(){
 
             @Override
             public Name getName() {
                 return aName;
             }
+
+            @Override
+            public R build(Number aValue) {
+                throw new UnsupportedOperationException("TODO");
+            }
         };
     }
 
     @Override
-    public <R> UnNamedProperty<R> number(final Class<R> aType) {
-        return new UnNamedProperty<R>(){
-            private Class<?> intermediate;
-
-            @Override
-            public Class<? extends R> getTargetType() {
-                return aType;
-            }
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)intermediate;
-            }
-
+    public <R> UnNamedProperty<Number,R> number(final Class<R> aType) {
+        return new UnNamedProperty<Number,R>(){
             @Override
             public Name getName() {
                 return Name.MISSING;
             }
+
+            @Override
+            public R build(Number aValue) {
+                throw new UnsupportedOperationException("TODO");
+            }
         };
     }
 
     @Override
-    public <R> NamedProperty<R> bool(String aName) {
+    public <R> NamedProperty<Boolean,R> bool(String aName) {
         return bool(alias(aName, aName));
     }
 
     @Override
-    public <R> NamedProperty<R> bool(final Name aName) {
-        return (NamedProperty<R>)bool(aName, Boolean.class);
+    public <R> NamedProperty<Boolean,R> bool(final Name aName) {
+        throw new UnsupportedOperationException("TODO"); // TODO: figure out R from the context
+        //return bool(aName, Boolean.class);
     }
 
     @Override
-    public <R> NamedProperty<R> bool(String aName, Class<R> aType) {
+    public <R> NamedProperty<Boolean,R> bool(String aName, Class<R> aType) {
         return bool(alias(aName, aName), aType);
     }
 
     @Override
-    public <R> NamedProperty<R> bool(final Name aName, final Class<R> aType) {
-        return new NamedProperty<R>(){
-            @Override
-            public Class<? extends R> getTargetType() {
-                return aType;
-            }
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)Boolean.class;
-            }
+    public <R> NamedProperty<Boolean,R> bool(final Name aName, final Class<R> aType) {
+        return new NamedProperty<Boolean,R>(){
+            private Converter<Boolean,R> converter = getConverter(Boolean.class, aType);
 
             @Override
             public Name getName() {
                 return aName;
             }
+
+            @Override
+            public R build(Boolean aValue) {
+                return converter.convert(aValue);
+            }
         };
     }
 
     @Override
-    public <R> UnNamedProperty<R> bool() {
-        return (UnNamedProperty<R>)bool(Boolean.class);
+    public <R> UnNamedProperty<Boolean,R> bool() {
+        throw new UnsupportedOperationException("TODO"); // TODO: figure out R from the context
+        //return bool(Boolean.class);
     }
 
     @Override
-    public <R> UnNamedProperty<R> bool(final Class<R> aType) {
-        return new UnNamedProperty<R>() {
-            @Override
-            public Class<R> getTargetType() {
-                return aType;
-            }
-
-            @Override
-            public <I> Class<I> getIntermediateType() {
-                return (Class<I>)Boolean.class;
-            }
+    public <R> UnNamedProperty<Boolean,R> bool(final Class<R> aType) {
+        return new UnNamedProperty<Boolean,R>() {
+            private Converter<Boolean,R> converter = getConverter(Boolean.class, aType);
 
             @Override
             public Name getName() {
                 return Name.MISSING;
+            }
+
+            @Override
+            public R build(Boolean aValue) {
+                return converter.convert(aValue);
             }
         };
     }

@@ -34,27 +34,27 @@ public interface DocumentDefinition<T> {
 
     public <R> UnNamedArray<R> array(Converter<List,? extends R> aConverter);
 
-    public <R> UnNamedProperty<R> property(Class<? extends R> aClass);
+    public <R> UnNamedProperty<String,R> property(Class<? extends R> aClass);
 
-    public <R> NamedProperty<R> property(String aName);
+    public <R> NamedProperty<String,R> property(String aName);
 
-    public <R> NamedProperty<R> property(Name aName);
+    public <R> NamedProperty<String,R> property(Name aName);
 
-    public <R> NamedProperty<R> number(String aName, Class<R> aType);
+    public <R> NamedProperty<Number,R> number(String aName, Class<R> aType);
 
-    public <R> NamedProperty<R> number(Name aName, Class<R> aType);
+    public <R> NamedProperty<Number,R> number(Name aName, Class<R> aType);
 
-    public <R> UnNamedProperty<R> number(Class<R> aType);
+    public <R> UnNamedProperty<Number,R> number(Class<R> aType);
 
-    public <R> NamedProperty<R> bool(String aName);
+    public <R> NamedProperty<Boolean,R> bool(String aName);
 
-    public <R> NamedProperty<R> bool(Name aName);
+    public <R> NamedProperty<Boolean,R> bool(Name aName);
 
-    public <R> NamedProperty<R> bool(String aName, Class<R> aType);
+    public <R> NamedProperty<Boolean,R> bool(String aName, Class<R> aType);
 
-    public <R> NamedProperty<R> bool(Name aName, Class<R> aType);
+    public <R> NamedProperty<Boolean,R> bool(Name aName, Class<R> aType);
 
-    public <R> UnNamedProperty<R> bool();
+    public <R> UnNamedProperty<Boolean,R> bool();
 
-    public <R> UnNamedProperty<R> bool(Class<R> aType);
+    public <R> UnNamedProperty<Boolean,R> bool(Class<R> aType);
 }

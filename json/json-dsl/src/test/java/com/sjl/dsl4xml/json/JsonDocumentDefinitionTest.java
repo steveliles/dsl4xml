@@ -112,10 +112,10 @@ public class JsonDocumentDefinitionTest {
         DocumentDefinition<NestedObjects> _either = new JsonDocumentDefinition<NestedObjects>() {{
             mapping(NestedObjects.class).with(
                 object(alias("first-property", "first"), Simple.class).with(
-                        property("myProperty")
+                    property("myProperty")
                 ),
                 object(alias("second-property", "second"), Simple.class).with(
-                        property("myProperty")
+                    property("myProperty")
                 )
             );
         }};
@@ -360,8 +360,8 @@ public class JsonDocumentDefinitionTest {
                 ),
                 // and again, this time via a class that is not interface compatible
                 object(Immutable.class).via(Uncommon.class).with(
-                        property("first"),
-                        property("second")
+                    property("first"),
+                    property("second")
                 )
             );
         }};

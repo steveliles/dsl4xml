@@ -2,7 +2,7 @@ package com.sjl.dsl4xml.json;
 
 import com.sjl.dsl4xml.Converter;
 
-public interface NamedObject<T> extends Content<T> {
+public interface NamedObject<T> extends Content<T>, Definition<T> {
 
     public <I> NamedObject<I> via(Class<I> anIntermediateType);
 
