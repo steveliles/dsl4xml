@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class JsonDocumentDefinitionTest {
+public class JsonDocumentDefinitions {
 
     /**
      * {}
@@ -19,7 +19,7 @@ public class JsonDocumentDefinitionTest {
     /**
      * { "myProperty":"some value" }
      */
-    interface Simple {
+    public interface Simple {
         public String getMyProperty();
     }
 
@@ -38,7 +38,7 @@ public class JsonDocumentDefinitionTest {
      *   "boolean":true
      * }
      */
-    interface Typed {
+    public interface Typed {
         public int getInteger();
         public float getFloat();
         public boolean getBoolean();
@@ -64,7 +64,7 @@ public class JsonDocumentDefinitionTest {
      *   }
      * }
      */
-    interface NestedObjects {
+    public interface NestedObjects {
         public Simple getFirst();
         public Simple getSecond();
     }
@@ -133,7 +133,7 @@ public class JsonDocumentDefinitionTest {
      *   "secondProperty":"I am second",
      * }
      */
-    interface MixedTypes {
+    public interface MixedTypes {
         String getFirstProperty();
         Simple getFirstObject();
         Simple getSecondObject();
@@ -165,7 +165,7 @@ public class JsonDocumentDefinitionTest {
      *   ]
      * }
      */
-    interface SimplePropertyArray {
+    public interface SimplePropertyArray {
         String getSomeProperty();
         List<String> getStrings();
     }
@@ -200,7 +200,7 @@ public class JsonDocumentDefinitionTest {
      *   ]
      * }
      */
-    interface ObjectArrays {
+    public interface ObjectArrays {
         String getSomeProperty();
         List<Simple> getSimples();
     }
@@ -227,7 +227,7 @@ public class JsonDocumentDefinitionTest {
      *     ]
      * }
      */
-    interface ArrayOfArrays {
+    public interface ArrayOfArrays {
         interface InnerArray {
             public List<String> getStrings();
         }
@@ -251,7 +251,7 @@ public class JsonDocumentDefinitionTest {
      *     "second":"ball"
      * }
      */
-    interface Interface {
+    public interface Interface {
         public String getFirst();
         public String getSecond();
     }
@@ -294,7 +294,7 @@ public class JsonDocumentDefinitionTest {
         }};
     }
 
-    interface Uncommon {
+    public interface Uncommon {
         public String getFirst();
         public String getSecond();
     }
@@ -329,7 +329,7 @@ public class JsonDocumentDefinitionTest {
         }};
     }
 
-    interface Immutables {
+    public interface Immutables {
         Immutable first();
         Immutable second();
     }
