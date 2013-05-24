@@ -5,19 +5,23 @@ import com.sjl.dsl4xml.ParsingException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 // TODO - extract to dsl4 support
 public class ReflectiveBuilderWithIntermediate<I,T> implements Builder<T> {
-    private I prepared;
 
-    private Reflector reflector;
+    private Name name;
     private Class<T> target;
     private Class<I> intermediate;
     private Converter<I,T> converter;
+    private Reflector reflector;
+    private List<Builder<?>> nested;
 
     public ReflectiveBuilderWithIntermediate(
-        Class<T> aTarget, Class<I> anIntermediate,
-        Converter<I, T> aConverter, Reflector aReflector) {
+        Name aName, Class<T> aTarget, Class<I> anIntermediate, Converter<I, T> aConverter,
+        Reflector aReflector, List<Builder<?>> aNested) {
+        if (aName == null)
+            throw new IllegalArgumentException("Must supply a name");
         if (aTarget == null)
             throw new IllegalArgumentException("Must supply a target type");
         if (anIntermediate == null)
@@ -27,22 +31,39 @@ public class ReflectiveBuilderWithIntermediate<I,T> implements Builder<T> {
         if (aReflector == null)
             throw new IllegalArgumentException("Must supply a reflector");
 
+        name = aName;
         target = aTarget;
         intermediate = anIntermediate;
         converter = aConverter;
         reflector = aReflector;
+        nested = aNested;
     }
 
     @Override
-    public void prepare() {
-        prepared = Classes.newInstance(intermediate);
+    public Name getName() {
+        return name;
     }
 
     @Override
-    public void setValue(String aName, Object aValue) {
+    public Builder<?> moveDown(Context aContext) {
+        return aContext.select(nested);
+    }
+
+    @Override
+    public void prepare(Context aContext) {
+        aContext.push(reflector.newInstance(intermediate));
+    }
+
+    @Override
+    public void setValue(Context aContext, Name aName, Object aValue) {
         Method _m = reflector.getMutator(intermediate, aName, aValue);
         try {
-            _m.invoke(prepared, aValue);
+            I _ctx = aContext.peek();
+            if (intermediate.isAssignableFrom(_ctx.getClass())) {
+                _m.invoke(aContext.peek(), aValue);
+            } else {
+                throw new ParsingException("Expected " + aName + " to be a " + intermediate.getName() + " but got a " + _ctx.getClass().getName());
+            }
         } catch (IllegalAccessException anExc) {
             throw new ParsingException("Not allowed to invoke " + _m.getName() + " on " + intermediate.getName(), anExc);
         } catch (InvocationTargetException anExc) {
@@ -51,7 +72,7 @@ public class ReflectiveBuilderWithIntermediate<I,T> implements Builder<T> {
     }
 
     @Override
-    public T build() {
-        return converter.convert(prepared);
+    public T build(Context aContext) {
+        return converter.convert((I)aContext.pop());
     }
 }

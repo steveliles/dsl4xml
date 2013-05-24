@@ -1,8 +1,13 @@
-package com.sjl.dsl4xml.json;
+package com.sjl.dsl4xml.support;
 
 public interface Name {
 
     public static final Name MISSING = new Name(){
+        @Override
+        public String getNamespace() {
+            return "";
+        }
+
         @Override
         public String getName() {
             return "";
@@ -13,6 +18,8 @@ public interface Name {
             return "";
         }
     };
+
+    public String getNamespace();
 
     public String getName();
 

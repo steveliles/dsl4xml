@@ -1,6 +1,7 @@
 package com.sjl.dsl4xml.json;
 
 import com.sjl.dsl4xml.Converter;
+import com.sjl.dsl4xml.support.Name;
 
 import java.util.List;
 

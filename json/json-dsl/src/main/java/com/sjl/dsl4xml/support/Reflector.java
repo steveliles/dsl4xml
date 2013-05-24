@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 
 public interface Reflector {
 
-    Method getMutator(Class<?> aClass, String aName, Object aValue);
+    public <T> T newInstance(Class<T> aType);
+
+    public Method getMutator(Class<?> aClass, Name aName, Object aValue);
 
 }

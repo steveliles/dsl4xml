@@ -1,6 +1,8 @@
 package com.sjl.dsl4xml.json;
 
-public interface Content<T> {
+import com.sjl.dsl4xml.support.Name;
+
+public interface Content<T> extends Definition<T> {
 
     public Name getName();
 

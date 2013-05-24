@@ -10,8 +10,8 @@ public class JsonDocumentDefinitions {
     /**
      * {}
      */
-    public void emptyDocument() {
-        DocumentDefinition<Object> _d = new JsonDocumentDefinition<Object>(){{
+    public DocumentDefinition<Object> emptyDocument() {
+        return new JsonDocumentDefinition<Object>(){{
             mapping(Object.class);
         }};
     }
@@ -23,8 +23,8 @@ public class JsonDocumentDefinitions {
         public String getMyProperty();
     }
 
-    public void simpleProperty() {
-        DocumentDefinition<Simple> _d = new JsonDocumentDefinition<Simple>(){{
+    public DocumentDefinition<Simple> simpleProperty() {
+        return new JsonDocumentDefinition<Simple>(){{
             mapping(Simple.class).with(
                 property("myProperty")
             );
@@ -44,8 +44,8 @@ public class JsonDocumentDefinitions {
         public boolean getBoolean();
     }
 
-    public void jsonTypedProperties() {
-        DocumentDefinition<Typed> _d = new JsonDocumentDefinition<Typed>(){{
+    public DocumentDefinition<Typed> jsonTypedProperties() {
+        return new JsonDocumentDefinition<Typed>(){{
             mapping(Typed.class).with(
                 number("integer", Integer.class),
                 number("float", Float.class),
@@ -69,7 +69,7 @@ public class JsonDocumentDefinitions {
         public Simple getSecond();
     }
 
-    public void nestedObjects() {
+    public void nestedObjects1() {
         DocumentDefinition<NestedObjects> _either = new JsonDocumentDefinition<NestedObjects>() {{
             mapping(NestedObjects.class).with(
                 object("first", Simple.class).with(
@@ -83,16 +83,20 @@ public class JsonDocumentDefinitions {
 
         // or we can define a method that defines the mapping of Simple to reduce repetition
 
+
+    }
+
+    public void nestedObjects2() {
         DocumentDefinition<NestedObjects> _or = new JsonDocumentDefinition<NestedObjects>() {{
-                mapping(NestedObjects.class).with(
+            mapping(NestedObjects.class).with(
                     simple("first"),
                     simple("second")
-                );
-            }
+            );
+        }
 
             private NamedObject<Simple> simple(String aName) {
                 return object(aName, Simple.class).with(
-                    property("myProperty")
+                        property("myProperty")
                 );
             }
         };

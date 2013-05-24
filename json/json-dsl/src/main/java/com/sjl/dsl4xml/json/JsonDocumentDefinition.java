@@ -5,9 +5,7 @@ import com.sjl.dsl4xml.TypeSafeConverter;
 import com.sjl.dsl4xml.support.*;
 import com.sjl.dsl4xml.support.convert.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
 
@@ -54,6 +52,11 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     public Name alias(final String aName, final String anAlias) {
         return new Name() {
             @Override
+            public String getNamespace() {
+                return "";
+            }
+
+            @Override
             public String getName() {
                 return aName;
             }
@@ -61,6 +64,28 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             @Override
             public String getAlias() {
                 return anAlias;
+            }
+
+            @Override
+            public String toString() {
+                return "'" + aName + "(" + anAlias + ")'";
+            }
+
+            @Override
+            public int hashCode() {
+                return getClass().hashCode() ^ aName.hashCode() ^ anAlias.hashCode();
+            }
+
+            @Override
+            public boolean equals(Object anObject) {
+                if (anObject instanceof Name) {
+                    Name _other = (Name) anObject;
+                    return
+                        ((aName != null) && (aName.equals(_other.getName()))) &&
+                        ((anAlias != null) && (anAlias.equals(_other.getAlias())));
+
+                }
+                return false;
             }
         };
     }
@@ -99,10 +124,13 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             @Override
             @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
+                List<Builder<?>> _nested = new ArrayList<Builder<?>>();
+                for (Content<?> _c : content)
+                    _nested.add(_c.newBuilder());
                 if (intermediate != null) {
-                    return new ReflectiveBuilder(aType, reflector);
+                    return new ReflectiveBuilder(Name.MISSING, aType, reflector, _nested);
                 } else {
-                    return new ReflectiveBuilderWithIntermediate(aType, intermediate, converter, reflector);
+                    return new ReflectiveBuilderWithIntermediate(Name.MISSING, aType, intermediate, converter, reflector, _nested);
                 }
             }
         };
@@ -156,13 +184,17 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
                 return aName;
             }
 
+            // TODO: this is identical in Document
             @Override
             @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
+                List<Builder<?>> _nested = new ArrayList<Builder<?>>();
+                for (Content<?> _c : content)
+                    _nested.add(_c.newBuilder());
                 if (intermediate != null) {
-                    return new ReflectiveBuilder(aType, reflector);
+                    return new ReflectiveBuilder(aName, aType, reflector, _nested);
                 } else {
-                    return new ReflectiveBuilderWithIntermediate(aType, intermediate, converter, reflector);
+                    return new ReflectiveBuilderWithIntermediate(aName, aType, intermediate, converter, reflector, _nested);
                 }
             }
         };
@@ -201,13 +233,17 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
                 return Name.MISSING;
             }
 
+            // TODO: this is identical in Document and elsewhere
             @Override
             @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
+                List<Builder<?>> _nested = new ArrayList<Builder<?>>();
+                for (Content<?> _c : content)
+                    _nested.add(_c.newBuilder());
                 if (intermediate != null) {
-                    return new ReflectiveBuilder(aType, reflector);
+                    return new ReflectiveBuilder(Name.MISSING, aType, reflector, _nested);
                 } else {
-                    return new ReflectiveBuilderWithIntermediate(aType, intermediate, converter, reflector);
+                    return new ReflectiveBuilderWithIntermediate(Name.MISSING, aType, intermediate, converter, reflector, _nested);
                 }
             }
         };
@@ -269,7 +305,10 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             @Override
             @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
-                return new ReflectiveBuilderWithIntermediate(Object.class, List.class, converter, reflector);
+                Definition<?> _def = firstNonNull(obj, property, array);
+                return new ReflectiveBuilderWithIntermediate(
+                    aName, Object.class, List.class, converter, reflector,
+                    Collections.singletonList(_def.newBuilder()));
             }
         };
     }
@@ -322,10 +361,14 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
                 return Name.MISSING;
             }
 
+            // TODO: this is identical in Named and Unnamed Array
             @Override
             @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
-                return new ReflectiveBuilderWithIntermediate(Object.class, List.class, converter, reflector);
+                Definition<?> _def = firstNonNull(obj, property, array);
+                return new ReflectiveBuilderWithIntermediate(
+                    Name.MISSING, Object.class, List.class, converter, reflector,
+                    Collections.singletonList(_def.newBuilder()));
             }
         };
     }
@@ -338,6 +381,11 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             @Override
             public Name getName() {
                 return Name.MISSING;
+            }
+
+            @Override
+            public Builder<R> newBuilder() {
+                return new PropertyBuilder<String,R>(Name.MISSING, converter);
             }
 
             public R build(String aValue) {
@@ -354,11 +402,16 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     @Override
     public <R> NamedProperty<String,R> property(final Name aName) {
         return new NamedProperty<String,R>(){
-            private Converter<String,R> converter; // TODO: need to figure this out from the context!
+            private Converter<String,? extends R> converter; // TODO: need to figure this out from the context!
 
             @Override
             public Name getName() {
                 return aName;  // TODO
+            }
+
+            @Override
+            public Builder<R> newBuilder() {
+                return new PropertyBuilder<String,R>(aName, converter);
             }
 
             @Override
@@ -376,10 +429,16 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     @Override
     public <R> NamedProperty<Number,R> number(final Name aName, final Class<R> aType) {
         return new NamedProperty<Number,R>(){
+            private Converter<Number,R> converter; // TODO: need to figure this out from the context!
 
             @Override
             public Name getName() {
                 return aName;
+            }
+
+            @Override
+            public Builder<R> newBuilder() {
+                return new PropertyBuilder<Number,R>(aName, converter);
             }
 
             @Override
@@ -392,9 +451,16 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     @Override
     public <R> UnNamedProperty<Number,R> number(final Class<R> aType) {
         return new UnNamedProperty<Number,R>(){
+            private Converter<Number,R> converter = getConverter(Number.class, aType); // todo: be more specific than Number?
+
             @Override
             public Name getName() {
                 return Name.MISSING;
+            }
+
+            @Override
+            public Builder<R> newBuilder() {
+                return new PropertyBuilder<Number,R>(Name.MISSING, converter);
             }
 
             @Override
@@ -431,6 +497,11 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             }
 
             @Override
+            public Builder<R> newBuilder() {
+                return new PropertyBuilder<Boolean,R>(aName,converter);
+            }
+
+            @Override
             public R build(Boolean aValue) {
                 return converter.convert(aValue);
             }
@@ -451,6 +522,11 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             @Override
             public Name getName() {
                 return Name.MISSING;
+            }
+
+            @Override
+            public Builder<R> newBuilder() {
+                return new PropertyBuilder<Boolean,R>(Name.MISSING,converter);
             }
 
             @Override
@@ -512,5 +588,12 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
         }
 
         throw new RuntimeException("no converter registered that can convert from " + aFromType + " to " + aToType);
+    }
+
+    private <T> T firstNonNull(T... aTs) {
+        for (T _t : aTs)
+            if (_t != null)
+                return _t;
+        return null;
     }
 }
