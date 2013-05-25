@@ -59,7 +59,6 @@ public class ReflectorFactory {
                 // we replace the cached method with the same method
                 if (_m == null) {
                     _m = getMutatorMethod(aClass, aName); // TODO: use the value for disambiguation?
-System.out.println("found mutator: " + _m.getName());
                     if (_m != null) {
                         Map<String,Method> _newCache = new HashMap<String,Method>(cache);
                         _newCache.put(aName.getName(), _m);
@@ -86,10 +85,8 @@ System.out.println("found mutator: " + _m.getName());
         // TODO: probably need some checks here, e.g. number of params?
         Class<?> _type = getAccessorMethod(aClass, aName).getReturnType();
         if (_type.isInterface()) {
-            System.out.println("interface, proxying as " + getProxy(_type));
             return getProxy(_type);
         } else {
-            System.out.println("not interface, returning " + _type.getName());
             return _type;
         }
     }

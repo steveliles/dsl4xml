@@ -142,12 +142,9 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
                 List<Builder<?>> _nested = new ArrayList<Builder<?>>();
                 for (Content<?> _c : content)
                     _nested.add(_c.newBuilder());
-                if (intermediate == null) {
-                    return new ReflectiveBuilder(Name.MISSING, aType, reflector.newReflector(), _nested);
-                } else {
-                    return new ReflectiveBuilderWithIntermediate(
-                        Name.MISSING, aType, intermediate, converter, reflector.newReflector(), _nested);
-                }
+                return new ReflectiveBuilder(
+                    Name.MISSING, aType, intermediate, converter,
+                    reflector.newReflector(), _nested);
             }
         };
     }
@@ -216,12 +213,10 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
                 List<Builder<?>> _nested = new ArrayList<Builder<?>>();
                 for (Content<?> _c : content)
                     _nested.add(_c.newBuilder());
-                if (intermediate == null) {
-                    return new ReflectiveBuilder(aName, aType, reflector.newReflector(), _nested);
-                } else {
-                    return new ReflectiveBuilderWithIntermediate(
-                        aName, aType, intermediate, converter, reflector.newReflector(), _nested);
-                }
+
+                return new ReflectiveBuilder(
+                    aName, aType, intermediate, converter,
+                    reflector.newReflector(), _nested);
             }
         };
     }
@@ -276,13 +271,9 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
                 List<Builder<?>> _nested = new ArrayList<Builder<?>>();
                 for (Content<?> _c : content)
                     _nested.add(_c.newBuilder());
-                if (intermediate == null) {
-                    return new ReflectiveBuilder(
-                        Name.MISSING, type, reflector.newReflector(), _nested);
-                } else {
-                    return new ReflectiveBuilderWithIntermediate(
-                        Name.MISSING, type, intermediate, converter, reflector.newReflector(), _nested);
-                }
+                return new ReflectiveBuilder(
+                    Name.MISSING, type, intermediate, converter,
+                    reflector.newReflector(), _nested);
             }
         };
     }
@@ -368,14 +359,9 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
                 Definition<?> _def = firstNonNull(obj, property, array);
-                if (intermediate == null) {
-                    return new ReflectiveBuilder(
-                        aName, aType, reflector.newReflector(), Collections.singletonList(_def));
-                } else {
-                    return new ReflectiveBuilderWithIntermediate(
-                        aName, aType, intermediate, converter,
-                        reflector.newReflector(), Collections.singletonList(_def));
-                }
+                return new ReflectiveBuilder(
+                    aName, aType, intermediate, converter,
+                    reflector.newReflector(), Collections.singletonList(_def));
             }
         };
     }
@@ -451,14 +437,9 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
                 Definition<?> _def = firstNonNull(obj, property, array);
-                if (intermediate == null) {
-                    return new ReflectiveBuilder(
-                        Name.MISSING, aType, reflector.newReflector(), Collections.singletonList(_def));
-                } else {
-                    return new ReflectiveBuilderWithIntermediate(
-                        Name.MISSING, aType, intermediate, converter,
-                        reflector.newReflector(), Collections.singletonList(_def));
-                }
+                return new ReflectiveBuilder(
+                    Name.MISSING, aType, intermediate, converter,
+                    reflector.newReflector(), Collections.singletonList(_def));
             }
         };
     }

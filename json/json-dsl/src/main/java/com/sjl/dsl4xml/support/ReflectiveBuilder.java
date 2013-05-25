@@ -1,19 +1,25 @@
 package com.sjl.dsl4xml.support;
 
+import com.sjl.dsl4xml.Converter;
 import com.sjl.dsl4xml.ParsingException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+// TODO - extract to dsl4 support
 public class ReflectiveBuilder<T> implements Builder<T> {
 
     private Name name;
     private Class<T> target;
+    private Class<?> intermediate;
+    private Converter<Object,T> converter;
     private Reflector reflector;
     private List<Builder<?>> nested;
 
-    public ReflectiveBuilder(Name aName, Class<T> aTarget, Reflector aReflector, List<Builder<?>> aNested) {
+    public ReflectiveBuilder(
+            Name aName, Class<T> aTarget, Class<?> anIntermediate, Converter<Object,T> aConverter,
+            Reflector aReflector, List<Builder<?>> aNested) {
         if (aName == null)
             throw new IllegalArgumentException("Must supply a name");
         if (aTarget == null)
@@ -22,9 +28,11 @@ public class ReflectiveBuilder<T> implements Builder<T> {
             throw new IllegalArgumentException("Must supply a reflector");
 
         name = aName;
+        target = aTarget;
+        intermediate = (anIntermediate == null) ? aTarget : anIntermediate;
+        converter = aConverter;
         reflector = aReflector;
         nested = aNested;
-        target = aTarget;
     }
 
     @Override
@@ -44,7 +52,7 @@ public class ReflectiveBuilder<T> implements Builder<T> {
 
     @Override
     public void prepare(Context aContext) {
-        aContext.push(reflector.newInstance(target));
+        aContext.push(reflector.newInstance(intermediate));
     }
 
     @Override
@@ -71,7 +79,6 @@ public class ReflectiveBuilder<T> implements Builder<T> {
                             " of " + aContext.getClass().getName() + " which requires " +
                             _m.getParameterTypes().length + " parameters");
                 }
-
             } else {
                 throw new ParsingException("Expected " + aName + " to be a " + target.getName() + " but got a " + _ctx.getClass().getName());
             }
@@ -84,6 +91,9 @@ public class ReflectiveBuilder<T> implements Builder<T> {
 
     @Override
     public T build(Context aContext) {
-        return aContext.pop();
+        if (converter != null)
+            return converter.convert(aContext.pop());
+        else
+            return aContext.pop();
     }
 }
