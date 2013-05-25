@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
 
-public class ReflectorFactory implements Reflector {
+public class ReflectorFactory {
 
     public static final String MAGIC_SET = "__magic_set";
     // TODO: expose these so that they can be customised?
@@ -43,19 +43,8 @@ public class ReflectorFactory implements Reflector {
             }
 
             @Override
-            public Class<?> getExpectedType(Class<?> aClass, Name aName) {
-                // TODO: probably need some checks here, e.g. number of params?
-                return getMutatorMethod(aClass, aName).getParameterTypes()[0];
-            }
-
-            @Override
             public Method getMutator(Class<?> aClass, Name aName, Object aValue) {
                 return methods.get(aName);
-            }
-
-            @Override
-            public boolean hasMutator(Class<?> aClass, Name aName, Class<?> aValueType) {
-                return methods.get(aName) != null;
             }
         };
     }
@@ -64,19 +53,12 @@ public class ReflectorFactory implements Reflector {
         throw new UnsupportedOperationException("Don't use me as a reflector, use me to create a reflector!");
     }
 
-    @Override
-    public Class<?> getExpectedType(Class<?> aClass, Name aName) {
+    public static Class<?> getExpectedType(Class<?> aClass, Name aName) {
         // TODO: probably need some checks here, e.g. number of params?
         return getMutatorMethod(aClass, aName).getParameterTypes()[0];
     }
 
-    @Override
-    public boolean hasMutator(Class<?> aClass, Name aName, Class<?> aValueType) {
-        return getMutatorMethod(aClass, aName) != null;
-    }
-
-    @Override
-    public Method getMutator(Class<?> aClass, Name aName, Object aValue) {
+    public boolean prepare(Class<?> aClass, Name aName, Class<?> aValueType) {
         Method _m = cache.get(aName);
         if (_m == null) {
             synchronized(lock) {
@@ -85,19 +67,27 @@ public class ReflectorFactory implements Reflector {
                 // we replace the cached method with the same method
                 if (_m == null) {
                     _m = getMutatorMethod(aClass, aName); // TODO: use the value for disambiguation?
-                    if (_m == null) {
-                        throw new NoSuitableMethodException(
-                            "Can't find an appropriate mutating method in " + aClass.getName() +
-                            " for property named " + aName + " of type " + aValue.getClass());
-                    } else {
+                    if (_m != null) {
                         Map<Name,Method> _newCache = new HashMap<Name,Method>(cache);
                         _newCache.put(aName, _m);
                         cache = _newCache;
+
                     }
                 }
             }
         }
-        return _m;
+        return _m != null;
+    }
+
+    public static <T,P> boolean hasMutatorMethod(Class<T> aContextClass, Name aName, Class<P> aParamType) {
+        Method _m = getMutatorMethod(aContextClass, aName);
+        if (_m != null) {
+            for (Class<?> _t : _m.getParameterTypes()) {
+                if (_t.isAssignableFrom(aParamType))
+                    return true;
+            }
+        }
+        return false;
     }
 
     private static <T> Method getMutatorMethod(Class<T> aContextClass, Name... aMaybeNames) {

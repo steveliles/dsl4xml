@@ -190,7 +190,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                if (reflector.hasMutator(aContainerType, aName, aType))
+                if (reflector.prepare(aContainerType, aName, aType))
                     throw new NoSuitableMethodException(
                         "Can't find a mutator method for object named " + aName +
                         " of type " + aType.getName() +
@@ -253,7 +253,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                if (reflector.hasMutator(aContainerType, Name.MISSING, aType))
+                if (reflector.prepare(aContainerType, Name.MISSING, aType))
                     throw new NoSuitableMethodException(
                         "Can't find a mutator method for unnamed property " +
                         " of type " + aType.getName() +
@@ -352,7 +352,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                if (reflector.hasMutator(aContainerType, aName, aType))
+                if (reflector.prepare(aContainerType, aName, aType))
                     throw new NoSuitableMethodException(
                         "Can't find a mutator method for array named " + aName +
                         " of type " + aType.getName() +
@@ -439,7 +439,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                if (reflector.hasMutator(aContainerType, Name.MISSING, aType))
+                if (reflector.prepare(aContainerType, Name.MISSING, aType))
                     throw new NoSuitableMethodException(
                         "Can't find a mutator method for unnamed array " +
                         " of type " + aType.getName() +
@@ -474,7 +474,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                if (new ReflectorFactory().hasMutator(aContainerType, Name.MISSING, aType))
+                if (ReflectorFactory.hasMutatorMethod(aContainerType, Name.MISSING, aType))
                     throw new NoSuitableMethodException(
                         "Can't find a mutator method for unnamed property " +
                         " of type " + aType.getName() +
@@ -506,7 +506,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                type = (Class<? extends R>)new ReflectorFactory().getExpectedType(aContainerType, aName);
+                type = (Class<? extends R>) ReflectorFactory.getExpectedType(aContainerType, aName);
                 converter = getConverter(type);
             }
 
@@ -534,8 +534,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                Reflector _reflector = new ReflectorFactory();
-                if (_reflector.hasMutator(aContainerType, aName, aType))
+                if (ReflectorFactory.hasMutatorMethod(aContainerType, aName, aType))
                     throw new NoSuitableMethodException(
                         "Can't find a mutator method for number property " + aName +
                         " of type " + aType.getName() +
@@ -561,7 +560,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                if (new ReflectorFactory().hasMutator(aContainerType, Name.MISSING, aType))
+                if (ReflectorFactory.hasMutatorMethod(aContainerType, Name.MISSING, aType))
                     throw new NoSuitableMethodException(
                         "Can't find a mutator method for unnamed number property " +
                         " of type " + aType.getName() +
@@ -603,7 +602,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                if (new ReflectorFactory().hasMutator(aContainerType, aName, aType))
+                if (ReflectorFactory.hasMutatorMethod(aContainerType, aName, aType))
                     throw new NoSuitableMethodException(
                         "Can't find a mutator method for boolean property " + aName +
                         " of type " + aType.getName() +
@@ -635,7 +634,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
-                if (new ReflectorFactory().hasMutator(aContainerType, Name.MISSING, aType))
+                if (ReflectorFactory.hasMutatorMethod(aContainerType, Name.MISSING, aType))
                     throw new NoSuitableMethodException(
                         "Can't find a mutator method for unnamed boolean property " +
                         " of type " + aType.getName() +
