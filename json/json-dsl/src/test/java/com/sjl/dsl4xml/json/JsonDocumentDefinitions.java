@@ -1,7 +1,6 @@
 package com.sjl.dsl4xml.json;
 
 import com.sjl.dsl4xml.Converter;
-import org.junit.Test;
 
 import java.util.List;
 
@@ -338,7 +337,6 @@ public class JsonDocumentDefinitions {
         Immutable second();
     }
 
-    @Test
     public void immutableNonRootTypes() {
         DocumentDefinition<Immutables> _d = new JsonDocumentDefinition<Immutables>(){{
             converting(Interface.class).to(Immutable.class).using(

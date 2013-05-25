@@ -36,12 +36,12 @@ public class PropertyBuilder<F,T> implements Builder<T> {
     }
 
     @Override
-    public void prepare(Context aContext) {
+    public final void prepare(Context aContext) {
         // no-op
     }
 
     @Override
-    public void setValue(Context aContext, Name aName, Object aValue) {
+    public void setValue(Context aContext, String aName, Object aValue) {
         aContext.push(aValue);
     }
 

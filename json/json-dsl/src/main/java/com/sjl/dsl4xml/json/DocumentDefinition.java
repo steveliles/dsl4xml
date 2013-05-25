@@ -1,11 +1,10 @@
 package com.sjl.dsl4xml.json;
 
-import com.sjl.dsl4xml.Converter;
 import com.sjl.dsl4xml.support.Name;
 
 import java.util.List;
 
-public interface DocumentDefinition<T> {
+public interface DocumentDefinition<T> extends Definition<T> {
 
     public <F> ConverterRegistration<F,Object> converting(Class<F> aToConvert);
 

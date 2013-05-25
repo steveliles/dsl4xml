@@ -22,7 +22,7 @@ public interface Builder<T> {
      * @param aName
      * @param aValue
      */
-    public void setValue(Context aContext, Name aName, Object aValue);
+    public void setValue(Context aContext, String aName, Object aValue);
 
     /**
      * build the final output, which may be a different type to the build-context

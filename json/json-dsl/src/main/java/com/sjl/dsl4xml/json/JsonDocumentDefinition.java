@@ -39,6 +39,14 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
     }
 
     @Override
+    public <R extends T> Builder<R> newBuilder() {
+        if (document == null)
+            throw new IllegalStateException("You haven't defined the document!");
+
+        return document.newBuilder();
+    }
+
+    @Override
     public <F> ConverterRegistration<F,Object> converting(Class<F> aToConvert) {
         if (document != null)
             throw new IllegalStateException(

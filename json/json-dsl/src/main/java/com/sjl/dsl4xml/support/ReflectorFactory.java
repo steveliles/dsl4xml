@@ -15,17 +15,17 @@ public class ReflectorFactory {
     public static final String[] MUTATOR_PREFIXES = {"add", "set", "insert", "put", MAGIC_SET};
 
     private Object lock;
-    private Map<Name,Method> cache;
+    private Map<String,Method> cache;
 
     public ReflectorFactory() {
         lock = new Object();
-        cache = new HashMap<Name,Method>();
+        cache = new HashMap<String,Method>();
     }
 
     // TODO: separate Reflector from ReflectorFactory - the interfaces are different!
     public Reflector newReflector()
     {
-        final Map<Name,Method> methods = new HashMap<Name,Method>(cache);
+        final Map<String,Method> methods = new HashMap<String,Method>(cache);
 
         return new Reflector()
         {
@@ -43,14 +43,10 @@ public class ReflectorFactory {
             }
 
             @Override
-            public Method getMutator(Class<?> aClass, Name aName, Object aValue) {
+            public Method getMutator(Class<?> aClass, String aName, Object aValue) {
                 return methods.get(aName);
             }
         };
-    }
-
-    public <T> T newInstance(Class<T> aClass) {
-        throw new UnsupportedOperationException("Don't use me as a reflector, use me to create a reflector!");
     }
 
     public static Class<?> getExpectedType(Class<?> aClass, Name aName) {
@@ -59,19 +55,18 @@ public class ReflectorFactory {
     }
 
     public boolean prepare(Class<?> aClass, Name aName, Class<?> aValueType) {
-        Method _m = cache.get(aName);
+        Method _m = cache.get(aName.getName());
         if (_m == null) {
             synchronized(lock) {
-                _m = cache.get(aName);
+                _m = cache.get(aName.getName());
                 // doesn't actually matter that DCL is broken, as worst case
                 // we replace the cached method with the same method
                 if (_m == null) {
                     _m = getMutatorMethod(aClass, aName); // TODO: use the value for disambiguation?
                     if (_m != null) {
-                        Map<Name,Method> _newCache = new HashMap<Name,Method>(cache);
-                        _newCache.put(aName, _m);
+                        Map<String,Method> _newCache = new HashMap<String,Method>(cache);
+                        _newCache.put(aName.getName(), _m);
                         cache = _newCache;
-
                     }
                 }
             }

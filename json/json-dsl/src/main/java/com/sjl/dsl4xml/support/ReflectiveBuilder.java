@@ -48,7 +48,7 @@ public class ReflectiveBuilder<T> implements Builder<T> {
     }
 
     @Override
-    public void setValue(Context aContext, Name aName, Object aValue) {
+    public void setValue(Context aContext, String aName, Object aValue) {
         Method _m = reflector.getMutator(target, aName, aValue);
         try {
             T _ctx = aContext.peek();

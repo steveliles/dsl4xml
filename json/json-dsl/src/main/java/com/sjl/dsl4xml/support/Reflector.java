@@ -6,6 +6,6 @@ public interface Reflector {
 
     public <T> T newInstance(Class<T> aType);
 
-    public Method getMutator(Class<?> aClass, Name aName, Object aValue);
+    public Method getMutator(Class<?> aClass, String aName, Object aValue);
 
 }
