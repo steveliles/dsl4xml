@@ -11,4 +11,3 @@ public interface UnNamedObject<T> extends Content<T>, Definition<T> {
     public UnNamedObject<T> with(Content<?> ... aContent);
 
 }
-s

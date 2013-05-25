@@ -12,6 +12,7 @@ public class ReflectorFactory {
 
     public static final String MAGIC_SET = "__magic_set";
     // TODO: expose these so that they can be customised?
+    public static final String[] ACCESSOR_PREFIXES = {"get", "is", "to"};
     public static final String[] MUTATOR_PREFIXES = {"add", "set", "insert", "put", MAGIC_SET};
 
     private Object lock;
@@ -49,11 +50,6 @@ public class ReflectorFactory {
         };
     }
 
-    public static Class<?> getExpectedType(Class<?> aClass, Name aName) {
-        // TODO: probably need some checks here, e.g. number of params?
-        return getMutatorMethod(aClass, aName).getParameterTypes()[0];
-    }
-
     public boolean prepare(Class<?> aClass, Name aName, Class<?> aValueType) {
         Method _m = cache.get(aName.getName());
         if (_m == null) {
@@ -63,6 +59,7 @@ public class ReflectorFactory {
                 // we replace the cached method with the same method
                 if (_m == null) {
                     _m = getMutatorMethod(aClass, aName); // TODO: use the value for disambiguation?
+System.out.println("found mutator: " + _m.getName());
                     if (_m != null) {
                         Map<String,Method> _newCache = new HashMap<String,Method>(cache);
                         _newCache.put(aName.getName(), _m);
@@ -72,6 +69,29 @@ public class ReflectorFactory {
             }
         }
         return _m != null;
+    }
+
+    public static <T> Class<T> getProxy(Class<T> aClass) {
+        if (aClass.isInterface()) {
+            return (Class<T>)Proxy.getProxyClass(
+                Classes.class.getClassLoader(),
+                new Class<?>[]{ aClass, Mutable.class }
+            );
+        } else {
+            return aClass;
+        }
+    }
+
+    public static Class<?> getExpectedType(Class<?> aClass, Name aName) {
+        // TODO: probably need some checks here, e.g. number of params?
+        Class<?> _type = getAccessorMethod(aClass, aName).getReturnType();
+        if (_type.isInterface()) {
+            System.out.println("interface, proxying as " + getProxy(_type));
+            return getProxy(_type);
+        } else {
+            System.out.println("not interface, returning " + _type.getName());
+            return _type;
+        }
     }
 
     public static <T,P> boolean hasMutatorMethod(Class<T> aContextClass, Name aName, Class<P> aParamType) {
@@ -85,13 +105,29 @@ public class ReflectorFactory {
         return false;
     }
 
+    private static <T> Method getAccessorMethod(Class<T> aClass, Name... aMaybeNames) {
+        Set<String> _names = new LinkedHashSet<String>();
+        for (Name _s : aMaybeNames) {
+            String _name = (_s.getAlias() == null) ? _s.getName() : _s.getAlias();
+            String _suffix = removeHyphensAndUpperCaseFirstLetters(_name);
+            for (String _prefix : ACCESSOR_PREFIXES) {
+                _names.add(_prefix + _suffix);
+            }
+        }
+
+        for (String _s : ACCESSOR_PREFIXES) {
+            _names.add(_s);
+        }
+
+        return getMethod(aClass, _names, true);
+    }
+
     private static <T> Method getMutatorMethod(Class<T> aContextClass, Name... aMaybeNames) {
         Set<String> _names = new LinkedHashSet<String>();
         for (Name _s : aMaybeNames) {
-            String _nameSuffix = removeHyphensAndUpperCaseFirstLetters(_s.getName());
-            String _aliasSuffix = removeHyphensAndUpperCaseFirstLetters(_s.getAlias());
+            String _name = (_s.getAlias() == null) ? _s.getName() : _s.getAlias();
+            String _aliasSuffix = removeHyphensAndUpperCaseFirstLetters(_name);
             for (String _prefix : MUTATOR_PREFIXES) {
-                _names.add(_prefix + _nameSuffix);
                 _names.add(_prefix + _aliasSuffix);
             }
         }
@@ -170,17 +206,18 @@ public class ReflectorFactory {
     @SuppressWarnings("unchecked")
     private static <T> T newListBasedProxy(final Class<T> aClass) {
         return (T) Proxy.newProxyInstance(
-                Classes.class.getClassLoader(),
-                new Class<?>[]{aClass, Mutable.class},
-                new ListBasedInvocationHandler<T>(aClass));
+            Classes.class.getClassLoader(),
+            new Class<?>[]{aClass, Mutable.class},
+            new ListBasedInvocationHandler<T>(aClass)
+        );
     }
 
     @SuppressWarnings("unchecked")
     private static <T> T newMapBasedProxy(final Class<T> aClass) {
         return (T) Proxy.newProxyInstance(
-                Classes.class.getClassLoader(),
-                new Class<?>[]{ aClass, Mutable.class },
-                new MapBasedInvocationHandler(aClass)
+            Classes.class.getClassLoader(),
+            new Class<?>[]{ aClass, Mutable.class },
+            new MapBasedInvocationHandler(aClass)
         );
     }
 

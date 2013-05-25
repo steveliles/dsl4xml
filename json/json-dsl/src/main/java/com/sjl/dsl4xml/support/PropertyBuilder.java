@@ -12,7 +12,7 @@ public class PropertyBuilder<F,T> implements Builder<T> {
     public PropertyBuilder(Name aName, Class<? extends T> aTarget, Converter<F,? extends T> aConverter) {
         if (aName == null)
             throw new IllegalArgumentException("Must supply a name");
-        if (converter == null)
+        if (aConverter == null)
             throw new IllegalArgumentException("Must supply a converter");
 
         name = aName;

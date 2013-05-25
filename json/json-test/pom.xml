@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.sjl.dsl4xml</groupId>
-	<artifactId>dsl4xml-gson</artifactId>
+	<artifactId>dsl4xml-json-test</artifactId>
 	<version>0.1.8-SNAPSHOT</version>
-	<name>dsl4xml-gson</name>
-	<description>DSL for XML - JSON Parsing with GSON</description>
+	<name>dsl4xml-json-test</name>
+	<description>Abstract JSON parsing tests.</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,56 +28,42 @@
 			<resource>
 				<directory>src/main/java</directory>
 				<includes>
-					<include>**/*.json</include>
+					<include>**/*.xml</include>
 				</includes>
 			</resource>
 		</resources>
 		<testResources>
 			<testResource>
 				<targetPath>./</targetPath>
-				<directory>src/test/java</directory>
+				<directory>src/main/java</directory>
 				<includes>
-					<include>**/*.json</include>
+					<include>**/*.xml</include>
 				</includes>
 			</testResource>
 		</testResources>
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.sjl.dsl4xml</groupId>
-			<artifactId>dsl4xml-support</artifactId>
-			<version>0.1.8-SNAPSHOT</version>
-		</dependency>
-  		<dependency>
-			<groupId>com.sjl.dsl4xml</groupId>
-			<artifactId>dsl4xml-json-dsl</artifactId>
-			<version>0.1.8-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.2.3</version>
-		</dependency>
-
         <dependency>
             <groupId>com.sjl.dsl4xml</groupId>
-            <artifactId>dsl4xml-json-test</artifactId>
+            <artifactId>dsl4xml-support</artifactId>
             <version>0.1.8-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.sjl.dsl4xml</groupId>
+            <artifactId>dsl4xml-json-dsl</artifactId>
+            <version>0.1.8-SNAPSHOT</version>
+        </dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jmock</groupId>
 			<artifactId>jmock-junit4</artifactId>
 			<version>2.5.1</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

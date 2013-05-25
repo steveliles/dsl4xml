@@ -60,7 +60,7 @@ public class ReflectiveBuilderWithIntermediate<I,T> implements Builder<T> {
     }
 
     @Override
-    public void setValue(Context aContext, Name aName, Object aValue) {
+    public void setValue(Context aContext, String aName, Object aValue) {
         Method _m = reflector.getMutator(intermediate, aName, aValue);
         try {
             I _ctx = aContext.peek();

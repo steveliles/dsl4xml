@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonToken;
 import com.sjl.dsl4xml.ParsingException;
 import com.sjl.dsl4xml.support.Builder;
 import com.sjl.dsl4xml.support.Context;
+import com.sjl.dsl4xml.support.Name;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,23 +29,23 @@ public class GsonContext implements Context {
     public <T> T build(Builder<T> aBuilder) {
         try {
             Builder _b = aBuilder;
+            builders.push(_b);
             _b.prepare(this);
 
             while (reader.hasNext()) {
                 JsonToken _token = reader.peek();
+System.out.println(_token);
                 switch(_token) {
                     case NAME:
                         names.push(reader.nextName());
                         break;
                     case STRING:
                         Builder<?> _p = _b.moveDown(this);
-                        if (_p == null) {
-                            reader.skipValue();
-                        } else {
-                            _p.prepare(this);
-                            _p.setValue(this, "", reader.nextString());
-                            _b.setValue(this, names.pop(), _p.build(this));
-                        }
+                        if (_p == null)
+                            _p = builders.peek();
+                        _p.prepare(this);
+                        _p.setValue(this, "", reader.nextString());
+                        _b.setValue(this, names.pop(), _p.build(this));
                         break;
                     case NUMBER:
                         _p = _b.moveDown(this);
@@ -74,7 +75,10 @@ public class GsonContext implements Context {
                         _b = _b.moveDown(this);
                         if (_b == null) {
                             _b = builders.peek();
-                            reader.skipValue();
+                            if (reader.peek() == JsonToken.END_ARRAY)
+                                reader.endArray();
+                            else
+                                reader.skipValue();
                         } else {
                             _b.prepare(this);
                             builders.push(_b);
@@ -91,7 +95,10 @@ public class GsonContext implements Context {
                         _b = _b.moveDown(this);
                         if (_b == null) {
                             _b = builders.peek();
-                            reader.skipValue();
+//                            if (reader.peek() == JsonToken.END_OBJECT)
+//                                reader.endObject();
+//                            else
+//                                reader.skipValue();
                         } else {
                             _b.prepare(this);
                             builders.push(_b);
@@ -104,8 +111,7 @@ public class GsonContext implements Context {
                         _b.setValue(this, names.pop(), _p.build(this));
                         break;
                     case END_DOCUMENT:
-                        reader.close();
-                        break;
+                        return aBuilder.build(this);
                 }
             }
 
@@ -121,9 +127,11 @@ public class GsonContext implements Context {
     public Builder<?> select(List<Builder<?>> aBuilders) {
         try {
             JsonToken _token = reader.peek();
-            String _name = names.peek();
+            String _name = names.isEmpty() ? "" : names.peek();
             for (Builder<?> _b : aBuilders) {
-                if (_name.equals(_b.getName())) {
+                Name _n = _b.getName();
+                String _bn = (_n.getAlias() != null) ? _n.getAlias() : _n.getName();
+                if (_name.equals(_bn)) {
                     // TODO: use the type info too ? ...
                     return _b;
                 }

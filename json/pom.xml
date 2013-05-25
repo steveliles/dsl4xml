@@ -16,6 +16,7 @@
 
   <modules>
     <module>json-dsl</module>
+    <module>json-test</module>
     <module>gson</module>
   </modules>
   

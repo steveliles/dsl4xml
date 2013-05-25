@@ -15,16 +15,16 @@ public class ReflectiveBuilder<T> implements Builder<T> {
 
     public ReflectiveBuilder(Name aName, Class<T> aTarget, Reflector aReflector, List<Builder<?>> aNested) {
         if (aName == null)
-            throw new IllegalArgumentException("Must suppky a name");
+            throw new IllegalArgumentException("Must supply a name");
         if (aTarget == null)
             throw new IllegalArgumentException("Must supply a target type");
         if (aReflector == null)
             throw new IllegalArgumentException("Must supply a reflector");
 
         name = aName;
-        target = aTarget;
         reflector = aReflector;
         nested = aNested;
+        target = aTarget;
     }
 
     @Override
@@ -50,10 +50,28 @@ public class ReflectiveBuilder<T> implements Builder<T> {
     @Override
     public void setValue(Context aContext, String aName, Object aValue) {
         Method _m = reflector.getMutator(target, aName, aValue);
+        if (_m == null)
+            throw new IllegalStateException(
+                "No mutator method found for '" + aName + "' of type " +
+                aValue.getClass().getName() + " in target " + aContext);
+
         try {
             T _ctx = aContext.peek();
             if (target.isAssignableFrom(_ctx.getClass())) {
-                _m.invoke(aContext.peek(), aValue);
+                switch (_m.getParameterTypes().length) {
+                    case 1 :
+                        _m.invoke(aContext.peek(), aValue);
+                        break;
+                    case 2 :
+                        _m.invoke(aContext.peek(), aName, aValue);
+                        break;
+                    default:
+                        throw new NoSuitableMethodException(
+                            "Don't know how to deal with mutator method " + _m.getName() +
+                            " of " + aContext.getClass().getName() + " which requires " +
+                            _m.getParameterTypes().length + " parameters");
+                }
+
             } else {
                 throw new ParsingException("Expected " + aName + " to be a " + target.getName() + " but got a " + _ctx.getClass().getName());
             }
