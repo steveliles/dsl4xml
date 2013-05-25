@@ -89,8 +89,8 @@ public class JsonDocumentDefinitions {
     public void nestedObjects2() {
         DocumentDefinition<NestedObjects> _or = new JsonDocumentDefinition<NestedObjects>() {{
             mapping(NestedObjects.class).with(
-                    simple("first"),
-                    simple("second")
+                simple("first"),
+                simple("second")
             );
         }
 

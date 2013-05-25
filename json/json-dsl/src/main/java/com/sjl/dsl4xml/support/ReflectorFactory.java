@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
 
-public class ThreadSafeCachingReflector implements Reflector {
+public class ReflectorFactory implements Reflector {
 
     public static final String MAGIC_SET = "__magic_set";
     // TODO: expose these so that they can be customised?
@@ -17,21 +17,62 @@ public class ThreadSafeCachingReflector implements Reflector {
     private Object lock;
     private Map<Name,Method> cache;
 
-    public ThreadSafeCachingReflector() {
+    public ReflectorFactory() {
         lock = new Object();
-        cache = new HashMap<Name, Method>();
+        cache = new HashMap<Name,Method>();
+    }
+
+    // TODO: separate Reflector from ReflectorFactory - the interfaces are different!
+    public Reflector newReflector()
+    {
+        final Map<Name,Method> methods = new HashMap<Name,Method>(cache);
+
+        return new Reflector()
+        {
+            @Override
+            public <T> T newInstance(Class<T> aType) {
+                try {
+                    if (aType.isInterface()) {
+                        return newDynamicProxy(aType);
+                    } else {
+                        return aType.newInstance();
+                    }
+                } catch (Exception anExc) {
+                    throw new ParsingException(anExc);
+                }
+            }
+
+            @Override
+            public Class<?> getExpectedType(Class<?> aClass, Name aName) {
+                // TODO: probably need some checks here, e.g. number of params?
+                return getMutatorMethod(aClass, aName).getParameterTypes()[0];
+            }
+
+            @Override
+            public Method getMutator(Class<?> aClass, Name aName, Object aValue) {
+                return methods.get(aName);
+            }
+
+            @Override
+            public boolean hasMutator(Class<?> aClass, Name aName, Class<?> aValueType) {
+                return methods.get(aName) != null;
+            }
+        };
     }
 
     public <T> T newInstance(Class<T> aClass) {
-        try {
-            if (aClass.isInterface()) {
-                return (T) newDynamicProxy(aClass);
-            } else {
-                return (T) aClass.newInstance();
-            }
-        } catch (Exception anExc) {
-            throw new ParsingException(anExc);
-        }
+        throw new UnsupportedOperationException("Don't use me as a reflector, use me to create a reflector!");
+    }
+
+    @Override
+    public Class<?> getExpectedType(Class<?> aClass, Name aName) {
+        // TODO: probably need some checks here, e.g. number of params?
+        return getMutatorMethod(aClass, aName).getParameterTypes()[0];
+    }
+
+    @Override
+    public boolean hasMutator(Class<?> aClass, Name aName, Class<?> aValueType) {
+        return getMutatorMethod(aClass, aName) != null;
     }
 
     @Override
@@ -43,7 +84,7 @@ public class ThreadSafeCachingReflector implements Reflector {
                 // doesn't actually matter that DCL is broken, as worst case
                 // we replace the cached method with the same method
                 if (_m == null) {
-                    _m = getMutatorMethod(aClass, aName); // TODO: use the value for disambiguation
+                    _m = getMutatorMethod(aClass, aName); // TODO: use the value for disambiguation?
                     if (_m == null) {
                         throw new NoSuitableMethodException(
                             "Can't find an appropriate mutating method in " + aClass.getName() +
@@ -59,7 +100,7 @@ public class ThreadSafeCachingReflector implements Reflector {
         return _m;
     }
 
-    public <T> Method getMutatorMethod(Class<T> aContextClass, Name... aMaybeNames) {
+    private static <T> Method getMutatorMethod(Class<T> aContextClass, Name... aMaybeNames) {
         Set<String> _names = new LinkedHashSet<String>();
         for (Name _s : aMaybeNames) {
             String _nameSuffix = removeHyphensAndUpperCaseFirstLetters(_s.getName());
@@ -78,7 +119,7 @@ public class ThreadSafeCachingReflector implements Reflector {
         return getMethod(aContextClass, _names, true);
     }
 
-    private String removeHyphensAndUpperCaseFirstLetters(String aString) {
+    private static String removeHyphensAndUpperCaseFirstLetters(String aString) {
         if (aString == null || "".equals(aString))
             return "";
 
@@ -91,7 +132,7 @@ public class ThreadSafeCachingReflector implements Reflector {
         return _sb.toString();
     }
 
-    private <T> Method getMethod(Class<T> aContextClass, Collection<String> aNames, boolean aThrowExceptionIfNotFound) {
+    private static <T> Method getMethod(Class<T> aContextClass, Collection<String> aNames, boolean aThrowExceptionIfNotFound) {
         List<Method> _methods = new ArrayList<Method>();
         List<Method> _twoArgMethods = new ArrayList<Method>();
         for (Method _m : aContextClass.getMethods()) {
@@ -129,11 +170,11 @@ public class ThreadSafeCachingReflector implements Reflector {
         }
     }
 
-    private String asString(Class<?> aClass, Class<?>... aClasses) {
+    private static String asString(Class<?> aClass, Class<?>... aClasses) {
         return aClass.getName() + Arrays.asList(aClasses).toString();
     }
 
-    private <T> T newDynamicProxy(Class<T> aClass) {
+    private static <T> T newDynamicProxy(Class<T> aClass) {
         if (Iterable.class.isAssignableFrom(aClass)) {
             return newListBasedProxy(aClass);
         } else {
@@ -142,7 +183,7 @@ public class ThreadSafeCachingReflector implements Reflector {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T newListBasedProxy(final Class<T> aClass) {
+    private static <T> T newListBasedProxy(final Class<T> aClass) {
         return (T) Proxy.newProxyInstance(
                 Classes.class.getClassLoader(),
                 new Class<?>[]{aClass, Mutable.class},
@@ -150,7 +191,7 @@ public class ThreadSafeCachingReflector implements Reflector {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T newMapBasedProxy(final Class<T> aClass) {
+    private static <T> T newMapBasedProxy(final Class<T> aClass) {
         return (T) Proxy.newProxyInstance(
                 Classes.class.getClassLoader(),
                 new Class<?>[]{ aClass, Mutable.class },
@@ -255,25 +296,8 @@ public class ThreadSafeCachingReflector implements Reflector {
             }
         }
 
-        // todo: cache for efficiency?
         private boolean isMethodOf(Class<?> aClass, Method aMethod) {
-            for (Method _m : aClass.getMethods()) {
-                if (_m.getName().equals(aMethod.getName())) {
-                    Class<?>[] _mp1 = _m.getParameterTypes();
-                    Class<?>[] _mp2 = aMethod.getParameterTypes();
-                    if (_mp1.length == _mp2.length) {
-                        boolean _match = true;
-                        for (int i=0; i<_mp1.length; i++) {
-                            if (!_mp1[i].equals(_mp2[i]))
-                                _match = false;
-                        }
-                        if (_match) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
+            return aMethod.getDeclaringClass().isAssignableFrom(aClass);
         }
 
         private boolean isMutator(Method aMethod) {

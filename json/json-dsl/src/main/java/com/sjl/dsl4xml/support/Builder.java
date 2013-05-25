@@ -5,6 +5,8 @@ public interface Builder<T> {
 
     public Name getName();
 
+    public Class<? extends T> getTargetType();
+
     /**
      * @return the builder for a nested object
      */

@@ -27,13 +27,13 @@ public interface DocumentDefinition<T> {
 
     public <R> NamedArray<R> array(Name aName);
 
-    public <R> NamedArray<R> array(String aName, Converter<List,? extends R> aConverter);
+    public <R> NamedArray<R> array(String aName, Class<? extends R> aType);
 
-    public <R> NamedArray<R> array(Name aName, Converter<List,? extends R> aConverter);
+    public <R> NamedArray<R> array(Name aName, Class<? extends R> aType);
 
-    public <R> UnNamedArray<R> array();
+    public UnNamedArray<List> array();
 
-    public <R> UnNamedArray<R> array(Converter<List,? extends R> aConverter);
+    public <R> UnNamedArray<R> array(Class<? extends R> aType);
 
     public <R> UnNamedProperty<String,R> property(Class<? extends R> aClass);
 

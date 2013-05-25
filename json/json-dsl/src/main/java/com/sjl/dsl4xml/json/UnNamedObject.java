@@ -1,7 +1,6 @@
 package com.sjl.dsl4xml.json;
 
 import com.sjl.dsl4xml.Converter;
-import com.sjl.dsl4xml.support.Builder;
 
 public interface UnNamedObject<T> extends Content<T>, Definition<T> {
 
@@ -12,3 +11,4 @@ public interface UnNamedObject<T> extends Content<T>, Definition<T> {
     public UnNamedObject<T> with(Content<?> ... aContent);
 
 }
+s

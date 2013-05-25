@@ -7,7 +7,7 @@ import com.sjl.dsl4xml.support.convert.*;
 
 import java.util.*;
 
-public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
+public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConverters {
 
     private List<TypeSafeConverter<?,?>> converters;
 
@@ -99,11 +99,15 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private Class<?> intermediate;
             private List<Content<?>> content;
             private Converter<Object,T> converter;
-            private Reflector reflector = new ThreadSafeCachingReflector();
+            private ReflectorFactory reflector = new ReflectorFactory();
 
             @Override
             public Document<T> with(Content<?>... aContent) {
-                content = Arrays.asList(aContent);
+                content = new ArrayList<Content<?>>();
+                for (Content<?> _c : aContent) {
+                    _c.onAttach(aType, JsonDocumentDefinition.this);
+                    content.add(_c);
+                }
                 return this;
             }
 
@@ -128,9 +132,10 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
                 for (Content<?> _c : content)
                     _nested.add(_c.newBuilder());
                 if (intermediate != null) {
-                    return new ReflectiveBuilder(Name.MISSING, aType, reflector, _nested);
+                    return new ReflectiveBuilder(Name.MISSING, aType, reflector.newReflector(), _nested);
                 } else {
-                    return new ReflectiveBuilderWithIntermediate(Name.MISSING, aType, intermediate, converter, reflector, _nested);
+                    return new ReflectiveBuilderWithIntermediate(
+                        Name.MISSING, aType, intermediate, converter, reflector.newReflector(), _nested);
                 }
             }
         };
@@ -157,7 +162,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private List<Content<?>> content;
             private Class<?> intermediate;
             private Converter<?,R> converter;
-            private Reflector reflector = new ThreadSafeCachingReflector();
+            private ReflectorFactory reflector = new ReflectorFactory();
 
             @Override
             public <I> NamedObject<I> via(Class<I> anIntermediateType) {
@@ -175,8 +180,21 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
 
             @Override
             public NamedObject<R> with(Content<?>... aContent) {
-                content = Arrays.asList(aContent);
+                content = new ArrayList<Content<?>>();
+                for (Content<?> _c : aContent) {
+                    _c.onAttach(aType, JsonDocumentDefinition.this);
+                    content.add(_c);
+                }
                 return this;
+            }
+
+            @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                if (reflector.hasMutator(aContainerType, aName, aType))
+                    throw new NoSuitableMethodException(
+                        "Can't find a mutator method for object named " + aName +
+                        " of type " + aType.getName() +
+                        " on target class " + aContainerType);
             }
 
             @Override
@@ -192,9 +210,10 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
                 for (Content<?> _c : content)
                     _nested.add(_c.newBuilder());
                 if (intermediate != null) {
-                    return new ReflectiveBuilder(aName, aType, reflector, _nested);
+                    return new ReflectiveBuilder(aName, aType, reflector.newReflector(), _nested);
                 } else {
-                    return new ReflectiveBuilderWithIntermediate(aName, aType, intermediate, converter, reflector, _nested);
+                    return new ReflectiveBuilderWithIntermediate(
+                        aName, aType, intermediate, converter, reflector.newReflector(), _nested);
                 }
             }
         };
@@ -206,7 +225,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private List<Content<?>> content;
             private Converter<?,R> converter;
             private Class<?> intermediate;
-            private Reflector reflector = new ThreadSafeCachingReflector();
+            private ReflectorFactory reflector = new ReflectorFactory();
 
             @Override
             public <I> UnNamedObject<I> via(Class<I> anIntermediateType) {
@@ -224,8 +243,21 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
 
             @Override
             public UnNamedObject<R> with(Content<?>... aContent) {
-                content = Arrays.asList(aContent);
+                content = new ArrayList<Content<?>>();
+                for (Content<?> _c : aContent) {
+                    _c.onAttach(aType, JsonDocumentDefinition.this);
+                    content.add(_c);
+                }
                 return this;
+            }
+
+            @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                if (reflector.hasMutator(aContainerType, Name.MISSING, aType))
+                    throw new NoSuitableMethodException(
+                        "Can't find a mutator method for unnamed property " +
+                        " of type " + aType.getName() +
+                        " on target class " + aContainerType);
             }
 
             @Override
@@ -241,9 +273,11 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
                 for (Content<?> _c : content)
                     _nested.add(_c.newBuilder());
                 if (intermediate != null) {
-                    return new ReflectiveBuilder(Name.MISSING, aType, reflector, _nested);
+                    return new ReflectiveBuilder(
+                        Name.MISSING, aType, reflector.newReflector(), _nested);
                 } else {
-                    return new ReflectiveBuilderWithIntermediate(Name.MISSING, aType, intermediate, converter, reflector, _nested);
+                    return new ReflectiveBuilderWithIntermediate(
+                        Name.MISSING, aType, intermediate, converter, reflector.newReflector(), _nested);
                 }
             }
         };
@@ -260,41 +294,69 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     }
 
     @Override
-    public <R> NamedArray<R> array(String aName, Converter<List, ? extends R> aConverter) {
-        return array(alias(aName, aName), aConverter);
+    public <R> NamedArray<R> array(String aName, Class<? extends R> aType) {
+        return array(alias(aName, aName));
     }
 
     @Override
-    public <R> NamedArray<R> array(final Name aName, final Converter<List, ? extends R> aConverter) {
+    public <R> NamedArray<R> array(final Name aName, final Class<? extends R> aType) {
         return new NamedArray<R>(){
             private UnNamedObject<?> obj;
             private UnNamedProperty<?,?> property;
             private UnNamedArray<?> array;
-            private Converter<List,? extends R> converter;
-            private Reflector reflector = new ThreadSafeCachingReflector();
+            private Class<?> intermediate;
+            private Converter<?,? extends R> converter;
+            private ReflectorFactory reflector = new ReflectorFactory();
+
+            @Override
+            public <I> NamedArray<I> via(Class<I> anIntermediateType) {
+                intermediate = anIntermediateType;
+                converter = (Converter<?,R>) getConverter(intermediate, aType);
+                return (NamedArray<I>)this;
+            }
+
+            @Override
+            public <I> NamedArray<I> via(Class<I> anIntermediateType, Converter<I, R> aConverter) {
+                intermediate = anIntermediateType;
+                converter = aConverter;
+                return (NamedArray<I>)this;
+            }
 
             @Override
             public NamedArray<R> of(Class<?> aConvertableType) {
                 obj = object(aConvertableType);
+                obj.onAttach(List.class, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public NamedArray<R> of(UnNamedProperty<?,?> aContent) {
                 property = aContent;
+                property.onAttach(List.class, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public NamedArray<R> of(UnNamedObject<?> aContent) {
                 obj = aContent;
+                obj.onAttach(List.class, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public NamedArray<R> of(UnNamedArray<?> aContent) {
                 array = aContent;
+                array.onAttach(List.class, JsonDocumentDefinition.this);
                 return this;
+            }
+
+            @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                if (reflector.hasMutator(aContainerType, aName, aType))
+                    throw new NoSuitableMethodException(
+                        "Can't find a mutator method for array named " + aName +
+                        " of type " + aType.getName() +
+                        " on target class " + aContainerType);
             }
 
             @Override
@@ -306,54 +368,82 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
                 Definition<?> _def = firstNonNull(obj, property, array);
-                return new ReflectiveBuilderWithIntermediate(
-                    aName, Object.class, List.class, converter, reflector,
-                    Collections.singletonList(_def.newBuilder()));
+                if (intermediate != null) {
+                    return new ReflectiveBuilder(
+                        aName, aType, reflector.newReflector(), Collections.singletonList(_def));
+                } else {
+                    return new ReflectiveBuilderWithIntermediate(
+                        aName, aType, intermediate, converter,
+                        reflector.newReflector(), Collections.singletonList(_def));
+                }
             }
         };
     }
 
     @Override
-    public <R> UnNamedArray<R> array() {
-        return array(new Converter<List,R>(){
-            @Override
-            public R convert(List aFrom) {
-                return (R)aFrom;
-            }
-        });
+    public UnNamedArray<List> array() {
+        return array(List.class);
     }
 
     @Override
-    public <R> UnNamedArray<R> array(Converter<List, ? extends R> aConverter) {
+    public <R> UnNamedArray<R> array(final Class<? extends R> aType) {
         return new UnNamedArray<R>(){
             private UnNamedObject<?> obj;
             private UnNamedProperty<?,?> property;
             private UnNamedArray<?> array;
-            private Converter<List,? extends R> converter;
-            private Reflector reflector = new ThreadSafeCachingReflector();
+            private Class<?> intermediate;
+            private Converter<?,? extends R> converter;
+            private ReflectorFactory reflector = new ReflectorFactory();
+
+            @Override
+            public <I> UnNamedArray<I> via(Class<I> anIntermediateType) {
+                intermediate = anIntermediateType;
+                converter = (Converter<?,R>) getConverter(intermediate, aType);
+                return (UnNamedArray<I>)this;
+            }
+
+            @Override
+            public <I> UnNamedArray<I> via(Class<I> anIntermediateType, Converter<I, R> aConverter) {
+                intermediate = anIntermediateType;
+                converter = aConverter;
+                return (UnNamedArray<I>)this;
+            }
 
             @Override
             public UnNamedArray<R> of(Class<?> aConvertableType) {
                 obj = object(aConvertableType);
+                obj.onAttach(List.class, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public UnNamedArray<R> of(UnNamedProperty<?,?> aContent) {
                 property = aContent;
+                property.onAttach(List.class, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public UnNamedArray<R> of(UnNamedObject<?> aContent) {
                 obj = aContent;
+                obj.onAttach(List.class, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public UnNamedArray<R> of(UnNamedArray<?> aContent) {
                 array = aContent;
+                array.onAttach(List.class, JsonDocumentDefinition.this);
                 return this;
+            }
+
+            @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                if (reflector.hasMutator(aContainerType, Name.MISSING, aType))
+                    throw new NoSuitableMethodException(
+                        "Can't find a mutator method for unnamed array " +
+                        " of type " + aType.getName() +
+                        " on target class " + aContainerType);
             }
 
             @Override
@@ -361,14 +451,18 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
                 return Name.MISSING;
             }
 
-            // TODO: this is identical in Named and Unnamed Array
             @Override
             @SuppressWarnings("rawtypes")
             public Builder<T> newBuilder() {
                 Definition<?> _def = firstNonNull(obj, property, array);
-                return new ReflectiveBuilderWithIntermediate(
-                    Name.MISSING, Object.class, List.class, converter, reflector,
-                    Collections.singletonList(_def.newBuilder()));
+                if (intermediate != null) {
+                    return new ReflectiveBuilder(
+                        Name.MISSING, aType, reflector.newReflector(), Collections.singletonList(_def));
+                } else {
+                    return new ReflectiveBuilderWithIntermediate(
+                        Name.MISSING, aType, intermediate, converter,
+                        reflector.newReflector(), Collections.singletonList(_def));
+                }
             }
         };
     }
@@ -379,17 +473,22 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private StringConverter<? extends R> converter = getConverter(aType);
 
             @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                if (new ReflectorFactory().hasMutator(aContainerType, Name.MISSING, aType))
+                    throw new NoSuitableMethodException(
+                        "Can't find a mutator method for unnamed property " +
+                        " of type " + aType.getName() +
+                        " on target class " + aContainerType);
+            }
+
+            @Override
             public Name getName() {
                 return Name.MISSING;
             }
 
             @Override
             public Builder<R> newBuilder() {
-                return new PropertyBuilder<String,R>(Name.MISSING, converter);
-            }
-
-            public R build(String aValue) {
-                return converter.convert(aValue);
+                return new PropertyBuilder<String,R>(Name.MISSING, aType, converter);
             }
         };
     }
@@ -402,7 +501,14 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     @Override
     public <R> NamedProperty<String,R> property(final Name aName) {
         return new NamedProperty<String,R>(){
-            private Converter<String,? extends R> converter; // TODO: need to figure this out from the context!
+            private Class<? extends R> type;
+            private StringConverter<? extends R> converter;
+
+            @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                type = (Class<? extends R>)new ReflectorFactory().getExpectedType(aContainerType, aName);
+                converter = getConverter(type);
+            }
 
             @Override
             public Name getName() {
@@ -411,12 +517,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
 
             @Override
             public Builder<R> newBuilder() {
-                return new PropertyBuilder<String,R>(aName, converter);
-            }
-
-            @Override
-            public R build(String aValue) {
-                throw new UnsupportedOperationException("TODO");
+                return new PropertyBuilder<String,R>(aName, type, converter);
             }
         };
     }
@@ -429,7 +530,17 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     @Override
     public <R> NamedProperty<Number,R> number(final Name aName, final Class<R> aType) {
         return new NamedProperty<Number,R>(){
-            private Converter<Number,R> converter; // TODO: need to figure this out from the context!
+            private Converter<Number,R> converter = getConverter(Number.class, aType);
+
+            @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                Reflector _reflector = new ReflectorFactory();
+                if (_reflector.hasMutator(aContainerType, aName, aType))
+                    throw new NoSuitableMethodException(
+                        "Can't find a mutator method for number property " + aName +
+                        " of type " + aType.getName() +
+                        " on target class " + aContainerType);
+            }
 
             @Override
             public Name getName() {
@@ -438,12 +549,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
 
             @Override
             public Builder<R> newBuilder() {
-                return new PropertyBuilder<Number,R>(aName, converter);
-            }
-
-            @Override
-            public R build(Number aValue) {
-                throw new UnsupportedOperationException("TODO");
+                return new PropertyBuilder<Number,R>(aName, aType, converter);
             }
         };
     }
@@ -451,7 +557,16 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
     @Override
     public <R> UnNamedProperty<Number,R> number(final Class<R> aType) {
         return new UnNamedProperty<Number,R>(){
-            private Converter<Number,R> converter = getConverter(Number.class, aType); // todo: be more specific than Number?
+            private Converter<Number,R> converter = getConverter(Number.class, aType);
+
+            @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                if (new ReflectorFactory().hasMutator(aContainerType, Name.MISSING, aType))
+                    throw new NoSuitableMethodException(
+                        "Can't find a mutator method for unnamed number property " +
+                        " of type " + aType.getName() +
+                        " on target class " + aContainerType);
+            }
 
             @Override
             public Name getName() {
@@ -460,12 +575,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
 
             @Override
             public Builder<R> newBuilder() {
-                return new PropertyBuilder<Number,R>(Name.MISSING, converter);
-            }
-
-            @Override
-            public R build(Number aValue) {
-                throw new UnsupportedOperationException("TODO");
+                return new PropertyBuilder<Number,R>(Name.MISSING, aType, converter);
             }
         };
     }
@@ -492,18 +602,22 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private Converter<Boolean,R> converter = getConverter(Boolean.class, aType);
 
             @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                if (new ReflectorFactory().hasMutator(aContainerType, aName, aType))
+                    throw new NoSuitableMethodException(
+                        "Can't find a mutator method for boolean property " + aName +
+                        " of type " + aType.getName() +
+                        " on target class " + aContainerType);
+            }
+
+            @Override
             public Name getName() {
                 return aName;
             }
 
             @Override
             public Builder<R> newBuilder() {
-                return new PropertyBuilder<Boolean,R>(aName,converter);
-            }
-
-            @Override
-            public R build(Boolean aValue) {
-                return converter.convert(aValue);
+                return new PropertyBuilder<Boolean,R>(aName, aType, converter);
             }
         };
     }
@@ -520,18 +634,22 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T> {
             private Converter<Boolean,R> converter = getConverter(Boolean.class, aType);
 
             @Override
+            public void onAttach(Class<?> aContainerType, HasConverters aConverters) {
+                if (new ReflectorFactory().hasMutator(aContainerType, Name.MISSING, aType))
+                    throw new NoSuitableMethodException(
+                        "Can't find a mutator method for unnamed boolean property " +
+                        " of type " + aType.getName() +
+                        " on target class " + aContainerType);
+            }
+
+            @Override
             public Name getName() {
                 return Name.MISSING;
             }
 
             @Override
             public Builder<R> newBuilder() {
-                return new PropertyBuilder<Boolean,R>(Name.MISSING,converter);
-            }
-
-            @Override
-            public R build(Boolean aValue) {
-                return converter.convert(aValue);
+                return new PropertyBuilder<Boolean,R>(Name.MISSING, aType, converter);
             }
         };
     }

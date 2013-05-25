@@ -45,6 +45,11 @@ public class ReflectiveBuilderWithIntermediate<I,T> implements Builder<T> {
     }
 
     @Override
+    public Class<T> getTargetType() {
+        return target;
+    }
+
+    @Override
     public Builder<?> moveDown(Context aContext) {
         return aContext.select(nested);
     }

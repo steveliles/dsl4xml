@@ -1,5 +1,7 @@
 package com.sjl.dsl4xml.json;
 
+import com.sjl.dsl4xml.Converter;
+
 public interface NamedArray<T> extends Content<T>, Definition<T> {
 
     /**
@@ -16,5 +18,9 @@ public interface NamedArray<T> extends Content<T>, Definition<T> {
     public NamedArray<T> of(UnNamedObject<?> aContent);
 
     public NamedArray<T> of(UnNamedArray<?> aContent);
+
+    public <I> NamedArray<I> via(Class<I> anIntermediateType);
+
+    public <I> NamedArray<I> via(Class<I> anIntermediateType, Converter<I,T> aConverter);
 
 }
