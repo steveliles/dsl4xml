@@ -28,6 +28,16 @@ public abstract class AbstractJsonParsingTest {
         Assert.assertEquals("some value", _result.getMyProperty());
     }
 
+    @Test
+    public void testJsonTypedProperties() {
+        DocumentReader2<JsonDocumentDefinitions.Typed> _r = newDocumentReader(defs.jsonTypedProperties());
+        JsonDocumentDefinitions.Typed _result = _r.read(newReader("{\"integer\":1,\"float\":2.0,\"boolean\":true}"));
+        Assert.assertNotNull(_result);
+        Assert.assertEquals(1, _result.getInteger());
+        Assert.assertEquals(2.0f, _result.getFloat(), 0f);
+        Assert.assertTrue(_result.getBoolean());
+    }
+
     private Reader newReader(String aString) {
         return new StringReader(aString);
     }

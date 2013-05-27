@@ -36,7 +36,18 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             new FloatStringConverter(),
             new DoubleStringConverter(),
             new ClassStringConverter(),
-            new StringStringConverter()
+            new StringStringConverter(),
+            new StringBigIntegerConverter(),
+            new StringBigDecimalConverter(),
+            new NumberByteConverter(),
+            new NumberShortConverter(),
+            new NumberIntegerConverter(),
+            new NumberLongConverter(),
+            new NumberFloatConverter(),
+            new NumberDoubleConverter(),
+            new NumberBigIntegerConverter(),
+            new NumberBigDecimalConverter(),
+            new BooleanBooleanConverter()
         ));
     }
 
@@ -552,8 +563,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
     @Override
     public <R> NamedProperty<Boolean,R> bool(final Name aName) {
-        throw new UnsupportedOperationException("TODO"); // TODO: figure out R from the context
-        //return bool(aName, Boolean.class);
+        return bool(aName, null);
     }
 
     @Override
@@ -564,11 +574,15 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
     @Override
     public <R> NamedProperty<Boolean,R> bool(final Name aName, final Class<R> aType) {
         return new NamedProperty<Boolean,R>(){
-            private Converter<Boolean,R> converter = getConverter(Boolean.class, aType);
+            private Class<R> type = aType;
+            private Converter<Boolean,R> converter;
 
             @Override
             public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
-                aReflector.prepare(aContainerType, aName, aType);
+                if (type == null)
+                    type = (Class<R>)ReflectorFactory.getExpectedType(aContainerType, aName);
+                converter = getConverter(Boolean.class, type);
+                aReflector.prepare(aContainerType, aName, type);
             }
 
             @Override
@@ -578,7 +592,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public Builder<R> newBuilder() {
-                return new PropertyBuilder<Boolean,R>(aName, aType, converter);
+                return new PropertyBuilder<Boolean,R>(aName, type, converter);
             }
         };
     }
