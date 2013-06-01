@@ -135,6 +135,79 @@ public abstract class AbstractJsonParsingTest {
         Assert.assertEquals("bananas", _strings.get(2));
     }
 
+    @Test
+    public void testObjectArrays() {
+        DocumentReader2<JsonDocumentDefinitions.ObjectArrays> _r = newDocumentReader(defs.objectArrays());
+        JsonDocumentDefinitions.ObjectArrays _result = _r.read(newReader(
+            "{\"someProperty\":\"hello\",\"simples\":[{\"myProperty\":\"first\"},{\"myProperty\":\"second\"},{\"myProperty\":\"third\"}]}"
+        ));
+
+        Assert.assertNotNull(_result);
+        Assert.assertEquals("hello", _result.getSomeProperty());
+        Assert.assertNotNull(_result.getSimples());
+        Assert.assertEquals(3, _result.getSimples().size());
+        Assert.assertEquals("first", _result.getSimples().get(0).getMyProperty());
+        Assert.assertEquals("second", _result.getSimples().get(1).getMyProperty());
+        Assert.assertEquals("third", _result.getSimples().get(2).getMyProperty());
+    }
+
+    @Test
+    public void testArrayOfArrays() {
+        DocumentReader2<JsonDocumentDefinitions.ArrayOfArrays> _r = newDocumentReader(defs.arraysOfArrays());
+        JsonDocumentDefinitions.ArrayOfArrays _result = _r.read(newReader(
+            "{\"arrays\":[[\"one\",\"two\",\"three\"],[\"apples\",\"oranges\"],[\"one banana\",\"two banana\"]]}"
+        ));
+
+        Assert.assertNotNull(_result);
+        Assert.assertEquals(3, _result.getArrays().size());
+        Assert.assertEquals(3, _result.getArrays().get(0).size());
+        Assert.assertEquals("one", _result.getArrays().get(0).get(0));
+        Assert.assertEquals("two", _result.getArrays().get(0).get(1));
+        Assert.assertEquals("three", _result.getArrays().get(0).get(2));
+        Assert.assertEquals(2, _result.getArrays().get(1).size());
+        Assert.assertEquals("apples", _result.getArrays().get(1).get(0));
+        Assert.assertEquals("oranges", _result.getArrays().get(1).get(1));
+        Assert.assertEquals(2, _result.getArrays().get(2).size());
+        Assert.assertEquals("one banana", _result.getArrays().get(2).get(0));
+        Assert.assertEquals("two banana", _result.getArrays().get(2).get(1));
+    }
+
+    @Test
+    public void testPopulatesImmutableRootTypesFromIntermediates() {
+        DocumentReader2<JsonDocumentDefinitions.Immutable> _r = newDocumentReader(defs.immutableRootTypes());
+        JsonDocumentDefinitions.Immutable _result = _r.read(newReader(
+            "{\"first\":\"apple\",\"second\":\"ball\"}"
+        ));
+
+        Assert.assertNotNull(_result);
+        Assert.assertEquals("apple", _result.getFirst());
+        Assert.assertEquals("ball", _result.getSecond());
+    }
+
+    @Test
+    public void testPopulatesImmutableRootTypesFromIntermediatesWithNoCommonHierarchy() {
+        DocumentReader2<JsonDocumentDefinitions.Immutable> _r = newDocumentReader(defs.intermediateRootTypeWithNoCommonHierarchy());
+        JsonDocumentDefinitions.Immutable _result = _r.read(newReader(
+            "{\"first\":\"apple\",\"second\":\"ball\"}"
+        ));
+
+        Assert.assertNotNull(_result);
+        Assert.assertEquals("apple", _result.getFirst());
+        Assert.assertEquals("ball", _result.getSecond());
+    }
+
+    @Test
+    public void testPopulatesImmutableNonRootTypes() {
+        DocumentReader2<JsonDocumentDefinitions.Immutables> _r = newDocumentReader(defs.immutableNonRootTypes());
+        JsonDocumentDefinitions.Immutables _result = _r.read(newReader(
+            "{\"first\":{\"first\":\"apple\",\"second\":\"ball\"},\"second\":{\"first\":\"apple\",\"second\":\"ball\"}}"
+        ));
+
+        Assert.assertNotNull(_result);
+        Assert.assertNotNull(_result.first());
+        Assert.assertNotNull(_result.second());
+    }
+
     private Reader newReader(String aString) {
         return new StringReader(aString);
     }

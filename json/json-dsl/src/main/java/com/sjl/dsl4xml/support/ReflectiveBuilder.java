@@ -38,6 +38,7 @@ public class ReflectiveBuilder<T> implements Builder<T> {
         reflector = aReflector;
         nested = aNested;
         array = anIsArray;
+
         if (nested != null)
         {
             aliases = new HashMap<String,String>();
@@ -75,15 +76,21 @@ public class ReflectiveBuilder<T> implements Builder<T> {
     public void setValue(Context aContext, String aName, Object aValue) {
         String _propertyName = aliases.get(aName);
         if (_propertyName == null) _propertyName = aName;
-        Method _m = reflector.getMutator(target, _propertyName, aValue);
+        Method _m = reflector.getMutator(intermediate, _propertyName, aValue);
         if (_m == null)
             throw new IllegalStateException(
                 "No mutator method found for '" + _propertyName + "' of type " +
-                aValue.getClass().getName() + " in target " + target);
+                aValue.getClass().getName() + " in target " + intermediate);
+
+//        if (!_m.getDeclaringClass().equals(intermediate))
+//        {
+//            throw new IllegalArgumentException(
+//                "cannot invoke " + _m.getName() + " on " + intermediate.getName() + " - it is not the declaring class!");
+//        }
 
         try {
             T _ctx = aContext.peek();
-            if (target.isAssignableFrom(_ctx.getClass())) {
+            if (intermediate.isAssignableFrom(_ctx.getClass())) {
                 switch (_m.getParameterTypes().length) {
                     case 1 :
                         _m.invoke(aContext.peek(), aValue);
@@ -98,20 +105,22 @@ public class ReflectiveBuilder<T> implements Builder<T> {
                             _m.getParameterTypes().length + " parameters");
                 }
             } else {
-                throw new ParsingException("Expected " + _propertyName + " to be a " + target.getName() + " but got a " + _ctx.getClass().getName());
+                throw new ParsingException("Expected " + _propertyName + " to be a " + intermediate.getName() + " but got a " + _ctx.getClass().getName());
             }
         } catch (IllegalAccessException anExc) {
-            throw new ParsingException("Not allowed to invoke " + _m.getName() + " on " + target.getName(), anExc);
+            throw new ParsingException("Not allowed to invoke " + _m.getName() + " on " + intermediate.getName(), anExc);
         } catch (InvocationTargetException anExc) {
-            throw new ParsingException("Problem while invoking " + _m.getName() + " on " + target.getName(), anExc);
+            throw new ParsingException("Problem while invoking " + _m.getName() + " on " + intermediate.getName(), anExc);
         }
     }
 
     @Override
     public T build(Context aContext) {
+        System.out.println(converter);
         if (converter != null)
             return converter.convert(aContext.pop());
-        else
+        else {
             return aContext.pop();
+        }
     }
 }

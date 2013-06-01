@@ -205,8 +205,8 @@ public class JsonDocumentDefinitions {
         List<Simple> getSimples();
     }
 
-    public void objectArrays() {
-        DocumentDefinition<ObjectArrays> _d = new JsonDocumentDefinition<ObjectArrays>() {{
+    public DocumentDefinition<ObjectArrays> objectArrays() {
+        return new JsonDocumentDefinition<ObjectArrays>() {{
             mapping(ObjectArrays.class).with(
                 property("someProperty"),
                 array("simples").of(
@@ -228,15 +228,11 @@ public class JsonDocumentDefinitions {
      * }
      */
     public interface ArrayOfArrays {
-        interface InnerArray {
-            public List<String> getStrings();
-        }
-
-        public List<InnerArray> getArrays();
+        public List<List<String>> getArrays();
     }
 
-    public void arraysOfArrays() {
-        DocumentDefinition<ArrayOfArrays> _d = new JsonDocumentDefinition<ArrayOfArrays>(){{
+    public DocumentDefinition<ArrayOfArrays> arraysOfArrays() {
+        return new JsonDocumentDefinition<ArrayOfArrays>(){{
             mapping(ArrayOfArrays.class).with(
                 array("arrays").of(
                     array().of(String.class)
@@ -256,7 +252,7 @@ public class JsonDocumentDefinitions {
         public String getSecond();
     }
 
-    final class Immutable implements Interface {
+    public final class Immutable implements Interface {
         final String first;
         final String second;
 
@@ -276,17 +272,17 @@ public class JsonDocumentDefinitions {
         }
     }
 
-    public void immutableRootTypes() {
-        DocumentDefinition<Interface> _either = new JsonDocumentDefinition<Interface>(){{
-            mapping(Immutable.class).via(Interface.class).with(
-                property("first"),
-                property("second")
+    public DocumentDefinition<Immutable> immutableRootTypes() {
+        return new JsonDocumentDefinition<Immutable>(){{
+            converting(Interface.class).to(Immutable.class).using(
+                new Converter<Interface, Immutable>(){
+                    @Override
+                    public Immutable convert(Interface aFrom) {
+                        return new Immutable(aFrom.getFirst(), aFrom.getSecond());
+                    }
+                }
             );
-        }};
 
-        // or
-
-        DocumentDefinition<Immutable> _or = new JsonDocumentDefinition<Immutable>(){{
             mapping(Immutable.class).via(Interface.class).with(
                 property("first"),
                 property("second")
@@ -299,7 +295,7 @@ public class JsonDocumentDefinitions {
         public String getSecond();
     }
 
-    public void intermediateRootTypeWithNoCommonHierarchy() {
+    public DocumentDefinition<Immutable> intermediateRootTypeWithNoCommonHierarchy() {
         // a converter that can convert from Uncommon to Immutable
         // this could be written inline in the document definition,
         // and, with Java8 lambdas, could be quite succinct.
@@ -309,22 +305,12 @@ public class JsonDocumentDefinitions {
             }
         };
 
-        DocumentDefinition<Immutable> _either = new JsonDocumentDefinition<Immutable>(){{
+        return new JsonDocumentDefinition<Immutable>(){{
             converting(Uncommon.class).to(Immutable.class).using(uncommonToImmutable);
 
             mapping(Immutable.class).via(Uncommon.class).with(
                 property("first"),
                 property("second")
-            );
-        }};
-
-        // or
-
-        DocumentDefinition<Immutable> _or = new JsonDocumentDefinition<Immutable>(){{
-            mapping(Immutable.class).
-                via(Uncommon.class, uncommonToImmutable).with(
-                    property("first"),
-                    property("second")
             );
         }};
     }
@@ -334,8 +320,8 @@ public class JsonDocumentDefinitions {
         Immutable second();
     }
 
-    public void immutableNonRootTypes() {
-        DocumentDefinition<Immutables> _d = new JsonDocumentDefinition<Immutables>(){{
+    public DocumentDefinition<Immutables> immutableNonRootTypes() {
+        return new JsonDocumentDefinition<Immutables>(){{
             converting(Interface.class).to(Immutable.class).using(
                 new Converter<Interface, Immutable>(){
                     public Immutable convert(Interface aFrom) {
@@ -353,12 +339,12 @@ public class JsonDocumentDefinitions {
 
             mapping(Immutables.class).with(
                 // via a class that is interface compatible,
-                object(Immutable.class).via(Interface.class).with(
+                object("first", Immutable.class).via(Interface.class).with(
                     property("first"),
                     property("second")
                 ),
                 // and again, this time via a class that is not interface compatible
-                object(Immutable.class).via(Uncommon.class).with(
+                object("second", Immutable.class).via(Uncommon.class).with(
                     property("first"),
                     property("second")
                 )

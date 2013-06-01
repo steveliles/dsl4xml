@@ -93,7 +93,10 @@ System.out.println(_p);
                         reader.endArray();
                         _p = builders.pop();
                         _b = builders.peek();
-                        _b.setValue(this, names.pop(), _p.build(this));
+                        if (_b.isArray())
+                            _b.setValue(this, "", _p.build(this));
+                        else
+                            _b.setValue(this, names.pop(), _p.build(this));
                         break;
                     case BEGIN_OBJECT:
                         reader.beginObject();
