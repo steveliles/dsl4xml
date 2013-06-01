@@ -51,17 +51,17 @@ public class ReflectorFactory {
     }
 
     public boolean prepare(Class<?> aClass, Name aName, Class<?> aValueType) {
-        Method _m = cache.get(aName.getName());
+        Method _m = cache.get(aName.getAlias());
         if (_m == null) {
             synchronized(lock) {
-                _m = cache.get(aName.getName());
+                _m = cache.get(aName.getAlias());
                 // doesn't actually matter that DCL is broken, as worst case
                 // we replace the cached method with the same method
                 if (_m == null) {
                     _m = getMutatorMethod(aClass, aName); // TODO: use the value for disambiguation?
                     if (_m != null) {
                         Map<String,Method> _newCache = new HashMap<String,Method>(cache);
-                        _newCache.put(aName.getName(), _m);
+                        _newCache.put(aName.getAlias(), _m);
                         cache = _newCache;
                     }
                 }
@@ -70,7 +70,7 @@ public class ReflectorFactory {
         return _m != null;
     }
 
-    public static <T> Class<T> getProxy(Class<T> aClass) {
+    public static <T> Class<T> maybeConvertToProxy(Class<T> aClass) {
         if (aClass.isInterface()) {
             return (Class<T>)Proxy.getProxyClass(
                 Classes.class.getClassLoader(),
@@ -85,7 +85,7 @@ public class ReflectorFactory {
         // TODO: probably need some checks here, e.g. number of params?
         Class<?> _type = getAccessorMethod(aClass, aName).getReturnType();
         if (_type.isInterface()) {
-            return getProxy(_type);
+            return maybeConvertToProxy(_type);
         } else {
             return _type;
         }

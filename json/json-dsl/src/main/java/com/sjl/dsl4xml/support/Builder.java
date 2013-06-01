@@ -5,6 +5,8 @@ public interface Builder<T> {
 
     public Name getName();
 
+    public boolean isArray();
+
     public Class<? extends T> getTargetType();
 
     /**

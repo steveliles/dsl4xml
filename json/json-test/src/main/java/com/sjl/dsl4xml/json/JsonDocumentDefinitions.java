@@ -68,8 +68,8 @@ public class JsonDocumentDefinitions {
         public Simple getSecond();
     }
 
-    public void nestedObjects1() {
-        DocumentDefinition<NestedObjects> _either = new JsonDocumentDefinition<NestedObjects>() {{
+    public DocumentDefinition<NestedObjects> nestedObjects1() {
+        return new JsonDocumentDefinition<NestedObjects>() {{
             mapping(NestedObjects.class).with(
                 object("first", Simple.class).with(
                     property("myProperty")
@@ -79,19 +79,16 @@ public class JsonDocumentDefinitions {
                 )
             );
         }};
-
-        // or we can define a method that defines the mapping of Simple to reduce repetition
-
-
     }
 
-    public void nestedObjects2() {
-        DocumentDefinition<NestedObjects> _or = new JsonDocumentDefinition<NestedObjects>() {{
-            mapping(NestedObjects.class).with(
-                simple("first"),
-                simple("second")
-            );
-        }
+    public DocumentDefinition<NestedObjects> nestedObjects2() {
+        return new JsonDocumentDefinition<NestedObjects>() {
+            {
+                mapping(NestedObjects.class).with(
+                    simple("first"),
+                    simple("second")
+                );
+            }
 
             private NamedObject<Simple> simple(String aName) {
                 return object(aName, Simple.class).with(
@@ -111,8 +108,8 @@ public class JsonDocumentDefinitions {
      *   }
      * }
      */
-    public void aliasedMethodNames() {
-        DocumentDefinition<NestedObjects> _either = new JsonDocumentDefinition<NestedObjects>() {{
+    public DocumentDefinition<NestedObjects> aliasedMethodNames() {
+        return new JsonDocumentDefinition<NestedObjects>() {{
             mapping(NestedObjects.class).with(
                 object(alias("first-property", "first"), Simple.class).with(
                     property("myProperty")
@@ -133,7 +130,7 @@ public class JsonDocumentDefinitions {
      *   "secondObject": {
      *     "myProperty":"second value"
      *   },
-     *   "secondProperty":"I am second",
+     *   "secondProperty":"I am second"
      * }
      */
     public interface MixedTypes {
@@ -143,8 +140,8 @@ public class JsonDocumentDefinitions {
         String getSecondProperty();
     }
 
-    public void mixedTypeHandling() {
-        DocumentDefinition<MixedTypes> _d = new JsonDocumentDefinition<MixedTypes>(){{
+    public DocumentDefinition<MixedTypes> mixedTypeHandling() {
+        return new JsonDocumentDefinition<MixedTypes>(){{
             mapping(MixedTypes.class).with(
                 property("firstProperty"),
                 object("firstObject", Simple.class).with(
@@ -173,8 +170,8 @@ public class JsonDocumentDefinitions {
         List<String> getStrings();
     }
 
-    public void simplePropertyArrays() {
-        DocumentDefinition<SimplePropertyArray> _either = new JsonDocumentDefinition<SimplePropertyArray>(){{
+    public DocumentDefinition<SimplePropertyArray> simplePropertyArrays() {
+        return new JsonDocumentDefinition<SimplePropertyArray>(){{
             mapping(SimplePropertyArray.class).with(
                 property("someProperty"),
                 array("strings").of(
@@ -182,10 +179,10 @@ public class JsonDocumentDefinitions {
                 )
             );
         }};
+    }
 
-        // or, taking advantage of the array-property shortcut
-
-        DocumentDefinition<SimplePropertyArray> _or = new JsonDocumentDefinition<SimplePropertyArray>(){{
+    public DocumentDefinition<SimplePropertyArray> simplePropertyArraysWithShortcut() {
+        return new JsonDocumentDefinition<SimplePropertyArray>(){{
             mapping(SimplePropertyArray.class).with(
                 property("someProperty"),
                 array("strings").of(String.class)

@@ -84,7 +84,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public String getAlias() {
-                return anAlias;
+                return (anAlias != null) ? anAlias : aName;
             }
 
             @Override
@@ -121,7 +121,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             private List<Content<?>> content = NO_CONTENT;
             private Converter<Object,T> converter;
             private ReflectorFactory reflector = new ReflectorFactory();
-            private Class<? extends T> type = reflector.getProxy(aType);
+            private Class<? extends T> type = ReflectorFactory.maybeConvertToProxy(aType);
 
             @Override
             public Document<T> with(Content<?>... aContent) {
@@ -135,14 +135,14 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public <I> Document<I> via(Class<I> anIntermediateType) {
-                intermediate = reflector.getProxy(anIntermediateType);
+                intermediate = ReflectorFactory.maybeConvertToProxy(anIntermediateType);
                 converter = (Converter<Object,T>)getConverter(anIntermediateType, type);
                 return (Document<I>)this;
             }
 
             @Override
             public <I> Document<I> via(Class<I> anIntermediateType, Converter<I,? extends T> aConverter) {
-                intermediate = reflector.getProxy(anIntermediateType);
+                intermediate = ReflectorFactory.maybeConvertToProxy(anIntermediateType);
                 converter = (Converter<Object,T>)aConverter;
                 return (Document<I>)this;
             }
@@ -155,7 +155,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
                     _nested.add(_c.newBuilder());
                 return new ReflectiveBuilder(
                     Name.MISSING, aType, intermediate, converter,
-                    reflector.newReflector(), _nested);
+                    reflector.newReflector(), _nested, false);
             }
         };
     }
@@ -182,17 +182,18 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             private Class<?> intermediate;
             private Converter<?,R> converter;
             private ReflectorFactory reflector = new ReflectorFactory();
+            private Class<? extends R> type = ReflectorFactory.maybeConvertToProxy(aType);
 
             @Override
             public <I> NamedObject<I> via(Class<I> anIntermediateType) {
                 getConverter(anIntermediateType, aType);
-                intermediate = anIntermediateType;
+                intermediate = ReflectorFactory.maybeConvertToProxy(anIntermediateType);
                 return (NamedObject<I>) this;
             }
 
             @Override
             public <I> NamedObject<I> via(Class<I> anIntermediateType, Converter<I, R> aConverter) {
-                intermediate = anIntermediateType;
+                intermediate = ReflectorFactory.maybeConvertToProxy(anIntermediateType);
                 converter = aConverter;
                 return (NamedObject<I>) this;
             }
@@ -201,7 +202,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             public NamedObject<R> with(Content<?>... aContent) {
                 content = new ArrayList<Content<?>>();
                 for (Content<?> _c : aContent) {
-                    _c.onAttach(aType, reflector, JsonDocumentDefinition.this);
+                    _c.onAttach(type, reflector, JsonDocumentDefinition.this);
                     content.add(_c);
                 }
                 return this;
@@ -209,7 +210,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
-                aReflector.prepare(aContainerType, aName, aType);
+                aReflector.prepare(aContainerType, aName, type);
             }
 
             @Override
@@ -227,7 +228,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
                 return new ReflectiveBuilder(
                     aName, aType, intermediate, converter,
-                    reflector.newReflector(), _nested);
+                    reflector.newReflector(), _nested, false);
             }
         };
     }
@@ -235,22 +236,22 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
     @Override
     public <R> UnNamedObject<R> object(final Class<? extends R> aType) {
         return new UnNamedObject<R>(){
-            private List<Content<?>> content;
+            private List<Content<?>> content = Collections.emptyList();
             private Converter<?,R> converter;
             private Class<?> intermediate;
             private ReflectorFactory reflector = new ReflectorFactory();
-            private Class<? extends R> type = reflector.getProxy(aType);
+            private Class<? extends R> type = reflector.maybeConvertToProxy(aType);
 
             @Override
             public <I> UnNamedObject<I> via(Class<I> anIntermediateType) {
-                intermediate = reflector.getProxy(anIntermediateType);
+                intermediate = reflector.maybeConvertToProxy(anIntermediateType);
                 converter = (Converter<?,R>) getConverter(intermediate, aType);
                 return (UnNamedObject<I>)this;
             }
 
             @Override
             public <I> UnNamedObject<I> via(Class<I> anIntermediateType, Converter<I, R> aConverter) {
-                intermediate = reflector.getProxy(anIntermediateType);
+                intermediate = reflector.maybeConvertToProxy(anIntermediateType);
                 converter = aConverter;
                 return (UnNamedObject<I>)this;
             }
@@ -283,25 +284,25 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
                 for (Content<?> _c : content)
                     _nested.add(_c.newBuilder());
                 return new ReflectiveBuilder(
-                    Name.MISSING, type, intermediate, converter,
-                    reflector.newReflector(), _nested);
+                    Name.MISSING, aType, intermediate, converter,
+                    reflector.newReflector(), _nested, false);
             }
         };
     }
 
     @Override
     public <R> NamedArray<R> array(String aName) {
-        return array(alias(aName, aName), null);
+        return array(alias(aName, aName));
     }
 
     @Override
     public <R> NamedArray<R> array(Name aName) {
-        return array(aName, null);
+        return (NamedArray<R>)array(aName, ArrayList.class);
     }
 
     @Override
     public <R> NamedArray<R> array(String aName, Class<? extends R> aType) {
-        return array(alias(aName, aName));
+        return array(alias(aName, aName), aType);
     }
 
     @Override
@@ -310,55 +311,40 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             private UnNamedObject<?> obj;
             private UnNamedProperty<?,?> property;
             private UnNamedArray<?> array;
-            private Class<?> intermediate;
+            private Class<? extends R> type = ReflectorFactory.maybeConvertToProxy(aType);
             private Converter<?,? extends R> converter;
             private ReflectorFactory reflector = new ReflectorFactory();
 
             @Override
-            public <I> NamedArray<I> via(Class<I> anIntermediateType) {
-                intermediate = anIntermediateType;
-                converter = (Converter<?,R>) getConverter(intermediate, aType);
-                return (NamedArray<I>)this;
-            }
-
-            @Override
-            public <I> NamedArray<I> via(Class<I> anIntermediateType, Converter<I, R> aConverter) {
-                intermediate = anIntermediateType;
-                converter = aConverter;
-                return (NamedArray<I>)this;
-            }
-
-            @Override
             public NamedArray<R> of(Class<?> aConvertableType) {
-                obj = object(aConvertableType);
-                obj.onAttach(List.class, reflector, JsonDocumentDefinition.this);
+                property = property(aConvertableType);
                 return this;
             }
 
             @Override
             public NamedArray<R> of(UnNamedProperty<?,?> aContent) {
                 property = aContent;
-                property.onAttach(List.class, reflector, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public NamedArray<R> of(UnNamedObject<?> aContent) {
                 obj = aContent;
-                obj.onAttach(List.class, reflector, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public NamedArray<R> of(UnNamedArray<?> aContent) {
                 array = aContent;
-                array.onAttach(List.class, reflector, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
-                aReflector.prepare(aContainerType, aName, aType);
+                Content<?> _def = firstNonNull(obj, property, array);
+                _def.onAttach(ArrayList.class, reflector, JsonDocumentDefinition.this);
+
+                aReflector.prepare(aContainerType, aName, type);
             }
 
             @Override
@@ -371,8 +357,8 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             public Builder<T> newBuilder() {
                 Definition<?> _def = firstNonNull(obj, property, array);
                 return new ReflectiveBuilder(
-                    aName, aType, intermediate, converter,
-                    reflector.newReflector(), Collections.singletonList(_def));
+                    aName, aType, ArrayList.class, converter,
+                    reflector.newReflector(), Collections.singletonList(_def.newBuilder()), true);
             }
         };
     }
@@ -408,34 +394,33 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
 
             @Override
             public UnNamedArray<R> of(Class<?> aConvertableType) {
-                obj = object(aConvertableType);
-                obj.onAttach(List.class, reflector, JsonDocumentDefinition.this);
+                property = property(aConvertableType);
                 return this;
             }
 
             @Override
             public UnNamedArray<R> of(UnNamedProperty<?,?> aContent) {
                 property = aContent;
-                property.onAttach(List.class, reflector, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public UnNamedArray<R> of(UnNamedObject<?> aContent) {
                 obj = aContent;
-                obj.onAttach(List.class, reflector, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public UnNamedArray<R> of(UnNamedArray<?> aContent) {
                 array = aContent;
-                array.onAttach(List.class, reflector, JsonDocumentDefinition.this);
                 return this;
             }
 
             @Override
             public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+                Content<?> _def = firstNonNull(obj, property, array);
+                _def.onAttach(ArrayList.class, reflector, JsonDocumentDefinition.this);
+
                 aReflector.prepare(aContainerType, Name.MISSING, aType);
             }
 
@@ -450,7 +435,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
                 Definition<?> _def = firstNonNull(obj, property, array);
                 return new ReflectiveBuilder(
                     Name.MISSING, aType, intermediate, converter,
-                    reflector.newReflector(), Collections.singletonList(_def));
+                    reflector.newReflector(), Collections.singletonList(_def), true);
             }
         };
     }

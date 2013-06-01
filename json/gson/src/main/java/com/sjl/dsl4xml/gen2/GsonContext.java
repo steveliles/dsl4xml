@@ -7,7 +7,6 @@ import com.sjl.dsl4xml.support.Builder;
 import com.sjl.dsl4xml.support.Context;
 import com.sjl.dsl4xml.support.Name;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
 
@@ -32,8 +31,8 @@ public class GsonContext implements Context {
             builders.push(_b);
             _b.prepare(this);
 
-            while (reader.hasNext()) {
-                JsonToken _token = reader.peek();
+            JsonToken _token = null;
+            while ((_token = reader.peek()) != null) {
 System.out.println(_token);
                 switch(_token) {
                     case NAME:
@@ -43,29 +42,35 @@ System.out.println(_token);
                         Builder<?> _p = _b.moveDown(this);
                         if (_p == null)
                             _p = builders.peek();
+System.out.println(_p);
                         _p.prepare(this);
                         _p.setValue(this, "", reader.nextString());
-                        _b.setValue(this, names.pop(), _p.build(this));
+                        if (_b.isArray())
+                            _b.setValue(this, "", _p.build(this));
+                        else
+                            _b.setValue(this, names.pop(), _p.build(this));
                         break;
                     case NUMBER:
                         _p = _b.moveDown(this);
-                        if (_p == null) {
-                            reader.skipValue();
-                        } else {
-                            _p.prepare(this);
-                            _p.setValue(this, "", reader.nextDouble()); // TODO: this is not good - overflow on long's
+                        if (_p == null)
+                            _p = builders.peek();
+                        _p.prepare(this);
+                        _p.setValue(this, "", reader.nextDouble()); // TODO: this is not good - overflow on long's
+                        if (_b.isArray())
+                            _b.setValue(this, "", _p.build(this));
+                        else
                             _b.setValue(this, names.pop(), _p.build(this));
-                        }
                         break;
                     case BOOLEAN:
                         _p = _b.moveDown(this);
-                        if (_p == null) {
-                            reader.skipValue();
-                        } else {
-                            _p.prepare(this);
-                            _p.setValue(this, "", reader.nextBoolean());
+                        if (_p == null)
+                            _p = builders.peek();
+                        _p.prepare(this);
+                        _p.setValue(this, "", reader.nextBoolean());
+                        if (_b.isArray())
+                            _b.setValue(this, "", _p.build(this));
+                        else
                             _b.setValue(this, names.pop(), _p.build(this));
-                        }
                         break;
                     case NULL:
                         reader.nextNull();
@@ -107,14 +112,19 @@ System.out.println(_token);
                     case END_OBJECT:
                         reader.endObject();
                         _p = builders.pop();
-                        _b = builders.peek();
-                        _b.setValue(this, names.pop(), _p.build(this));
+                        if (!builders.isEmpty())
+                        {
+                            _b = builders.peek();
+                            if (_b.isArray())
+                                _b.setValue(this, "", _p.build(this));
+                            else
+                                _b.setValue(this, names.pop(), _p.build(this));
+                        }
                         break;
                     case END_DOCUMENT:
                         return aBuilder.build(this);
                 }
             }
-
             return aBuilder.build(this);
         } catch (ParsingException anExc) {
             throw anExc;
@@ -125,21 +135,16 @@ System.out.println(_token);
 
     @Override
     public Builder<?> select(List<Builder<?>> aBuilders) {
-        try {
-            JsonToken _token = reader.peek();
-            String _name = names.isEmpty() ? "" : names.peek();
-            for (Builder<?> _b : aBuilders) {
-                Name _n = _b.getName();
-                String _bn = (_n.getAlias() != null) ? _n.getAlias() : _n.getName();
-                if (_name.equals(_bn)) {
-                    // TODO: use the type info too ? ...
-                    return _b;
-                }
+        String _name = names.isEmpty() ? "" : names.peek();
+        for (Builder<?> _b : aBuilders) {
+            if ((_name.equals(_b.getName().getName())) ||
+                (_b.getName().equals(Name.MISSING) && aBuilders.size()==1)
+               ) {
+                // TODO: use the type info too ? ...
+                return _b;
             }
-            return null;
-        } catch (IOException anExc) {
-            throw new ParsingException(anExc);
         }
+        return null;
     }
 
     @Override

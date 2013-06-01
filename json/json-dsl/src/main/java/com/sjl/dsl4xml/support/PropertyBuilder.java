@@ -26,6 +26,11 @@ public class PropertyBuilder<F,T> implements Builder<T> {
     }
 
     @Override
+    public boolean isArray() {
+        return false;
+    }
+
+    @Override
     public Class<? extends T> getTargetType() {
         return target;
     }
