@@ -1,7 +1,6 @@
 package com.sjl.dsl4xml.gson;
 
-import static com.sjl.dsl4xml.GsonLegacyDocumentReader.*;
-import com.sjl.dsl4xml.GsonLegacyDocumentReader;
+import com.sjl.dsl4xml.json.JsonDocumentDefinition;
 import com.sjl.dsl4xml.support.Factory;
 import com.sjl.dsl4xml.support.convert.ThreadSafeDateStringConverter;
 import junit.framework.Assert;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,25 +40,28 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesComplexMemberJson() throws Exception {
-		GsonLegacyDocumentReader<Member1> _reader = mappingOf(Member1.class).to(
-			property("id"),
-			property("registrationDate"),
-			object("person", Member1.Person.class).with(
-				property("id"),
-				property("firstname"),
-				property("lastname"),
-				property("email"),
-				property("title")
-			),
-			object("social", Member1.Social.class).with(
-				property("providerId"),
-				property("providerUserId"),
-				property("imageUrl")
-			),
-			property("pointsAccrued")
-		);
+		GsonDocumentReader<Member1> _reader = new GsonDocumentReader<Member1>(
+            new JsonDocumentDefinition<Member1>(){{
+                registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
 
-		_reader.registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
+                mapping(Member1.class).with(
+                    property("id"),
+                    property("registrationDate"),
+                    object("person", Member1.Person.class).with(
+                        property("id"),
+                        property("firstname"),
+                        property("lastname"),
+                        property("email"),
+                        property("title")
+                    ),
+                    object("social", Member1.Social.class).with(
+                        property("providerId"),
+                        property("providerUserId"),
+                        property("imageUrl")
+                    ),
+                    property("pointsAccrued")
+                );
+        }});
 
 		Member1 _result = _reader.read(new InputStreamReader(getClass().getResourceAsStream("member-1.json")));
 
@@ -137,29 +138,33 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesComplexMemberJsonWithIdObjects() throws Exception {
-		GsonLegacyDocumentReader<Member2> _reader = mappingOf(Member2.class).to(
-			object("id", Member2.Identifier.class).with(
-				property("serializedForm")
-			),
-			property("registrationDate"),
-			object("person", Member2.Person.class).with(
-				object("id", Member2.Identifier.class).with(
-					property("serializedForm")
-				),
-				property("firstname"),
-				property("lastname"),
-				property("email"),
-				property("title")
-			),
-			object("social", Member2.Social.class).with(
-				property("providerId"),
-				property("providerUserId"),
-				property("imageUrl")
-			),
-			property("pointsAccrued")
-		);
+        GsonDocumentReader<Member2> _reader = new GsonDocumentReader<Member2>(
+            new JsonDocumentDefinition<Member2>(){{
+                registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
 
-		_reader.registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
+                mapping(Member2.class).with(
+                    object("id", Member2.Identifier.class).with(
+                        property("serializedForm")
+                    ),
+                    property("registrationDate"),
+                    object("person", Member2.Person.class).with(
+                        object("id", Member2.Identifier.class).with(
+                            property("serializedForm")
+                        ),
+                        property("firstname"),
+                        property("lastname"),
+                        property("email"),
+                        property("title")
+                    ),
+                    object("social", Member2.Social.class).with(
+                        property("providerId"),
+                        property("providerUserId"),
+                        property("imageUrl")
+                    ),
+                    property("pointsAccrued")
+                );
+            }});
+
 
 		Member2 _result = _reader.read(new InputStreamReader(getClass().getResourceAsStream("member-2.json")));
 
@@ -186,9 +191,7 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesComplexMemberJsonToImmutableObjects() throws Exception {
-		GsonLegacyDocumentReader<Member2> _reader = createMember2Reader();
-
-		_reader.registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
+		GsonDocumentReader<Member2> _reader = createMember2Reader();
 
 		Member2 _result = _reader.read(new InputStreamReader(getClass().getResourceAsStream("member-2.json")));
 
@@ -221,11 +224,14 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesArraysOfLengthOne() {
-		GsonLegacyDocumentReader<ThingWithText> _reader = mappingOf(ThingWithText.class).to(
-			array("text", List.class).of(
-				unNamedProperty(String.class)
-			)
-		);
+		GsonDocumentReader<ThingWithText> _reader = new GsonDocumentReader<ThingWithText>(
+            new JsonDocumentDefinition<ThingWithText>() {{
+                mapping(ThingWithText.class).with(
+                    array("text", List.class).of(
+                            property(String.class)
+                    ));
+            }}
+        );
 
 		ThingWithText _twt = _reader.read(new StringReader("{\"text\":[\"one\"], \"other\":\"flib\"}"));
 
@@ -237,10 +243,13 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesArraysOfStrings() {
-		GsonLegacyDocumentReader<ThingWithText> _reader = mappingOf(ThingWithText.class).to(
-			array("text", List.class).of(
-				unNamedProperty(String.class)
-			)
+		GsonDocumentReader<ThingWithText> _reader = new GsonDocumentReader<ThingWithText>(
+            new JsonDocumentDefinition<ThingWithText>() {{
+                mapping(ThingWithText.class).with(
+                    array("text", List.class).of(
+                        property(String.class)
+                    ));
+            }}
 		);
 
 		ThingWithText _twt = _reader.read(new StringReader("{\"text\":[\"first\", \"second\", \"third\"]}"));
@@ -260,10 +269,13 @@ public class JsonParsingTest
 	@Test
 	public void parsesArraysOfBooleans()
 	{
-		GsonLegacyDocumentReader<Truthy> _reader = mappingOf(Truthy.class).to(
-			array("truths", List.class).of(
-				unNamedProperty(Boolean.class)
-			)
+		GsonDocumentReader<Truthy> _reader =  new GsonDocumentReader<Truthy>(
+            new JsonDocumentDefinition<Truthy>() {{
+                mapping(Truthy.class).with(
+                    array("truths", List.class).of(
+                        bool(Boolean.class)
+                    ));
+            }}
 		);
 
 		Truthy _t = _reader.read(new StringReader("{\"truths\":[true, false, true]}"));
@@ -283,10 +295,13 @@ public class JsonParsingTest
 	@Test
 	public void parsesArraysOfNumbers()
 	{
-		GsonLegacyDocumentReader<Numbers> _reader = mappingOf(Numbers.class).to(
-			array("numbers", List.class).of(
-				unNamedProperty(Float.class)
-			)
+		GsonDocumentReader<Numbers> _reader =  new GsonDocumentReader<Numbers>(
+            new JsonDocumentDefinition<Numbers>() {{
+                mapping(Numbers.class).with(
+                    array("numbers", List.class).of(
+                        number(Float.class)
+                    ));
+            }}
 		);
 
 		Numbers _t = _reader.read(new StringReader("{\"numbers\":[1.0, 2.0, 3.0]}"));
@@ -305,13 +320,16 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesArraysOfConvertedStrings() {
-		GsonLegacyDocumentReader<Dates> _reader = mappingOf(Dates.class).to(
-			array("dates", List.class).of(
-				unNamedProperty(Date.class)
-			)
-		);
-
-		_reader.registerConverters(new ThreadSafeDateStringConverter("yyyyMMddZ"));
+		GsonDocumentReader<Dates> _reader = new GsonDocumentReader<Dates>(
+            new JsonDocumentDefinition<Dates>() {{
+                registerConverters(new ThreadSafeDateStringConverter("yyyyMMddZ"));
+                mapping(Dates.class).with(
+                    array("dates", List.class).of(
+                        property(Date.class)
+                    )
+                );
+            }}
+        );
 
 		Dates _t = _reader.read(new StringReader("{\"dates\":[\"20130507+0000\", \"20130508+0000\", \"20130509+0000\"]}"));
 
@@ -323,53 +341,9 @@ public class JsonParsingTest
 		Assert.assertEquals(new Date(1368057600000L), _t.getDates().get(2));
 	}
 
-	class StringList extends ArrayList<String>{
-		public StringList(List<String> aStrings) {
-			super(aStrings);
-		}
-	}
-
-	interface PostConstructed {
-		public StringList getStrings();
-	}
-
-	public ArrayHandler<StringList> stringList() {
-		return array("strings", new Factory<List<String>, StringList>(){
-			public List<String> newIntermediary() {
-				return new ArrayList<String>();
-			}
-
-			@Override
-			public StringList newTarget(List<String> anIntermediary) {
-				return new StringList(anIntermediary);  // TODO
-			}
-		}).of(
-			unNamedProperty(String.class)
-		);
-	}
-
-	@Test
-	public void postConstructsListTypesViaFactory() {
-		GsonLegacyDocumentReader<PostConstructed> _reader = mappingOf(PostConstructed.class).to(
-			stringList()
-		);
-
-		PostConstructed _pc = _reader.read(new StringReader("{\"strings\":[\"first\", \"second\", \"third\"]}"));
-		Assert.assertNotNull(_pc);
-		Assert.assertNotNull(_pc.getStrings());
-		Assert.assertTrue(_pc.getStrings() instanceof StringList);
-		Assert.assertEquals(3, _pc.getStrings().size());
-
-		Assert.assertEquals("first", _pc.getStrings().get(0));
-		Assert.assertEquals("second", _pc.getStrings().get(1));
-		Assert.assertEquals("third", _pc.getStrings().get(2));
-	}
-
-
-
 	@Test
 	public void skipsMissingObjects() {
-		GsonLegacyDocumentReader<Member2> _reader = createMember2Reader();
+		GsonDocumentReader<Member2> _reader = createMember2Reader();
 
 		Member2 _result = _reader.read(new StringReader("{\"id\":{\"serializedForm\":\"1234\"}, \"pointsAccrued\":50}"));
 
@@ -380,28 +354,34 @@ public class JsonParsingTest
 		Assert.assertEquals(50, _result.getPointsAccrued());
 	}
 
-	private GsonLegacyDocumentReader<Member2> createMember2Reader() {
-		return mappingOf(Member2.class).to(
-			object("id", Member2.Identifier.class, new ImmutableIdentifierFactory()).with(
-				property("serializedForm")
-			),
-			property("registrationDate"),
-			object("person", Member2.Person.class).with(
-				object("id", Member2.Identifier.class, new ImmutableIdentifierFactory()).with(
-					property("serializedForm")
-				),
-				property("firstname"),
-				property("lastname"),
-				property("email"),
-				property("title")
-			),
-			object("social", Member2.Social.class).with(
-				property("providerId"),
-				property("providerUserId"),
-				property("imageUrl")
-			),
-			property("pointsAccrued")
-		);
+	private GsonDocumentReader<Member2> createMember2Reader() {
+        return new GsonDocumentReader<Member2>(
+            new JsonDocumentDefinition<Member2>(){{
+                registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
+
+                mapping(Member2.class).with(
+                    object("id", Member2.Identifier.class).with(
+                        property("serializedForm")
+                    ),
+                    property("registrationDate"),
+                    object("person", Member2.Person.class).with(
+                        object("id", Member2.Identifier.class).with(
+                            property("serializedForm")
+                        ),
+                        property("firstname"),
+                        property("lastname"),
+                        property("email"),
+                        property("title")
+                    ),
+                    object("social", Member2.Social.class).with(
+                        property("providerId"),
+                        property("providerUserId"),
+                        property("imageUrl")
+                    ),
+                    number("pointsAccrued", Integer.class)
+                );
+            }}
+        );
 	}
 
 }

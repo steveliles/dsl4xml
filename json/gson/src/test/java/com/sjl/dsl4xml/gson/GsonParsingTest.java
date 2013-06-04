@@ -1,5 +1,6 @@
-package com.sjl.dsl4xml.gen2;
+package com.sjl.dsl4xml.gson;
 
+import com.sjl.dsl4xml.gson.GsonDocumentReader;
 import com.sjl.dsl4xml.json.AbstractJsonParsingTest;
 import com.sjl.dsl4xml.json.DocumentDefinition;
 import com.sjl.dsl4xml.DocumentReader;

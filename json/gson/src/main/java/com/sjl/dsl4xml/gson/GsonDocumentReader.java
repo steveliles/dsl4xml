@@ -1,4 +1,4 @@
-package com.sjl.dsl4xml.gen2;
+package com.sjl.dsl4xml.gson;
 
 import com.google.gson.stream.JsonReader;
 import com.sjl.dsl4xml.ParsingException;

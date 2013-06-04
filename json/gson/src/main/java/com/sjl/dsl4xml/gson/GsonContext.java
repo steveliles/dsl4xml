@@ -2,225 +2,171 @@ package com.sjl.dsl4xml.gson;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
-import com.sjl.dsl4xml.Converter;
 import com.sjl.dsl4xml.ParsingException;
-import com.sjl.dsl4xml.TypeSafeConverter;
-import com.sjl.dsl4xml.support.StringConverter;
-import com.sjl.dsl4xml.support.convert.*;
+import com.sjl.dsl4xml.support.Builder;
+import com.sjl.dsl4xml.Context;
+import com.sjl.dsl4xml.Name;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-/**
- * @author steve
- */
-public class GsonContext implements Context
-{
-	private JsonReader reader;
-	private List<TypeSafeConverter<?,?>> converters;
-	private Stack<Object> stack;
-	private Stack<String> names;
-	private String name;
-	private String value;
-	private JsonToken token;
+public class GsonContext implements Context {
 
-	public GsonContext(JsonReader aReader)
-	{
-		reader = aReader;
-		stack = new Stack<Object>();
-		names = new Stack<String>();
-		converters = new ArrayList<TypeSafeConverter<?,?>>();
+    private JsonReader reader;
+    private Stack<String> names;
+    private Stack<Object> build;
+    private Stack<Builder<?>> builders;
 
-		registerConverters(
-			new PrimitiveBooleanStringConverter(),
-			new DecimalToByteStringConverter(),
-			new DecimalToShortStringConverter(),
-			new DecimalToIntStringConverter(),
-			new DecimalToLongStringConverter(),
-			new PrimitiveCharStringConverter(),
-			new PrimitiveFloatStringConverter(),
-			new PrimitiveDoubleStringConverter(),
-			new BooleanStringConverter(),
-			new ByteStringConverter(),
-			new ShortStringConverter(),
-			new IntegerStringConverter(),
-			new LongStringConverter(),
-			new CharacterStringConverter(),
-			new FloatStringConverter(),
-			new DoubleStringConverter(),
-			new ClassStringConverter(),
-			new StringStringConverter()
-		);
-	}
+    public GsonContext(JsonReader aReader) {
+        reader = aReader;
 
-	@Override
-	public void push(Object aContext) {
-		stack.push(aContext);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T pop() {
-		return (T) stack.pop();
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T peek() {
-		return (T) stack.peek();
-	}
-
-	@Override
-	public void registerConverters(TypeSafeConverter<?,?>... aConverters)
-	{
-		// push any registered converters on ahead of existing converters (allows simple override)
-		converters.addAll(0, Arrays.asList(aConverters));
-	}
-
-    public <T> StringConverter<T> getConverter(Class<T> aTo) {
-        return (StringConverter<T>) getConverter(String.class, aTo);
+        names = new Stack<String>();
+        build = new Stack<Object>();
+        builders = new Stack<Builder<?>>();
     }
 
-    public <F,T> TypeSafeConverter<F,T> getConverter(Class<F> aFromType, Class<T> aToType) {
-        for (TypeSafeConverter<?,?> _c : converters) {
-            if ((_c.canConvertFrom(aFromType)) && (_c.canConvertTo(aToType))) {
-                return (TypeSafeConverter<F,T>) _c;
+    public <T> T build(Builder<T> aBuilder) {
+        try {
+            Builder _b = aBuilder;
+            builders.push(_b);
+            _b.prepare(this);
+
+            JsonToken _token = null;
+            while ((_token = reader.peek()) != null) {
+                switch(_token) {
+                    case NAME:
+                        names.push(reader.nextName());
+                        break;
+                    case STRING:
+                        Builder<?> _p = _b.moveDown(this);
+                        if (_p == null)
+                            _p = builders.peek();
+                        _p.prepare(this);
+                        _p.setValue(this, "", reader.nextString());
+                        if (_b.isArray())
+                            _b.setValue(this, "", _p.build(this));
+                        else
+                            _b.setValue(this, names.pop(), _p.build(this));
+                        break;
+                    case NUMBER:
+                        _p = _b.moveDown(this);
+                        if (_p == null)
+                            _p = builders.peek();
+                        _p.prepare(this);
+                        _p.setValue(this, "", reader.nextDouble()); // TODO: this is not good - overflow on long's
+                        String _name = "";
+                        try {
+                            if (_b.isArray())
+                                _b.setValue(this, "", _p.build(this));
+                            else
+                                _b.setValue(this, _name = names.pop(), _p.build(this));
+                        } catch (ClassCastException anExc) { // TODO: need to at least give some idea of which property we are reading in the message
+                            throw new ParsingException("Problem converting number '" + _name + "' in '" + _b.getName().getName() + "' ... does your document definition use 'property' where it should use 'number'?", anExc);
+                        }
+                        break;
+                    case BOOLEAN:
+                        _p = _b.moveDown(this);
+                        if (_p == null)
+                            _p = builders.peek();
+                        _p.prepare(this);
+                        _p.setValue(this, "", reader.nextBoolean());
+
+                        _name = "";
+                        try {
+                            if (_b.isArray())
+                                _b.setValue(this, "", _p.build(this));
+                            else
+                                _b.setValue(this, _name = names.pop(), _p.build(this));
+                        } catch (ClassCastException anExc) {
+                            throw new ParsingException("Problem converting boolean '" + _name + "' in '" + _b.getName().getName() + "' ... does your document definition use 'property' where it should use 'bool'?", anExc);
+                        }
+                        break;
+                    case NULL:
+                        reader.nextNull();
+                        names.pop();
+                    case BEGIN_ARRAY:
+                        reader.beginArray();
+                        _b = _b.moveDown(this);
+                        if (_b == null) {
+                            _b = builders.peek();
+                            if (reader.peek() == JsonToken.END_ARRAY)
+                                reader.endArray();
+                            else
+                                reader.skipValue();
+                        } else {
+                            _b.prepare(this);
+                            builders.push(_b);
+                        }
+                        break;
+                    case END_ARRAY:
+                        reader.endArray();
+                        _p = builders.pop();
+                        _b = builders.peek();
+                        if (_b.isArray())
+                            _b.setValue(this, "", _p.build(this));
+                        else
+                            _b.setValue(this, names.pop(), _p.build(this));
+                        break;
+                    case BEGIN_OBJECT:
+                        reader.beginObject();
+                        _b = _b.moveDown(this);
+                        if (_b == null) {
+                            _b = builders.peek();
+                        } else {
+                            _b.prepare(this);
+                            builders.push(_b);
+                        }
+                        break;
+                    case END_OBJECT:
+                        reader.endObject();
+                        _p = builders.pop();
+                        if (!builders.isEmpty())
+                        {
+                            _b = builders.peek();
+                            if (_b.isArray())
+                                _b.setValue(this, "", _p.build(this));
+                            else
+                                _b.setValue(this, names.pop(), _p.build(this));
+                        }
+                        break;
+                    case END_DOCUMENT:
+                        return aBuilder.build(this);
+                }
+            }
+            return aBuilder.build(this);
+        } catch (ParsingException anExc) {
+            throw anExc;
+        } catch (Exception anExc) {
+            throw new ParsingException(anExc);
+        }
+    }
+
+    @Override
+    public Builder<?> select(List<Builder<?>> aBuilders) {
+        String _name = names.isEmpty() ? "" : names.peek();
+        for (Builder<?> _b : aBuilders) {
+            if ((_name.equals(_b.getName().getName())) ||
+                (_b.getName().equals(Name.MISSING) && aBuilders.size()==1)
+               ) {
+                // TODO: use the type info too ? ...
+                return _b;
             }
         }
-
-        throw new RuntimeException("No converter registered that can convert from " + aFromType + " to " + aToType);
+        return null;
     }
 
-	@Override
-	public boolean hasNext() {
-		try {
-			return reader.peek() != JsonToken.END_DOCUMENT;
-		} catch (IOException anExc) {
-			throw new ParsingException(anExc);
-		}
-	}
+    @Override
+    public void push(Object anObject) {
+        build.push(anObject);
+    }
 
-	@Override
-	public JsonToken next() {
-		try {
-			token = reader.peek();
-			switch(token) {
-				case NAME:
-					value = null;
-					name = names.push(reader.nextName());
-					token = reader.peek();
-					break;
-				case BEGIN_OBJECT:
-					value = null;
-					reader.beginObject();
-					break;
-				case END_OBJECT:
-					value = null;
-					reader.endObject();
-					if (!names.isEmpty()) {
-						names.pop();
-						if (!names.isEmpty())
-							name = names.peek();
-						else
-							name = null;
-					} else {
-						name = null;
-					}
-					break;
-				case BEGIN_ARRAY:
-					reader.beginArray();
-					value = null;
-					token = reader.peek();
-					break;
-				case END_ARRAY:
-					value = null;
-					reader.endArray();
-					if (!names.isEmpty()) {
-						names.pop();
-						if (!names.isEmpty())
-							name = names.peek();
-						else
-							name = null;
-					} else {
-						name = null;
-					}
-					break;
-				case STRING:
-					value = reader.nextString();
-					name = names.pop();
-					break;
-				case BOOLEAN:
-					value = String.valueOf(reader.nextBoolean());
-					name = names.pop();
-					break;
-				case NUMBER:
-					value = String.valueOf(reader.nextDouble()); // todo: optimise
-					name = names.pop();
-					break;
-				case NULL:
-					value = null;
-					reader.nextNull();
-					name = names.pop();
-					break;
-			}
+    @Override
+    public <T> T pop() {
+        return (T)build.pop();
+    }
 
-			return token;
-		} catch (IOException anExc) {
-			throw new ParsingException(anExc);
-		}
-	}
-
-	@Override
-	public boolean isStartObjectNamed(String aName) {
-		return (
-			(token == JsonToken.BEGIN_OBJECT) &&
-			(aName.equals(name))
-		);
-	}
-
-	@Override
-	public boolean isNotEndObject() {
-		return !(token == JsonToken.END_OBJECT);
-	}
-
-	@Override
-	public boolean isStartArrayNamed(String aName) {
-		return (
-			(token == JsonToken.BEGIN_ARRAY) &&
-			(aName.equals(name))
-		);
-	}
-
-	@Override
-	public boolean isNotEndArray() {
-		return !(token == JsonToken.END_ARRAY);
-	}
-
-	@Override
-	public boolean isPropertyNamed(String aName) {
-		return (
-			(token == JsonToken.BOOLEAN || token == JsonToken.STRING || token == JsonToken.NUMBER) &&
-			(aName == null || aName.isEmpty() || aName.equals(name))
-		);
-	}
-
-	@Override
-	public void prepareForPossibleArrayEntry() {
-		name = names.push("");
-	}
-
-	@Override
-	public void removeUnusedArrayEntry() {
-		names.pop();
-		if (!names.isEmpty())
-			name = names.peek();
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
+    @Override
+    public <T> T peek() {
+        return (T)build.peek();
+    }
 }
