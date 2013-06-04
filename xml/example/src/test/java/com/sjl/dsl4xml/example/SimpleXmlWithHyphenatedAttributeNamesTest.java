@@ -7,14 +7,14 @@ import org.junit.*;
 
 import com.sjl.dsl4xml.*;
 
-import static com.sjl.dsl4xml.SAXDocumentReader.*;
+import static com.sjl.dsl4xml.SAXLegacyDocumentReader.*;
 
 public class SimpleXmlWithHyphenatedAttributeNamesTest {
 
 	@Test
 	public void mapsHobbitTagToHobbitObject()
 	throws Exception {
-		DocumentReader<Hobbits> _p = newMarshaller();
+		LegacyDocumentReader<Hobbits> _p = newMarshaller();
 		Hobbits _h = _p.read(getTestInput(), "utf-8");
 		Assert.assertEquals(4, _h.size());
 		Assert.assertEquals("frodo", _h.get(0).getFirstName());
@@ -25,7 +25,7 @@ public class SimpleXmlWithHyphenatedAttributeNamesTest {
 		return getClass().getResourceAsStream("example5.xml");
 	}
 	
-	private DocumentReader<Hobbits> newMarshaller() {
+	private LegacyDocumentReader<Hobbits> newMarshaller() {
 		return mappingOf("example", Hobbits.class).to(
 			tag("hobbit", Hobbit.class).with(
 				attributes("first-name", "last-name", "age")

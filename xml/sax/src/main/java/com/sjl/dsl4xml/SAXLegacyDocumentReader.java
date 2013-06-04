@@ -8,10 +8,10 @@ import org.xml.sax.*;
 
 import com.sjl.dsl4xml.sax.*;
 
-public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
+public class SAXLegacyDocumentReader<T> extends AbstractLegacyDocumentReader<T> {
 
-	public static <R> SAXDocumentReader<R> mappingOf(String aTagName, Class<R> aClass) {
-		return new SAXDocumentReader<R>(
+	public static <R> SAXLegacyDocumentReader<R> mappingOf(String aTagName, Class<R> aClass) {
+		return new SAXLegacyDocumentReader<R>(
 			aClass, new TagHandler<R>(aTagName, aClass)
 		);
 	}
@@ -32,7 +32,7 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 	private TagHandler<T> root;
 	private Dsl4XmlContentHandler<T> handler;
 	
-	public SAXDocumentReader(Class<T> aResultType, TagHandler<T> aRootTagHandler) {
+	public SAXLegacyDocumentReader(Class<T> aResultType, TagHandler<T> aRootTagHandler) {
 		super(aResultType);
 		try {
 			SAXParserFactory _f = SAXParserFactory.newInstance();
@@ -47,17 +47,17 @@ public class SAXDocumentReader<T> extends AbstractDocumentReader<T> {
 		}
 	}
 	
-	public SAXDocumentReader<T> to(AttributesHandler anAttributes) {
+	public SAXLegacyDocumentReader<T> to(AttributesHandler anAttributes) {
 		root.with(anAttributes);
 		return this;
 	}
 	
-	public SAXDocumentReader<T> to(TagHandler<?>... aHandlers) {
+	public SAXLegacyDocumentReader<T> to(TagHandler<?>... aHandlers) {
 		root.to(aHandlers);
 		return this;
 	}
 	
-	public SAXDocumentReader<T> to(AttributesHandler anAttributes, TagHandler<?>... aHandlers) {
+	public SAXLegacyDocumentReader<T> to(AttributesHandler anAttributes, TagHandler<?>... aHandlers) {
 		root.with(anAttributes, aHandlers);
 		return this;
 	}

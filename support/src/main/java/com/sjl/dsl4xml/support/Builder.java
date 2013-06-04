@@ -1,6 +1,8 @@
 package com.sjl.dsl4xml.support;
 
-// TODO - extract to dsl4 support
+import com.sjl.dsl4xml.Context;
+import com.sjl.dsl4xml.Name;
+
 public interface Builder<T> {
 
     public Name getName();

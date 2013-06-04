@@ -6,10 +6,10 @@ import org.xmlpull.v1.*;
 
 import com.sjl.dsl4xml.pull.*;
 
-public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
+public class PullLegacyDocumentReader<T> extends AbstractLegacyDocumentReader<T> {
 
-	public static <R> PullDocumentReader<R> mappingOf(Class<R> aClass) {
-		return new PullDocumentReader<R>(aClass);
+	public static <R> PullLegacyDocumentReader<R> mappingOf(Class<R> aClass) {
+		return new PullLegacyDocumentReader<R>(aClass);
 	}
 	
 	public static <R> TagReader<R> tag(String aTagName) {
@@ -64,7 +64,7 @@ public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
 	private XmlPullParserFactory factory;
 	private XmlReader[] mappers = new XmlReader[]{};
 	
-	public PullDocumentReader(Class<T> aClass) {
+	public PullLegacyDocumentReader(Class<T> aClass) {
 		super(aClass);
 		try {
 			factory = XmlPullParserFactory.newInstance();
@@ -74,7 +74,7 @@ public class PullDocumentReader<T> extends AbstractDocumentReader<T> {
 		}
 	}
 	
-	public PullDocumentReader<T> to(XmlReader... aMappers) {
+	public PullLegacyDocumentReader<T> to(XmlReader... aMappers) {
 		mappers = aMappers;
 		return this;
 	}

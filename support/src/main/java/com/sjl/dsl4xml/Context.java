@@ -1,4 +1,6 @@
-package com.sjl.dsl4xml.support;
+package com.sjl.dsl4xml;
+
+import com.sjl.dsl4xml.support.Builder;
 
 import java.util.List;
 

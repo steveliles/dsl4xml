@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.sjl.dsl4xml.*;
 
+@Deprecated
 public class Classes {
 
     public static final String MAGIC_SET = "__magic_set";

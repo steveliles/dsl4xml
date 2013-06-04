@@ -1,6 +1,8 @@
 package com.sjl.dsl4xml.support;
 
+import com.sjl.dsl4xml.Context;
 import com.sjl.dsl4xml.Converter;
+import com.sjl.dsl4xml.Name;
 import com.sjl.dsl4xml.ParsingException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -116,7 +118,6 @@ public class ReflectiveBuilder<T> implements Builder<T> {
 
     @Override
     public T build(Context aContext) {
-        System.out.println(converter);
         if (converter != null)
             return converter.convert(aContext.pop());
         else {

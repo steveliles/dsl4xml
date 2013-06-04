@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.pull;
 
-import com.sjl.dsl4xml.DocumentReader;
+import com.sjl.dsl4xml.LegacyDocumentReader;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -53,30 +53,30 @@ public abstract class DynamicImplementationTestBase
 		public int getNumberOfDependents();
 	}
 
-	protected abstract DocumentReader<Root> newRootOnlyUnmarshaller();
+	protected abstract LegacyDocumentReader<Root> newRootOnlyUnmarshaller();
 
-	protected abstract DocumentReader<Root> newCorrectRootUnmarshaller();
+	protected abstract LegacyDocumentReader<Root> newCorrectRootUnmarshaller();
 
-	protected abstract DocumentReader<Root> newMissingAttributeRootUnmarshaller();
+	protected abstract LegacyDocumentReader<Root> newMissingAttributeRootUnmarshaller();
 
-	protected abstract DocumentReader<Root> newMissingElementRootUnmarshaller();
+	protected abstract LegacyDocumentReader<Root> newMissingElementRootUnmarshaller();
 
-	protected abstract DocumentReader<Profile1> newProfile1Unmarshaller();
+	protected abstract LegacyDocumentReader<Profile1> newProfile1Unmarshaller();
 
-	protected abstract DocumentReader<Profile2> newProfile2Unmarshaller();
+	protected abstract LegacyDocumentReader<Profile2> newProfile2Unmarshaller();
 
-	protected abstract DocumentReader<Person> newPersonUnmarshaller();
+	protected abstract LegacyDocumentReader<Person> newPersonUnmarshaller();
 
 	@Test
 	public void unmarshallsRootElementToDynamicallyImplementedRootType() {
-		DocumentReader<Root> _r = newRootOnlyUnmarshaller();
+		LegacyDocumentReader<Root> _r = newRootOnlyUnmarshaller();
 		Root _root = _r.read(get("root-1.xml"), "utf-8");
 		Assert.assertNotNull(_root);
 	}
 
 	@Test
 	public void unmarshallsRootElementWithSomeAttributes() {
-		DocumentReader<Root> _r = newCorrectRootUnmarshaller();
+		LegacyDocumentReader<Root> _r = newCorrectRootUnmarshaller();
 		Root _root = _r.read(get("root-2.xml"), "utf-8");
 		Assert.assertNotNull(_root);
 		Assert.assertNull(_root.getAttr1());
@@ -85,7 +85,7 @@ public abstract class DynamicImplementationTestBase
 
 	@Test
 	public void unmarshallsRootElementWithNoAttributesAndMissingElements() {
-		DocumentReader<Root> _r = newCorrectRootUnmarshaller();
+		LegacyDocumentReader<Root> _r = newCorrectRootUnmarshaller();
 		Root _root = _r.read(get("root-3.xml"), "utf-8");
 		Assert.assertNotNull(_root);
 		Assert.assertNull(_root.getAttr1());
@@ -96,7 +96,7 @@ public abstract class DynamicImplementationTestBase
 
 	@Test
 	public void unmarshallsRootElementWithMissingAttributesAndElements() {
-		DocumentReader<Root> _r = newCorrectRootUnmarshaller();
+		LegacyDocumentReader<Root> _r = newCorrectRootUnmarshaller();
 		Root _root = _r.read(get("root-4.xml"), "utf-8");
 		Assert.assertNotNull(_root);
 		Assert.assertNull(_root.getAttr1());
@@ -107,7 +107,7 @@ public abstract class DynamicImplementationTestBase
 
 	@Test
 	public void unmarshallsRootElementWithAllAttributesAndElements() {
-		DocumentReader<Root> _r = newCorrectRootUnmarshaller();
+		LegacyDocumentReader<Root> _r = newCorrectRootUnmarshaller();
 		Root _root = _r.read(get("root-5.xml"), "utf-8");
 		Assert.assertNotNull(_root);
 		Assert.assertEquals("first", _root.getAttr1());
@@ -118,7 +118,7 @@ public abstract class DynamicImplementationTestBase
 
 	@Test
 	public void dynamicImplementationsProduceReasonableToString() {
-		DocumentReader<Root> _r = newCorrectRootUnmarshaller();
+		LegacyDocumentReader<Root> _r = newCorrectRootUnmarshaller();
 		Root _root = _r.read(get("root-5.xml"), "utf-8");
 
 		Assert.assertTrue(_root.toString().startsWith("proxy(" + Root.class.getName() + "){"));
@@ -130,7 +130,7 @@ public abstract class DynamicImplementationTestBase
 
 	@Test
 	public void dynamicImplementationsCanIncorporateListsOfRepeatedElements() {
-		DocumentReader<Profile1> _r = newProfile1Unmarshaller();
+		LegacyDocumentReader<Profile1> _r = newProfile1Unmarshaller();
 		Profile1 _profile = _r.read(get("profile-1.xml"), "utf-8");
 		Assert.assertNotNull(_profile);
 
@@ -146,7 +146,7 @@ public abstract class DynamicImplementationTestBase
 
 	@Test
 	public void dynamicImplementationsCanIncorporateInlineListsOfRepeatedElements() {
-		DocumentReader<Profile2> _r = newProfile2Unmarshaller();
+		LegacyDocumentReader<Profile2> _r = newProfile2Unmarshaller();
 		Profile2 _profile = _r.read(get("profile-2.xml"), "utf-8");
 		Assert.assertNotNull(_profile);
 
@@ -163,7 +163,7 @@ public abstract class DynamicImplementationTestBase
 	@Test
 	public void dynamicImplementationsCanConvertTypes()
 	throws Exception {
-		DocumentReader<Person> _r = newPersonUnmarshaller();
+		LegacyDocumentReader<Person> _r = newPersonUnmarshaller();
 		Person _person = _r.read(get("person-1.xml"), "utf-8");
 		Assert.assertNotNull(_person);
 

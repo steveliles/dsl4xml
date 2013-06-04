@@ -4,8 +4,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.sjl.dsl4xml.ParsingException;
 import com.sjl.dsl4xml.support.Builder;
-import com.sjl.dsl4xml.support.Context;
-import com.sjl.dsl4xml.support.Name;
+import com.sjl.dsl4xml.Context;
+import com.sjl.dsl4xml.Name;
 
 import java.util.List;
 import java.util.Stack;
@@ -33,7 +33,6 @@ public class GsonContext implements Context {
 
             JsonToken _token = null;
             while ((_token = reader.peek()) != null) {
-System.out.println(_token);
                 switch(_token) {
                     case NAME:
                         names.push(reader.nextName());
@@ -42,7 +41,6 @@ System.out.println(_token);
                         Builder<?> _p = _b.moveDown(this);
                         if (_p == null)
                             _p = builders.peek();
-System.out.println(_p);
                         _p.prepare(this);
                         _p.setValue(this, "", reader.nextString());
                         if (_b.isArray())
@@ -103,10 +101,6 @@ System.out.println(_p);
                         _b = _b.moveDown(this);
                         if (_b == null) {
                             _b = builders.peek();
-//                            if (reader.peek() == JsonToken.END_OBJECT)
-//                                reader.endObject();
-//                            else
-//                                reader.skipValue();
                         } else {
                             _b.prepare(this);
                             builders.push(_b);

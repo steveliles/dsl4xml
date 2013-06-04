@@ -1,4 +1,4 @@
-package com.sjl.dsl4xml.json;
+package com.sjl.dsl4xml;
 
 import com.sjl.dsl4xml.support.Builder;
 

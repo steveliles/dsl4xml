@@ -1,6 +1,4 @@
-package com.sjl.dsl4xml.json;
-
-import com.sjl.dsl4xml.Converter;
+package com.sjl.dsl4xml;
 
 public interface ConverterRegistration<F,T> {
 

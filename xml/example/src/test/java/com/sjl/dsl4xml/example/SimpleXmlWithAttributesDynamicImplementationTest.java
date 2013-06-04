@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.SAXDocumentReader.*;
+import static com.sjl.dsl4xml.SAXLegacyDocumentReader.*;
 
 import java.io.*;
 import java.util.*;
@@ -14,7 +14,7 @@ public class SimpleXmlWithAttributesDynamicImplementationTest {
 	@Test
 	public void mapsHobbitsTagToHobbitsObject()
 	throws Exception {
-		DocumentReader<Hobbits> _p = newMarshaller();
+		LegacyDocumentReader<Hobbits> _p = newMarshaller();
 		Hobbits _h = _p.read(getTestInput(), "utf-8");
 		Assert.assertEquals(4, _h.size());
 	}
@@ -22,7 +22,7 @@ public class SimpleXmlWithAttributesDynamicImplementationTest {
 	@Test
 	public void mapsHobbitTagToHobbitObject()
 	throws Exception {
-		DocumentReader<Hobbits> _p = newMarshaller();
+		LegacyDocumentReader<Hobbits> _p = newMarshaller();
 		Hobbits _h = _p.read(getTestInput(), "utf-8");
 		
 		Halfling _first = _h.get(0);
@@ -36,7 +36,7 @@ public class SimpleXmlWithAttributesDynamicImplementationTest {
 		return getClass().getResourceAsStream("example2.xml");
 	}
 	
-	private DocumentReader<Hobbits> newMarshaller() {
+	private LegacyDocumentReader<Hobbits> newMarshaller() {
 		return mappingOf("example", Hobbits.class).to(
 			tag("hobbit", Halfling.class).with(
 				attributes("firstname", "surname", "age")

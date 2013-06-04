@@ -1,5 +1,8 @@
 package com.sjl.dsl4xml.json;
 
+import com.sjl.dsl4xml.Content;
+import com.sjl.dsl4xml.Definition;
+
 public interface NamedArray<T> extends Content<T>, Definition<T> {
 
     /**

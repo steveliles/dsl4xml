@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.json;
 
-import com.sjl.dsl4xml.support.DocumentReader2;
+import com.sjl.dsl4xml.DocumentReader;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,20 +10,20 @@ import java.util.List;
 
 public abstract class AbstractJsonParsingTest {
 
-    protected abstract <T> DocumentReader2<T> newDocumentReader(DocumentDefinition<T> aDefinition);
+    protected abstract <T> DocumentReader<T> newDocumentReader(DocumentDefinition<T> aDefinition);
 
     private JsonDocumentDefinitions defs = new JsonDocumentDefinitions();
 
     @Test
     public void testEmptyDocument(){
-        DocumentReader2<Object> _r = newDocumentReader(defs.emptyDocument());
+        DocumentReader<Object> _r = newDocumentReader(defs.emptyDocument());
         Object _result = _r.read(newReader("{}"));
         Assert.assertNotNull(_result);
     }
 
     @Test
     public void testSimpleDocument() {
-        DocumentReader2<JsonDocumentDefinitions.Simple> _r = newDocumentReader(defs.simpleProperty());
+        DocumentReader<JsonDocumentDefinitions.Simple> _r = newDocumentReader(defs.simpleProperty());
         JsonDocumentDefinitions.Simple _result = _r.read(newReader("{\"myProperty\":\"some value\"}"));
         Assert.assertNotNull(_result);
         Assert.assertEquals("some value", _result.getMyProperty());
@@ -31,7 +31,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testJsonTypedProperties() {
-        DocumentReader2<JsonDocumentDefinitions.Typed> _r = newDocumentReader(defs.jsonTypedProperties());
+        DocumentReader<JsonDocumentDefinitions.Typed> _r = newDocumentReader(defs.jsonTypedProperties());
         JsonDocumentDefinitions.Typed _result = _r.read(newReader("{\"integer\":1,\"float\":2.0,\"boolean\":true}"));
         Assert.assertNotNull(_result);
         Assert.assertEquals(1, _result.getInteger());
@@ -41,7 +41,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testNestedObjects1() {
-        DocumentReader2<JsonDocumentDefinitions.NestedObjects> _r = newDocumentReader(defs.nestedObjects1());
+        DocumentReader<JsonDocumentDefinitions.NestedObjects> _r = newDocumentReader(defs.nestedObjects1());
         Object _value = _r.read(newReader(
             "{\"first\":{\"myProperty\":\"1st\"},\"second\":{\"myProperty\":\"2nd\"}}"));
         Assert.assertTrue(_value instanceof JsonDocumentDefinitions.NestedObjects);
@@ -54,7 +54,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testNestedObjects2() {
-        DocumentReader2<JsonDocumentDefinitions.NestedObjects> _r = newDocumentReader(defs.nestedObjects2());
+        DocumentReader<JsonDocumentDefinitions.NestedObjects> _r = newDocumentReader(defs.nestedObjects2());
         JsonDocumentDefinitions.NestedObjects _result = _r.read(newReader(
                 "{\"first\":{\"myProperty\":\"1st\"},\"second\":{\"myProperty\":\"2nd\"}}"));
 
@@ -66,7 +66,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testAliasedMethodNames() {
-        DocumentReader2<JsonDocumentDefinitions.NestedObjects> _r = newDocumentReader(defs.aliasedMethodNames());
+        DocumentReader<JsonDocumentDefinitions.NestedObjects> _r = newDocumentReader(defs.aliasedMethodNames());
         JsonDocumentDefinitions.NestedObjects _result = _r.read(newReader(
                 "{\"first-property\":{\"myProperty\":\"1st\"},\"second-property\":{\"myProperty\":\"2nd\"}}"));
 
@@ -78,7 +78,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testMixedTypeHandling() {
-        DocumentReader2<JsonDocumentDefinitions.MixedTypes> _r = newDocumentReader(defs.mixedTypeHandling());
+        DocumentReader<JsonDocumentDefinitions.MixedTypes> _r = newDocumentReader(defs.mixedTypeHandling());
         JsonDocumentDefinitions.MixedTypes _result = _r.read(newReader(
             "{\"firstProperty\":\"I am first\"," +
             "  \"firstObject\": {" +
@@ -101,7 +101,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testSimplePropertyArrays() {
-        DocumentReader2<JsonDocumentDefinitions.SimplePropertyArray> _r = newDocumentReader(defs.simplePropertyArrays());
+        DocumentReader<JsonDocumentDefinitions.SimplePropertyArray> _r = newDocumentReader(defs.simplePropertyArrays());
         JsonDocumentDefinitions.SimplePropertyArray _result = _r.read(newReader(
             "{\"someProperty\":\"hello\",\"strings\":[\"apples\",\"oranges\",\"bananas\"]}"
         ));
@@ -119,7 +119,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testSimplePropertyArraysWithShortcut() {
-        DocumentReader2<JsonDocumentDefinitions.SimplePropertyArray> _r = newDocumentReader(defs.simplePropertyArraysWithShortcut());
+        DocumentReader<JsonDocumentDefinitions.SimplePropertyArray> _r = newDocumentReader(defs.simplePropertyArraysWithShortcut());
         JsonDocumentDefinitions.SimplePropertyArray _result = _r.read(newReader(
                 "{\"someProperty\":\"hello\",\"strings\":[\"apples\",\"oranges\",\"bananas\"]}"
         ));
@@ -137,7 +137,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testObjectArrays() {
-        DocumentReader2<JsonDocumentDefinitions.ObjectArrays> _r = newDocumentReader(defs.objectArrays());
+        DocumentReader<JsonDocumentDefinitions.ObjectArrays> _r = newDocumentReader(defs.objectArrays());
         JsonDocumentDefinitions.ObjectArrays _result = _r.read(newReader(
             "{\"someProperty\":\"hello\",\"simples\":[{\"myProperty\":\"first\"},{\"myProperty\":\"second\"},{\"myProperty\":\"third\"}]}"
         ));
@@ -153,7 +153,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testArrayOfArrays() {
-        DocumentReader2<JsonDocumentDefinitions.ArrayOfArrays> _r = newDocumentReader(defs.arraysOfArrays());
+        DocumentReader<JsonDocumentDefinitions.ArrayOfArrays> _r = newDocumentReader(defs.arraysOfArrays());
         JsonDocumentDefinitions.ArrayOfArrays _result = _r.read(newReader(
             "{\"arrays\":[[\"one\",\"two\",\"three\"],[\"apples\",\"oranges\"],[\"one banana\",\"two banana\"]]}"
         ));
@@ -174,7 +174,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testPopulatesImmutableRootTypesFromIntermediates() {
-        DocumentReader2<JsonDocumentDefinitions.Immutable> _r = newDocumentReader(defs.immutableRootTypes());
+        DocumentReader<JsonDocumentDefinitions.Immutable> _r = newDocumentReader(defs.immutableRootTypes());
         JsonDocumentDefinitions.Immutable _result = _r.read(newReader(
             "{\"first\":\"apple\",\"second\":\"ball\"}"
         ));
@@ -186,7 +186,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testPopulatesImmutableRootTypesFromIntermediatesWithNoCommonHierarchy() {
-        DocumentReader2<JsonDocumentDefinitions.Immutable> _r = newDocumentReader(defs.intermediateRootTypeWithNoCommonHierarchy());
+        DocumentReader<JsonDocumentDefinitions.Immutable> _r = newDocumentReader(defs.intermediateRootTypeWithNoCommonHierarchy());
         JsonDocumentDefinitions.Immutable _result = _r.read(newReader(
             "{\"first\":\"apple\",\"second\":\"ball\"}"
         ));
@@ -198,7 +198,7 @@ public abstract class AbstractJsonParsingTest {
 
     @Test
     public void testPopulatesImmutableNonRootTypes() {
-        DocumentReader2<JsonDocumentDefinitions.Immutables> _r = newDocumentReader(defs.immutableNonRootTypes());
+        DocumentReader<JsonDocumentDefinitions.Immutables> _r = newDocumentReader(defs.immutableNonRootTypes());
         JsonDocumentDefinitions.Immutables _result = _r.read(newReader(
             "{\"first\":{\"first\":\"apple\",\"second\":\"ball\"},\"second\":{\"first\":\"apple\",\"second\":\"ball\"}}"
         ));

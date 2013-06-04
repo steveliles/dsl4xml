@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.SAXDocumentReader.*;
+import static com.sjl.dsl4xml.SAXLegacyDocumentReader.*;
 
 import java.io.*;
 import java.util.*;
@@ -34,8 +34,8 @@ public class UnknownTagsTest {
 		Assert.assertEquals(1, mainTag.size());
 	}
 	
-	private static DocumentReader<MainTag> newMarshaller() {
-		DocumentReader<MainTag> _result = mappingOf("mainTag", MainTag.class).to(
+	private static LegacyDocumentReader<MainTag> newMarshaller() {
+		LegacyDocumentReader<MainTag> _result = mappingOf("mainTag", MainTag.class).to(
 			tag("subTag", SubTag.class)
 		);
 		return _result;

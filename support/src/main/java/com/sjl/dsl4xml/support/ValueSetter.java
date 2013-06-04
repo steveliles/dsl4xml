@@ -4,6 +4,7 @@ import java.lang.reflect.*;
 
 import com.sjl.dsl4xml.*;
 
+@Deprecated
 public class ValueSetter {
 
 	private Method setter;

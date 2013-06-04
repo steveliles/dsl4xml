@@ -1,7 +1,7 @@
 package com.sjl.dsl4xml.gson;
 
-import static com.sjl.dsl4xml.GsonDocumentReader.*;
-import com.sjl.dsl4xml.GsonDocumentReader;
+import static com.sjl.dsl4xml.GsonLegacyDocumentReader.*;
+import com.sjl.dsl4xml.GsonLegacyDocumentReader;
 import com.sjl.dsl4xml.support.Factory;
 import com.sjl.dsl4xml.support.convert.ThreadSafeDateStringConverter;
 import junit.framework.Assert;
@@ -42,7 +42,7 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesComplexMemberJson() throws Exception {
-		GsonDocumentReader<Member1> _reader = mappingOf(Member1.class).to(
+		GsonLegacyDocumentReader<Member1> _reader = mappingOf(Member1.class).to(
 			property("id"),
 			property("registrationDate"),
 			object("person", Member1.Person.class).with(
@@ -137,7 +137,7 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesComplexMemberJsonWithIdObjects() throws Exception {
-		GsonDocumentReader<Member2> _reader = mappingOf(Member2.class).to(
+		GsonLegacyDocumentReader<Member2> _reader = mappingOf(Member2.class).to(
 			object("id", Member2.Identifier.class).with(
 				property("serializedForm")
 			),
@@ -186,7 +186,7 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesComplexMemberJsonToImmutableObjects() throws Exception {
-		GsonDocumentReader<Member2> _reader = createMember2Reader();
+		GsonLegacyDocumentReader<Member2> _reader = createMember2Reader();
 
 		_reader.registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
 
@@ -221,7 +221,7 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesArraysOfLengthOne() {
-		GsonDocumentReader<ThingWithText> _reader = mappingOf(ThingWithText.class).to(
+		GsonLegacyDocumentReader<ThingWithText> _reader = mappingOf(ThingWithText.class).to(
 			array("text", List.class).of(
 				unNamedProperty(String.class)
 			)
@@ -237,7 +237,7 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesArraysOfStrings() {
-		GsonDocumentReader<ThingWithText> _reader = mappingOf(ThingWithText.class).to(
+		GsonLegacyDocumentReader<ThingWithText> _reader = mappingOf(ThingWithText.class).to(
 			array("text", List.class).of(
 				unNamedProperty(String.class)
 			)
@@ -260,7 +260,7 @@ public class JsonParsingTest
 	@Test
 	public void parsesArraysOfBooleans()
 	{
-		GsonDocumentReader<Truthy> _reader = mappingOf(Truthy.class).to(
+		GsonLegacyDocumentReader<Truthy> _reader = mappingOf(Truthy.class).to(
 			array("truths", List.class).of(
 				unNamedProperty(Boolean.class)
 			)
@@ -283,7 +283,7 @@ public class JsonParsingTest
 	@Test
 	public void parsesArraysOfNumbers()
 	{
-		GsonDocumentReader<Numbers> _reader = mappingOf(Numbers.class).to(
+		GsonLegacyDocumentReader<Numbers> _reader = mappingOf(Numbers.class).to(
 			array("numbers", List.class).of(
 				unNamedProperty(Float.class)
 			)
@@ -305,7 +305,7 @@ public class JsonParsingTest
 
 	@Test
 	public void parsesArraysOfConvertedStrings() {
-		GsonDocumentReader<Dates> _reader = mappingOf(Dates.class).to(
+		GsonLegacyDocumentReader<Dates> _reader = mappingOf(Dates.class).to(
 			array("dates", List.class).of(
 				unNamedProperty(Date.class)
 			)
@@ -350,7 +350,7 @@ public class JsonParsingTest
 
 	@Test
 	public void postConstructsListTypesViaFactory() {
-		GsonDocumentReader<PostConstructed> _reader = mappingOf(PostConstructed.class).to(
+		GsonLegacyDocumentReader<PostConstructed> _reader = mappingOf(PostConstructed.class).to(
 			stringList()
 		);
 
@@ -369,7 +369,7 @@ public class JsonParsingTest
 
 	@Test
 	public void skipsMissingObjects() {
-		GsonDocumentReader<Member2> _reader = createMember2Reader();
+		GsonLegacyDocumentReader<Member2> _reader = createMember2Reader();
 
 		Member2 _result = _reader.read(new StringReader("{\"id\":{\"serializedForm\":\"1234\"}, \"pointsAccrued\":50}"));
 
@@ -380,7 +380,7 @@ public class JsonParsingTest
 		Assert.assertEquals(50, _result.getPointsAccrued());
 	}
 
-	private GsonDocumentReader<Member2> createMember2Reader() {
+	private GsonLegacyDocumentReader<Member2> createMember2Reader() {
 		return mappingOf(Member2.class).to(
 			object("id", Member2.Identifier.class, new ImmutableIdentifierFactory()).with(
 				property("serializedForm")

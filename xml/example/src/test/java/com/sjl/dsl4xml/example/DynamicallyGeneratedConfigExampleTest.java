@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.PullDocumentReader.*;
+import static com.sjl.dsl4xml.PullLegacyDocumentReader.*;
 
 import java.io.*;
 
@@ -14,7 +14,7 @@ public class DynamicallyGeneratedConfigExampleTest {
 	@Test
 	public void mapsConfigurationToDynamicallyCreatedImplementationsOfInterfaces()
 	throws Exception {
-		DocumentReader<Config> _p = newMarshaller();
+		LegacyDocumentReader<Config> _p = newMarshaller();
 		Config _c = _p.read(getTestInput(), "utf-8");
 		
 		Assert.assertNotNull(_c);
@@ -26,7 +26,7 @@ public class DynamicallyGeneratedConfigExampleTest {
 		
 	}
 	
-	private DocumentReader<Config> newMarshaller() {
+	private LegacyDocumentReader<Config> newMarshaller() {
 		return mappingOf(Config.class).to(
 			tag("database", Config.Database.class).with(
 				attributes("name"),

@@ -1,13 +1,12 @@
 package com.sjl.dsl4xml.json;
 
-import com.sjl.dsl4xml.Converter;
-import com.sjl.dsl4xml.TypeSafeConverter;
+import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.*;
 import com.sjl.dsl4xml.support.convert.*;
 
 import java.util.*;
 
-public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConverters {
+public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, ConverterRegistry {
 
     private static final  List<Content<?>> NO_CONTENT = Collections.emptyList();
 
@@ -18,7 +17,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
     {
         converters = new ArrayList<TypeSafeConverter<?,?>>();
 
-        converters.addAll(Arrays.asList(
+        registerConverters(
             new PrimitiveBooleanStringConverter(),
             new DecimalToByteStringConverter(),
             new DecimalToShortStringConverter(),
@@ -49,7 +48,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             new NumberBigDecimalConverter(),
             new BooleanBooleanConverter(),
             new IdentityConverter(ArrayList.class)
-        ));
+        );
     }
 
     @Override
@@ -210,7 +209,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             }
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 Class<?> _attachTo = ReflectorFactory.maybeConvertToProxy((intermediate != null) ? intermediate : aType);
                 for (Content _c : content)
                     _c.onAttach(_attachTo, reflector, JsonDocumentDefinition.this);
@@ -269,7 +268,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             }
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 Class<?> _attachTo = ReflectorFactory.maybeConvertToProxy((intermediate != null) ? intermediate : aType);
                 for (Content _c : content)
                     _c.onAttach(_attachTo, reflector, JsonDocumentDefinition.this);
@@ -345,7 +344,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             }
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 Content<?> _def = firstNonNull(obj, property, array);
 
                 if (aType.isInterface())
@@ -419,7 +418,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             }
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 Content<?> _def = firstNonNull(obj, property, array);
 
                 // todo: what if aType is a mutable concrete class?
@@ -460,7 +459,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             private StringConverter<? extends R> converter = getConverter(aType);
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 aReflector.prepare(aContainerType, Name.MISSING, aType);
             }
 
@@ -488,7 +487,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             private StringConverter<? extends R> converter;
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 type = (Class<? extends R>) ReflectorFactory.getExpectedType(aContainerType, aName);
                 aReflector.prepare(aContainerType, aName, type);
                 converter = getConverter(type);
@@ -517,7 +516,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             private Converter<Number,R> converter = getConverter(Number.class, aType);
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 aReflector.prepare(aContainerType, aName, aType);
             }
 
@@ -539,7 +538,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             private Converter<Number,R> converter = getConverter(Number.class, aType);
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 aReflector.prepare(aContainerType, Name.MISSING, aType);
             }
 
@@ -577,7 +576,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             private Converter<Boolean,R> converter;
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 if (type == null)
                     type = (Class<R>)ReflectorFactory.getExpectedType(aContainerType, aName);
                 converter = getConverter(Boolean.class, type);
@@ -608,7 +607,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
             private Converter<Boolean,R> converter = getConverter(Boolean.class, aType);
 
             @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, HasConverters aConverters) {
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
                 aReflector.prepare(aContainerType, Name.MISSING, aType);
             }
 
@@ -662,6 +661,10 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, HasConv
                 return converter;
             }
         };
+    }
+
+    public void registerConverters(TypeSafeConverter<?,?>... aConverters) {
+        converters.addAll(0, Arrays.asList(aConverters)); // always push on to front to allow overriding
     }
 
     public <T> StringConverter<T> getConverter(Class<T> aTo) {

@@ -4,11 +4,11 @@ import com.google.gson.stream.JsonReader;
 import com.sjl.dsl4xml.ParsingException;
 import com.sjl.dsl4xml.json.DocumentDefinition;
 import com.sjl.dsl4xml.support.Builder;
-import com.sjl.dsl4xml.support.DocumentReader2;
+import com.sjl.dsl4xml.DocumentReader;
 
 import java.io.*;
 
-public class GsonDocumentReader<T> implements DocumentReader2<T> {
+public class GsonDocumentReader<T> implements DocumentReader<T> {
 
     private Builder<T> builder;
 

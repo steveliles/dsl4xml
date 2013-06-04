@@ -144,7 +144,7 @@ And some simple model objects we want to marshall to:
 
 We can unmarshall the XML to those model objects using the following simple Java code:
 
-    import static com.sjl.dsl4xml.SAXDocumentReader.*;
+    import static com.sjl.dsl4xml.SAXLegacyDocumentReader.*;
 
     class BooksReader {
 	    private DocumentReader<Books> reader;
@@ -233,7 +233,7 @@ POJO's:
 	
 Unmarshalling code:
 
-	import static com.sjl.dsl4xml.SAXDocumentReader.*;
+	import static com.sjl.dsl4xml.SAXLegacyDocumentReader.*;
 
     class HobbitsReader {
 	    private DocumentReader<Hobbits> Reader;
@@ -273,7 +273,7 @@ POJO's: [See the source-code of the test-case](https://github.com/steveliles/dsl
 	
 Unmarshalling code:
 
-	import static com.sjl.dsl4xml.PullDocumentReader.*;
+	import static com.sjl.dsl4xml.PullLegacyDocumentReader.*;
 
 	private static DocumentReader<Hobbit> newReader() {
 		DocumentReader<Hobbit> _reader = mappingOf(Hobbit.class).to(
@@ -325,7 +325,7 @@ And some simple model _interfaces_ we want to unmarshall to:
     
 We can unmarshall the XML to those model objects using the exact same simple Java code we used in the original example. Dsl4Xml understands that it should dynamically implement interfaces:
 
-    import static com.sjl.dsl4xml.SAXDocumentReader.*;
+    import static com.sjl.dsl4xml.SAXLegacyDocumentReader.*;
 
     class BooksReader {
 	    private DocumentReader<Books> reader;
@@ -469,8 +469,8 @@ Interfaces:
 
 Mapping:
 
-	import static com.sjl.dsl4xml.GsonDocumentReader.*;
-	import com.sjl.dsl4xml.GsonDocumentReader;
+	import static com.sjl.dsl4xml.GsonLegacyDocumentReader.*;
+	import com.sjl.dsl4xml.GsonLegacyDocumentReader;
 
 	GsonDocumentReader<Member> _reader = mappingOf(Member.class).to(
 		object("id", Member.Identifier.class).with(

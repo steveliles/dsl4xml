@@ -11,10 +11,10 @@ import java.util.List;
 /**
  * @author steve
  */
-public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
+public class GsonLegacyDocumentReader<T> extends AbstractLegacyDocumentReader<T>
 {
-	public static <R> GsonDocumentReader<R> mappingOf(Class<R> aClass) {
-		return new GsonDocumentReader<R>(aClass);
+	public static <R> GsonLegacyDocumentReader<R> mappingOf(Class<R> aClass) {
+		return new GsonLegacyDocumentReader<R>(aClass);
 	}
 
 	public static <R> ObjectHandler<R> object(String aName, Class<R> aContextType) {
@@ -51,7 +51,7 @@ public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
 
 	private JsonHandler[] handlers = new JsonHandler[]{};
 
-	public GsonDocumentReader(Class<T> aClass) {
+	public GsonLegacyDocumentReader(Class<T> aClass) {
 		super(aClass);
 	}
 
@@ -61,7 +61,7 @@ public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
 		JsonReader _reader = null;
 		try {
 			_reader = new JsonReader(aReader);
-			Context _ctx = new GsonContext(_reader);
+			GsonContext _ctx = new GsonContext(_reader);
 			if (converters != null)
 				_ctx.registerConverters(converters);
 			_ctx.push(newResultObject());
@@ -106,7 +106,7 @@ public class GsonDocumentReader<T> extends AbstractDocumentReader<T>
 		}
 	}
 
-	public GsonDocumentReader<T> to(JsonHandler... aHandlers) {
+	public GsonLegacyDocumentReader<T> to(JsonHandler... aHandlers) {
 		handlers = aHandlers;
 		return this;
 	}

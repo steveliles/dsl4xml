@@ -1,4 +1,4 @@
-package com.sjl.dsl4xml.support;
+package com.sjl.dsl4xml;
 
 public interface Name {
 

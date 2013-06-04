@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.sax;
 
-import static com.sjl.dsl4xml.SAXDocumentReader.*;
+import static com.sjl.dsl4xml.SAXLegacyDocumentReader.*;
 
 import java.util.*;
 
@@ -10,11 +10,11 @@ import com.sjl.dsl4xml.support.convert.*;
 public class DynamicImplementationSAXParserTest extends DynamicImplementationTestBase {
 
 	@Override
-	protected DocumentReader<Root> newRootOnlyUnmarshaller() {
+	protected LegacyDocumentReader<Root> newRootOnlyUnmarshaller() {
 		return mappingOf("root", Root.class);
 	}
 
-	protected DocumentReader<Root> newCorrectRootUnmarshaller() {
+	protected LegacyDocumentReader<Root> newCorrectRootUnmarshaller() {
 		return mappingOf("root", Root.class).to(
 			attributes("attr1", "attr2"),
 			tag("elem1"),
@@ -23,20 +23,20 @@ public class DynamicImplementationSAXParserTest extends DynamicImplementationTes
 	}
 	
 	@Override
-	protected DocumentReader<Root> newMissingAttributeRootUnmarshaller() {
+	protected LegacyDocumentReader<Root> newMissingAttributeRootUnmarshaller() {
 		return mappingOf("root", Root.class).to(
 			attributes("attr1", "attr2", "attr3")
 		);
 	}
 	
 	@Override
-	protected DocumentReader<Root> newMissingElementRootUnmarshaller() {
+	protected LegacyDocumentReader<Root> newMissingElementRootUnmarshaller() {
 		return mappingOf("root", Root.class).to(
 			tag("missing", String.class)
 		);
 	}
 
-	protected DocumentReader<Profile1> newProfile1Unmarshaller() {
+	protected LegacyDocumentReader<Profile1> newProfile1Unmarshaller() {
 		return mappingOf("profile", Profile1.class).to(
 			tag("name"),
 			tag("readingList", List.class).with(
@@ -47,7 +47,7 @@ public class DynamicImplementationSAXParserTest extends DynamicImplementationTes
 		);
 	}
 	
-	protected DocumentReader<Profile2> newProfile2Unmarshaller() {
+	protected LegacyDocumentReader<Profile2> newProfile2Unmarshaller() {
 		return mappingOf("profile", Profile2.class).to(
 			tag("name"),
 			tag("book", Book.class).with(
@@ -56,8 +56,8 @@ public class DynamicImplementationSAXParserTest extends DynamicImplementationTes
 		);
 	}
 	
-	protected DocumentReader<Person> newPersonUnmarshaller() {
-		DocumentReader<Person> _r = mappingOf("person", Person.class).to(
+	protected LegacyDocumentReader<Person> newPersonUnmarshaller() {
+		LegacyDocumentReader<Person> _r = mappingOf("person", Person.class).to(
 			tag("name"),
 			tag("dateOfBirth"),
 			tag("numberOfDependents")

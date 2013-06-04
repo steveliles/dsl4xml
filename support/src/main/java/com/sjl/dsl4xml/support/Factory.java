@@ -1,6 +1,8 @@
 package com.sjl.dsl4xml.support;
 
 /**
+ * @deprecated
+ *
  * Provides a mechanism for parsing to classes which do not expose mutating
  * methods to allow gradual population, but can only be created in "complete"
  * form via constructors or factory methods.

@@ -1,5 +1,6 @@
 package com.sjl.dsl4xml.support;
 
+import com.sjl.dsl4xml.Name;
 import com.sjl.dsl4xml.ParsingException;
 
 import java.lang.reflect.InvocationHandler;

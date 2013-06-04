@@ -5,12 +5,12 @@ import java.util.*;
 
 import com.sjl.dsl4xml.support.*;
 
-public abstract class AbstractDocumentReader<T> implements DocumentReader<T> {
+public abstract class AbstractLegacyDocumentReader<T> implements LegacyDocumentReader<T> {
 
 	protected StringConverter<?>[] converters;
 	protected Class<T> resultType;
 	
-	public AbstractDocumentReader(Class<T> aClass) {
+	public AbstractLegacyDocumentReader(Class<T> aClass) {
 		resultType = aClass;
 	}
 	

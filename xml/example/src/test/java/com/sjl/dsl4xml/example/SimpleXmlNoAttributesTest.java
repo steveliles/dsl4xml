@@ -1,6 +1,6 @@
 package com.sjl.dsl4xml.example;
 
-import static com.sjl.dsl4xml.SAXDocumentReader.*;
+import static com.sjl.dsl4xml.SAXLegacyDocumentReader.*;
 
 import java.io.*;
 import java.util.*;
@@ -43,7 +43,7 @@ public class SimpleXmlNoAttributesTest {
 	}
 
 	private Description marshallTestDocumentToDescription() {
-		DocumentReader<Description> _m = newMarshaller();
+		LegacyDocumentReader<Description> _m = newMarshaller();
 		return _m.read(getTestInput(), "utf-8");
 	}
 
@@ -52,10 +52,10 @@ public class SimpleXmlNoAttributesTest {
 	}
 	
 	/**
-	 * @return a PullDocumentReader that can map documents like example1.xml
+	 * @return a PullLegacyDocumentReader that can map documents like example1.xml
 	 * to the Description class declared below.
 	 */
-	private static DocumentReader<Description> newMarshaller() {
+	private static LegacyDocumentReader<Description> newMarshaller() {
 		return mappingOf("example", Description.class).to(
 			tag("description").with(
 				tag("title"),
