@@ -1,5 +1,6 @@
 package com.sjl.dsl4xml.gson;
 
+import com.sjl.dsl4xml.Converter;
 import com.sjl.dsl4xml.json.JsonDocumentDefinition;
 import com.sjl.dsl4xml.support.Factory;
 import com.sjl.dsl4xml.support.convert.ThreadSafeDateStringConverter;
@@ -59,7 +60,7 @@ public class JsonParsingTest
                         property("providerUserId"),
                         property("imageUrl")
                     ),
-                    property("pointsAccrued")
+                    number("pointsAccrued", Integer.class)
                 );
         }});
 
@@ -161,7 +162,7 @@ public class JsonParsingTest
                         property("providerUserId"),
                         property("imageUrl")
                     ),
-                    property("pointsAccrued")
+                    number("pointsAccrued", Integer.class)
                 );
             }});
 
@@ -196,7 +197,7 @@ public class JsonParsingTest
 		Member2 _result = _reader.read(new InputStreamReader(getClass().getResourceAsStream("member-2.json")));
 
 		Assert.assertNotNull(_result);
-		Assert.assertTrue(_result.getId() instanceof ImmutableIdentifier);
+        Assert.assertTrue(_result.getId() instanceof ImmutableIdentifier);
 		Assert.assertEquals("5e39dcc6-d4e3-5067-0058-aec52c70f0d3", _result.getId().toSerializedForm());
 		Assert.assertEquals(new SimpleDateFormat("yyyyMMdd").parse("20130501"), _result.getRegistrationDate());
 
@@ -228,12 +229,12 @@ public class JsonParsingTest
             new JsonDocumentDefinition<ThingWithText>() {{
                 mapping(ThingWithText.class).with(
                     array("text", List.class).of(
-                            property(String.class)
+                        property(String.class)
                     ));
             }}
         );
 
-		ThingWithText _twt = _reader.read(new StringReader("{\"text\":[\"one\"], \"other\":\"flib\"}"));
+		ThingWithText _twt = _reader.read(new StringReader("{\"text\":[\"one\"]}"));
 
 		Assert.assertNotNull(_twt);
 		Assert.assertNotNull(_twt.asText());
@@ -272,9 +273,9 @@ public class JsonParsingTest
 		GsonDocumentReader<Truthy> _reader =  new GsonDocumentReader<Truthy>(
             new JsonDocumentDefinition<Truthy>() {{
                 mapping(Truthy.class).with(
-                    array("truths", List.class).of(
-                        bool(Boolean.class)
-                    ));
+                        array("truths", List.class).of(
+                                bool(Boolean.class)
+                        ));
             }}
 		);
 
@@ -298,9 +299,9 @@ public class JsonParsingTest
 		GsonDocumentReader<Numbers> _reader =  new GsonDocumentReader<Numbers>(
             new JsonDocumentDefinition<Numbers>() {{
                 mapping(Numbers.class).with(
-                    array("numbers", List.class).of(
-                        number(Float.class)
-                    ));
+                        array("numbers", List.class).of(
+                                number(Float.class)
+                        ));
             }}
 		);
 
@@ -357,17 +358,29 @@ public class JsonParsingTest
 	private GsonDocumentReader<Member2> createMember2Reader() {
         return new GsonDocumentReader<Member2>(
             new JsonDocumentDefinition<Member2>(){{
+
                 registerConverters(new ThreadSafeDateStringConverter("yyyy-MM-dd"));
 
+                converting(Member2.Identifier.class).to(ImmutableIdentifier.class).using(
+                    new Converter<Member2.Identifier, ImmutableIdentifier>() {
+                        public ImmutableIdentifier convert(Member2.Identifier aFrom) {
+                            return ImmutableIdentifier.create(aFrom);
+                        }
+                    });
+
                 mapping(Member2.class).with(
-                    object("id", Member2.Identifier.class).with(
-                        property("serializedForm")
-                    ),
-                    property("registrationDate"),
-                    object("person", Member2.Person.class).with(
-                        object("id", Member2.Identifier.class).with(
+                    object("id", ImmutableIdentifier.class)
+                        .via(Member2.Identifier.class)
+                        .with(
                             property("serializedForm")
                         ),
+                    property("registrationDate"),
+                    object("person", Member2.Person.class).with(
+                        object("id", ImmutableIdentifier.class)
+                            .via(Member2.Identifier.class)
+                            .with(
+                                property("serializedForm")
+                            ),
                         property("firstname"),
                         property("lastname"),
                         property("email"),

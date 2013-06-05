@@ -84,6 +84,7 @@ public class GsonContext implements Context {
                     case NULL:
                         reader.nextNull();
                         names.pop();
+                        break;
                     case BEGIN_ARRAY:
                         reader.beginArray();
                         _b = _b.moveDown(this);
