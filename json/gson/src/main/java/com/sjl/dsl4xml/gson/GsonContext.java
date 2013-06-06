@@ -31,7 +31,7 @@ public class GsonContext implements Context {
             builders.push(_b);
             _b.prepare(this);
 
-            JsonToken _token = null;
+            JsonToken _token;
             while ((_token = reader.peek()) != null) {
                 switch(_token) {
                     case NAME:
@@ -43,26 +43,15 @@ public class GsonContext implements Context {
                             _p = builders.peek();
                         _p.prepare(this);
                         _p.setValue(this, "", reader.nextString());
-                        if (_b.isArray())
-                            _b.setValue(this, "", _p.build(this));
-                        else
-                            _b.setValue(this, names.pop(), _p.build(this));
+                        buildAndSet(_b, _p, "");
                         break;
                     case NUMBER:
                         _p = _b.moveDown(this);
                         if (_p == null)
                             _p = builders.peek();
                         _p.prepare(this);
-                        _p.setValue(this, "", reader.nextDouble()); // TODO: this is not good - overflow on long's
-                        String _name = "";
-                        try {
-                            if (_b.isArray())
-                                _b.setValue(this, "", _p.build(this));
-                            else
-                                _b.setValue(this, _name = names.pop(), _p.build(this));
-                        } catch (ClassCastException anExc) { // TODO: need to at least give some idea of which property we are reading in the message
-                            throw new ParsingException("Problem converting number '" + _name + "' in '" + _b.getName().getName() + "' ... does your document definition use 'property' where it should use 'number'?", anExc);
-                        }
+                        _p.setValue(this, names.peek(), reader.nextDouble());
+                        buildAndSet(_b, _p, "number");
                         break;
                     case BOOLEAN:
                         _p = _b.moveDown(this);
@@ -71,15 +60,7 @@ public class GsonContext implements Context {
                         _p.prepare(this);
                         _p.setValue(this, "", reader.nextBoolean());
 
-                        _name = "";
-                        try {
-                            if (_b.isArray())
-                                _b.setValue(this, "", _p.build(this));
-                            else
-                                _b.setValue(this, _name = names.pop(), _p.build(this));
-                        } catch (ClassCastException anExc) {
-                            throw new ParsingException("Problem converting boolean '" + _name + "' in '" + _b.getName().getName() + "' ... does your document definition use 'property' where it should use 'bool'?", anExc);
-                        }
+                        buildAndSet(_b, _p, "bool");
                         break;
                     case NULL:
                         reader.nextNull();
@@ -103,10 +84,7 @@ public class GsonContext implements Context {
                         reader.endArray();
                         _p = builders.pop();
                         _b = builders.peek();
-                        if (_b.isArray())
-                            _b.setValue(this, "", _p.build(this));
-                        else
-                            _b.setValue(this, names.pop(), _p.build(this));
+                        buildAndSet(_b, _p, "");
                         break;
                     case BEGIN_OBJECT:
                         reader.beginObject();
@@ -124,10 +102,7 @@ public class GsonContext implements Context {
                         if (!builders.isEmpty())
                         {
                             _b = builders.peek();
-                            if (_b.isArray())
-                                _b.setValue(this, "", _p.build(this));
-                            else
-                                _b.setValue(this, names.pop(), _p.build(this));
+                            buildAndSet(_b, _p, "");
                         }
                         break;
                     case END_DOCUMENT:
@@ -142,8 +117,30 @@ public class GsonContext implements Context {
         }
     }
 
+    private void buildAndSet(Builder aParentBuilder, Builder<?> aCurrentBuilder, String aTypeName) {
+        String _name = "";
+        try
+        {
+            Object _o = aCurrentBuilder.build(this);
+            if (_o != null)
+            {
+                if (aParentBuilder.isArray())
+                    aParentBuilder.setValue(this, _name, _o);
+                else
+                    aParentBuilder.setValue(this, _name = names.pop(), _o);
+            }
+        }
+        catch (ClassCastException anExc)
+        {
+            throw new ParsingException(
+                "Problem converting " + aTypeName + " '" + _name + "' in '" +
+                aParentBuilder.getName().getName() + "' ... does your document definition use 'property' where it should use '" +
+                aTypeName + "'?", anExc);
+        }
+    }
+
     @Override
-    public Builder<?> select(List<Builder<?>> aBuilders) {
+    public Builder<?> select(Builder<?> aCurrent, List<Builder<?>> aBuilders) {
         String _name = names.isEmpty() ? "" : names.peek();
         for (Builder<?> _b : aBuilders) {
             if ((_name.equals(_b.getName().getName())) ||
@@ -153,6 +150,7 @@ public class GsonContext implements Context {
                 return _b;
             }
         }
+
         return null;
     }
 

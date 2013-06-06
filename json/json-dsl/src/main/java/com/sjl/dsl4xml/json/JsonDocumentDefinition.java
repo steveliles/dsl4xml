@@ -597,8 +597,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
     @Override
     public <R> UnNamedProperty<Boolean,R> bool() {
-        throw new UnsupportedOperationException("TODO"); // TODO: figure out R from the context
-        //return bool(Boolean.class);
+        return (UnNamedProperty<Boolean,R>)bool(Boolean.class);
     }
 
     @Override

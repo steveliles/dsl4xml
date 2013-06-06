@@ -66,7 +66,7 @@ public class ReflectiveBuilder<T> implements Builder<T> {
 
     @Override
     public Builder<?> moveDown(Context aContext) {
-        return aContext.select(nested);
+        return aContext.select(this, nested);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ReflectiveBuilder<T> implements Builder<T> {
     @Override
     public void setValue(Context aContext, String aName, Object aValue) {
         String _propertyName = aliases.get(aName);
-        if (_propertyName == null) _propertyName = aName;
+        if ((_propertyName == null) || ("".equals(_propertyName))) _propertyName = aName;
         Method _m = reflector.getMutator(intermediate, _propertyName, aValue);
         if (_m == null)
             throw new IllegalStateException(

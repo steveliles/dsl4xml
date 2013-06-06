@@ -8,7 +8,7 @@ public interface Context {
 
     public <T> T build(Builder<T> aBuilder);
 
-    public Builder<?> select(List<Builder<?>> aBuilders);
+    public Builder<?> select(Builder<?> aCurrent, List<Builder<?>> aBuilders);
 
     public void push(Object anObject);
 

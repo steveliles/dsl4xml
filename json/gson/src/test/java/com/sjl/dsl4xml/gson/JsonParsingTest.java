@@ -355,6 +355,16 @@ public class JsonParsingTest
 		Assert.assertEquals(50, _result.getPointsAccrued());
 	}
 
+    @Test
+    public void skipsUnexpectedJsonObjects() {
+        GsonDocumentReader<Member2> _reader = createMember2Reader();
+
+        Member2 _result = _reader.read(new InputStreamReader(getClass().getResourceAsStream("member-3.json")));
+
+        Assert.assertNotNull(_result);
+        Assert.assertEquals(50, _result.getPointsAccrued());
+    }
+
 	private GsonDocumentReader<Member2> createMember2Reader() {
         return new GsonDocumentReader<Member2>(
             new JsonDocumentDefinition<Member2>(){{
@@ -379,7 +389,7 @@ public class JsonParsingTest
                         object("id", ImmutableIdentifier.class)
                             .via(Member2.Identifier.class)
                             .with(
-                                property("serializedForm")
+                                    property("serializedForm")
                             ),
                         property("firstname"),
                         property("lastname"),
