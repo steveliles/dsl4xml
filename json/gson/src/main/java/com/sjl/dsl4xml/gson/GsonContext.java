@@ -6,6 +6,7 @@ import com.sjl.dsl4xml.ParsingException;
 import com.sjl.dsl4xml.support.Builder;
 import com.sjl.dsl4xml.Context;
 import com.sjl.dsl4xml.Name;
+import com.sjl.dsl4xml.support.NoResultBuilder;
 
 import java.util.List;
 import java.util.Stack;
@@ -141,6 +142,11 @@ public class GsonContext implements Context {
 
     @Override
     public Builder<?> select(Builder<?> aCurrent, List<Builder<?>> aBuilders) {
+
+        // todo: invert so that we are asking the builders if they match Name...
+        //       this is nicer from a tell-dont-ask perspective, and also
+        //       allows the builder to dynamically respond to names
+
         String _name = names.isEmpty() ? "" : names.peek();
         for (Builder<?> _b : aBuilders) {
             if ((_name.equals(_b.getName().getName())) ||

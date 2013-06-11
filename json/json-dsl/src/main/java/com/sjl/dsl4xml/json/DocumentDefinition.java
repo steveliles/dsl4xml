@@ -19,6 +19,10 @@ public interface DocumentDefinition<T> extends Definition<T> {
 
     public <R> NamedObject<R> object(Name aName);
 
+    public <R> Ignored<R> ignoring(String aName);
+
+    public <R> Ignored<R> ignoring(Name aName);
+
     public <R> NamedObject<R> object(String aName, Class<? extends R> aType);
 
     public <R> NamedObject<R> object(Name aName, Class<? extends R> aType);

@@ -363,6 +363,7 @@ public class JsonParsingTest
 
         Assert.assertNotNull(_result);
         Assert.assertEquals(50, _result.getPointsAccrued());
+        Assert.assertEquals("mr", _result.getPerson().getTitle());
     }
 
 	private GsonDocumentReader<Member2> createMember2Reader() {
@@ -394,7 +395,8 @@ public class JsonParsingTest
                         property("firstname"),
                         property("lastname"),
                         property("email"),
-                        property("title")
+                        property("title"),
+                        ignoring("job")
                     ),
                     object("social", Member2.Social.class).with(
                         property("providerId"),

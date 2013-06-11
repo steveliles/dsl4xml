@@ -163,6 +163,31 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
     }
 
     @Override
+    public <R> Ignored<R> ignoring(String aName) {
+        return ignoring(alias(aName, aName));
+    }
+
+    @Override
+    public <R> Ignored<R> ignoring(final Name aName) {
+        return new Ignored<R>(){
+            @Override
+            public Name getName() {
+                return aName;
+            }
+
+            @Override
+            public void onAttach(Class<?> aContainerType, ReflectorFactory aFactory, ConverterRegistry aConverters) {
+
+            }
+
+            @Override
+            public Builder<R> newBuilder() {
+                return new NoResultBuilder<R>(aName);
+            }
+        };
+    }
+
+    @Override
     public <R> NamedObject<R> object(String aName) {
         return object(alias(aName, aName), null);
     }
@@ -223,8 +248,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
             // TODO: this is identical in Document
             @Override
-            @SuppressWarnings("rawtypes")
-            public Builder<T> newBuilder() {
+            public Builder<R> newBuilder() {
                 List<Builder<?>> _nested = new ArrayList<Builder<?>>();
                 for (Content<?> _c : content)
                     _nested.add(_c.newBuilder());
@@ -282,8 +306,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
             // TODO: this is identical in Document and elsewhere
             @Override
-            @SuppressWarnings("rawtypes")
-            public Builder<T> newBuilder() {
+            public Builder<R> newBuilder() {
                 List<Builder<?>> _nested = new ArrayList<Builder<?>>();
                 for (Content<?> _c : content)
                     _nested.add(_c.newBuilder());
@@ -368,8 +391,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
             }
 
             @Override
-            @SuppressWarnings("rawtypes")
-            public Builder<T> newBuilder() {
+            public Builder<R> newBuilder() {
                 Definition<?> _def = firstNonNull(obj, property, array);
                 return new ReflectiveBuilder(
                     aName, aType, intermediate, converter,
@@ -444,7 +466,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
             @Override
             @SuppressWarnings("rawtypes")
-            public Builder<T> newBuilder() {
+            public Builder<R> newBuilder() {
                 Definition<?> _def = firstNonNull(obj, property, array);
                 return new ReflectiveBuilder(
                     Name.MISSING, aType, intermediate, converter,
