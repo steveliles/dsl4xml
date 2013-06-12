@@ -8,10 +8,9 @@ import java.util.*;
 
 public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, ConverterRegistry {
 
-    private static final  List<Content<?>> NO_CONTENT = Collections.emptyList();
+    private static final List<Content<?>> NO_CONTENT = Collections.emptyList();
 
     private List<TypeSafeConverter<?,?>> converters;
-
     private Document<T> document;
 
     {
@@ -71,44 +70,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
     @Override
     public Name alias(final String aName, final String anAlias) {
-        return new Name() {
-            @Override
-            public String getNamespace() {
-                return "";
-            }
-
-            @Override
-            public String getName() {
-                return aName;
-            }
-
-            @Override
-            public String getAlias() {
-                return (anAlias != null) ? anAlias : aName;
-            }
-
-            @Override
-            public String toString() {
-                return "'" + aName + "(" + anAlias + ")'";
-            }
-
-            @Override
-            public int hashCode() {
-                return getClass().hashCode() ^ aName.hashCode() ^ anAlias.hashCode();
-            }
-
-            @Override
-            public boolean equals(Object anObject) {
-                if (anObject instanceof Name) {
-                    Name _other = (Name) anObject;
-                    return
-                        ((aName != null) && (aName.equals(_other.getName()))) &&
-                        ((anAlias != null) && (anAlias.equals(_other.getAlias())));
-
-                }
-                return false;
-            }
-        };
+        return new Name.Impl(aName, anAlias);
     }
 
     @Override
@@ -169,22 +131,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
     @Override
     public <R> Ignored<R> ignoring(final Name aName) {
-        return new Ignored<R>(){
-            @Override
-            public Name getName() {
-                return aName;
-            }
-
-            @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aFactory, ConverterRegistry aConverters) {
-
-            }
-
-            @Override
-            public Builder<R> newBuilder() {
-                return new NoResultBuilder<R>(aName);
-            }
-        };
+         return new Ignored.Impl<R>(aName);
     }
 
     @Override
