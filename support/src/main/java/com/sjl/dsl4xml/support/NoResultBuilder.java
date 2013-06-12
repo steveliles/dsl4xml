@@ -5,7 +5,6 @@ import com.sjl.dsl4xml.Name;
 
 public class NoResultBuilder<T> implements Builder<T> {
     private Name name;
-    private Stack<Name> names
 
     public NoResultBuilder(Name aName) {
         name = aName;
@@ -27,13 +26,12 @@ public class NoResultBuilder<T> implements Builder<T> {
     }
 
     @Override
-    public Builder<?> moveDown(Context aContext) {
+    public Builder<?> moveDown(String aName) {
         return this;
     }
 
     @Override
     public void prepare(Context aContext) {
-        aContext.push(null);
     }
 
     @Override
@@ -42,6 +40,6 @@ public class NoResultBuilder<T> implements Builder<T> {
 
     @Override
     public T build(Context aContext) {
-        return aContext.pop();
+        return null;
     }
 }

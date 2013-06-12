@@ -65,8 +65,14 @@ public class ReflectiveBuilder<T> implements Builder<T> {
     }
 
     @Override
-    public Builder<?> moveDown(Context aContext) {
-        return aContext.select(this, nested);
+    public Builder<?> moveDown(String aName) {
+        for (Builder<?> _b : nested) {
+            if ((aName.equals(_b.getName().getName())) ||
+                (_b.getName().equals(Name.MISSING) && nested.size()==1)) {
+                return _b;
+            }
+        }
+        return null;
     }
 
     @Override

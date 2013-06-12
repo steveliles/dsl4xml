@@ -8,8 +8,6 @@ public interface Context {
 
     public <T> T build(Builder<T> aBuilder);
 
-    public Builder<?> select(Builder<?> aCurrent, List<Builder<?>> aBuilders);
-
     public void push(Object anObject);
 
     public <T> T pop();

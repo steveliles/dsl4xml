@@ -14,7 +14,7 @@ public interface Builder<T> {
     /**
      * @return the builder for a nested object
      */
-    public Builder<?> moveDown(Context aContext);
+    public Builder<?> moveDown(String aName);
 
     /**
      * Creates the build-context object, which may be a mutable intermediate type

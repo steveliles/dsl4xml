@@ -38,7 +38,7 @@ public class PropertyBuilder<F,T> implements Builder<T> {
     }
 
     @Override
-    public Builder<?> moveDown(Context aContext) {
+    public Builder<?> moveDown(String aName) {
         throw new ParsingException("Nothing can be nested in property " + name + " - definition doesn't match document?");
     }
 

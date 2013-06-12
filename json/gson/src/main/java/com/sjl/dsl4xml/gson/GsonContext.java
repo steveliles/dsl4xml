@@ -2,13 +2,10 @@ package com.sjl.dsl4xml.gson;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
+import com.sjl.dsl4xml.Context;
 import com.sjl.dsl4xml.ParsingException;
 import com.sjl.dsl4xml.support.Builder;
-import com.sjl.dsl4xml.Context;
-import com.sjl.dsl4xml.Name;
-import com.sjl.dsl4xml.support.NoResultBuilder;
 
-import java.util.List;
 import java.util.Stack;
 
 public class GsonContext implements Context {
@@ -39,7 +36,7 @@ public class GsonContext implements Context {
                         names.push(reader.nextName());
                         break;
                     case STRING:
-                        Builder<?> _p = _b.moveDown(this);
+                        Builder<?> _p = _b.moveDown(getName());
                         if (_p == null)
                             _p = builders.peek();
                         _p.prepare(this);
@@ -47,7 +44,7 @@ public class GsonContext implements Context {
                         buildAndSet(_b, _p, "");
                         break;
                     case NUMBER:
-                        _p = _b.moveDown(this);
+                        _p = _b.moveDown(getName());
                         if (_p == null)
                             _p = builders.peek();
                         _p.prepare(this);
@@ -55,7 +52,7 @@ public class GsonContext implements Context {
                         buildAndSet(_b, _p, "number");
                         break;
                     case BOOLEAN:
-                        _p = _b.moveDown(this);
+                        _p = _b.moveDown(getName());
                         if (_p == null)
                             _p = builders.peek();
                         _p.prepare(this);
@@ -69,7 +66,7 @@ public class GsonContext implements Context {
                         break;
                     case BEGIN_ARRAY:
                         reader.beginArray();
-                        _b = _b.moveDown(this);
+                        _b = _b.moveDown(getName());
                         if (_b == null) {
                             _b = builders.peek();
                             if (reader.peek() == JsonToken.END_ARRAY)
@@ -89,7 +86,7 @@ public class GsonContext implements Context {
                         break;
                     case BEGIN_OBJECT:
                         reader.beginObject();
-                        _b = _b.moveDown(this);
+                        _b = _b.moveDown(getName());
                         if (_b == null) {
                             _b = builders.peek();
                         } else {
@@ -118,18 +115,22 @@ public class GsonContext implements Context {
         }
     }
 
+    private String getName()
+    {
+        return names.isEmpty() ? "" : names.peek();
+    }
+
     private void buildAndSet(Builder aParentBuilder, Builder<?> aCurrentBuilder, String aTypeName) {
         String _name = "";
         try
         {
             Object _o = aCurrentBuilder.build(this);
+
+            if (!aParentBuilder.isArray())
+                _name = names.pop();
+
             if (_o != null)
-            {
-                if (aParentBuilder.isArray())
-                    aParentBuilder.setValue(this, _name, _o);
-                else
-                    aParentBuilder.setValue(this, _name = names.pop(), _o);
-            }
+                aParentBuilder.setValue(this, _name, _o);
         }
         catch (ClassCastException anExc)
         {
@@ -138,26 +139,6 @@ public class GsonContext implements Context {
                 aParentBuilder.getName().getName() + "' ... does your document definition use 'property' where it should use '" +
                 aTypeName + "'?", anExc);
         }
-    }
-
-    @Override
-    public Builder<?> select(Builder<?> aCurrent, List<Builder<?>> aBuilders) {
-
-        // todo: invert so that we are asking the builders if they match Name...
-        //       this is nicer from a tell-dont-ask perspective, and also
-        //       allows the builder to dynamically respond to names
-
-        String _name = names.isEmpty() ? "" : names.peek();
-        for (Builder<?> _b : aBuilders) {
-            if ((_name.equals(_b.getName().getName())) ||
-                (_b.getName().equals(Name.MISSING) && aBuilders.size()==1)
-               ) {
-                // TODO: use the type info too ? ...
-                return _b;
-            }
-        }
-
-        return null;
     }
 
     @Override
