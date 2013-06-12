@@ -281,68 +281,10 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
     @Override
     public <R> NamedArray<R> array(final Name aName, final Class<? extends R> aType) {
-        return new NamedArray<R>(){
-            private UnNamedObject<?> obj;
-            private UnNamedProperty<?,?> property;
-            private UnNamedArray<?> array;
-            private Converter<?,? extends R> converter;
-            private Class<?> intermediate;
-            private ReflectorFactory reflector = new ReflectorFactory();
-
+        return new NamedArray.Impl<R>(new Array<R>(aName, aType)) {
             @Override
             public NamedArray<R> of(Class<?> aConvertableType) {
-                property = property(aConvertableType);
-                return this;
-            }
-
-            @Override
-            public NamedArray<R> of(UnNamedProperty<?,?> aContent) {
-                property = aContent;
-                return this;
-            }
-
-            @Override
-            public NamedArray<R> of(UnNamedObject<?> aContent) {
-                obj = aContent;
-                return this;
-            }
-
-            @Override
-            public NamedArray<R> of(UnNamedArray<?> aContent) {
-                array = aContent;
-                return this;
-            }
-
-            @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
-                Content<?> _def = firstNonNull(obj, property, array);
-
-                if (aType.isInterface())
-                {
-                    intermediate = ArrayList.class;
-                    converter = getConverter(ArrayList.class, aType);
-                    aReflector.prepare(aContainerType, aName, intermediate);
-                    _def.onAttach(intermediate, reflector, JsonDocumentDefinition.this);
-                }
-                else
-                {
-                    Class<?> _type = ReflectorFactory.maybeConvertToProxy(aType);
-                    aReflector.prepare(aContainerType, aName, _type);
-                    _def.onAttach(_type, reflector, JsonDocumentDefinition.this);
-                }
-            }
-
-            @Override
-            public Name getName() {
-                return aName;
-            }
-
-            @Override
-            public Builder<R> newBuilder() {
-                Definition<?> _def = firstNonNull(obj, property, array);
-                return new ReflectiveBuilder(
-                    aName, aType, intermediate, converter,
-                    reflector.newReflector(), Collections.singletonList(_def.newBuilder()), true);
+                return of(property(aConvertableType));
             }
         };
     }
@@ -354,70 +296,10 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
     @Override
     public <R> UnNamedArray<R> array(final Class<? extends R> aType) {
-        return new UnNamedArray<R>(){
-            private UnNamedObject<?> obj;
-            private UnNamedProperty<?,?> property;
-            private UnNamedArray<?> array;
-            private Class<?> intermediate;
-            private Converter<?,? extends R> converter;
-            private ReflectorFactory reflector = new ReflectorFactory();
-
+        return new UnNamedArray.Impl<R>(new Array<R>(Name.MISSING, aType)) {
             @Override
             public UnNamedArray<R> of(Class<?> aConvertableType) {
-                property = property(aConvertableType);
-                return this;
-            }
-
-            @Override
-            public UnNamedArray<R> of(UnNamedProperty<?,?> aContent) {
-                property = aContent;
-                return this;
-            }
-
-            @Override
-            public UnNamedArray<R> of(UnNamedObject<?> aContent) {
-                obj = aContent;
-                return this;
-            }
-
-            @Override
-            public UnNamedArray<R> of(UnNamedArray<?> aContent) {
-                array = aContent;
-                return this;
-            }
-
-            @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
-                Content<?> _def = firstNonNull(obj, property, array);
-
-                // todo: what if aType is a mutable concrete class?
-                if (!aType.isInterface())
-                {
-                    intermediate = ArrayList.class;
-                    converter = getConverter(ArrayList.class, aType);
-                    aReflector.prepare(aContainerType, Name.MISSING, intermediate);
-                    _def.onAttach(intermediate, reflector, JsonDocumentDefinition.this);
-                }
-                else
-                {
-                    Class<?> _type = ReflectorFactory.maybeConvertToProxy(aType);
-                    aReflector.prepare(aContainerType, Name.MISSING, _type);
-                    _def.onAttach(_type, reflector, JsonDocumentDefinition.this);
-                }
-            }
-
-            @Override
-            public Name getName() {
-                return Name.MISSING;
-            }
-
-            @Override
-            @SuppressWarnings("rawtypes")
-            public Builder<R> newBuilder() {
-                Definition<?> _def = firstNonNull(obj, property, array);
-                return new ReflectiveBuilder(
-                    Name.MISSING, aType, intermediate, converter,
-                    reflector.newReflector(), Collections.singletonList(_def.newBuilder()), true);
+                return of(property(aConvertableType));
             }
         };
     }
@@ -649,7 +531,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
         throw new RuntimeException("no converter registered that can convert from " + aFromType + " to " + aToType);
     }
 
-    private <T> T firstNonNull(T... aTs) {
+    static <T> T firstNonNull(T... aTs) {
         for (T _t : aTs)
             if (_t != null)
                 return _t;
