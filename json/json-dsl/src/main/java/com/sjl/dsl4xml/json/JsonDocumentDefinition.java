@@ -4,7 +4,10 @@ import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.*;
 import com.sjl.dsl4xml.support.convert.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, ConverterRegistry {
 
@@ -151,117 +154,12 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
     @Override
     public <R> NamedObject<R> object(final Name aName, final Class<? extends R> aType) {
-        return new NamedObject<R>(){
-            private List<Content<?>> content;
-            private Class<?> intermediate;
-            private Converter<?,R> converter;
-            private ReflectorFactory reflector = new ReflectorFactory();
-
-            @Override
-            public <I> NamedObject<I> via(Class<I> anIntermediateType) {
-                converter = (Converter<?,R>)getConverter(anIntermediateType, aType);
-                intermediate = anIntermediateType;
-                return (NamedObject<I>) this;
-            }
-
-            @Override
-            public <I> NamedObject<I> via(Class<I> anIntermediateType, Converter<I, R> aConverter) {
-                intermediate = anIntermediateType;
-                converter = aConverter;
-                return (NamedObject<I>) this;
-            }
-
-            @Override
-            public NamedObject<R> with(Content<?>... aContent) {
-                content = new ArrayList<Content<?>>();
-                for (Content<?> _c : aContent) {
-                    content.add(_c);
-                }
-                return this;
-            }
-
-            @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
-                Class<?> _attachTo = ReflectorFactory.maybeConvertToProxy((intermediate != null) ? intermediate : aType);
-                for (Content _c : content)
-                    _c.onAttach(_attachTo, reflector, JsonDocumentDefinition.this);
-                aReflector.prepare(aContainerType, aName, _attachTo);
-            }
-
-            @Override
-            public Name getName() {
-                return aName;
-            }
-
-            // TODO: this is identical in Document
-            @Override
-            public Builder<R> newBuilder() {
-                List<Builder<?>> _nested = new ArrayList<Builder<?>>();
-                for (Content<?> _c : content)
-                    _nested.add(_c.newBuilder());
-
-                return new ReflectiveBuilder(
-                    aName, aType, intermediate, converter,
-                    reflector.newReflector(), _nested, false);
-            }
-        };
+        return new NamedObject.Impl<R>(aName, aType);
     }
 
     @Override
     public <R> UnNamedObject<R> object(final Class<? extends R> aType) {
-        return new UnNamedObject<R>(){
-            private List<Content<?>> content = Collections.emptyList();
-            private Converter<?,R> converter;
-            private Class<?> intermediate;
-            private ReflectorFactory reflector = new ReflectorFactory();
-
-            @Override
-            public <I> UnNamedObject<I> via(Class<I> anIntermediateType) {
-                intermediate = anIntermediateType;
-                converter = (Converter<?,R>) getConverter(intermediate, aType);
-                return (UnNamedObject<I>)this;
-            }
-
-            @Override
-            public <I> UnNamedObject<I> via(Class<I> anIntermediateType, Converter<I, R> aConverter) {
-                intermediate = anIntermediateType;
-                converter = aConverter;
-                return (UnNamedObject<I>)this;
-            }
-
-            @Override
-            public UnNamedObject<R> with(Content<?>... aContent) {
-                content = new ArrayList<Content<?>>();
-                for (Content<?> _c : aContent) {
-                    content.add(_c);
-                }
-                return this;
-            }
-
-            @Override
-            public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
-                Class<?> _attachTo = ReflectorFactory.maybeConvertToProxy((intermediate != null) ? intermediate : aType);
-                for (Content _c : content)
-                    _c.onAttach(_attachTo, reflector, JsonDocumentDefinition.this);
-                aReflector.prepare(aContainerType, Name.MISSING, _attachTo);
-            }
-
-            @Override
-            public Name getName() {
-                return Name.MISSING;
-            }
-
-            // TODO: this is identical in Document and elsewhere
-            @Override
-            public Builder<R> newBuilder() {
-                List<Builder<?>> _nested = new ArrayList<Builder<?>>();
-                for (Content<?> _c : content)
-                    _nested.add(_c.newBuilder());
-                return new ReflectiveBuilder(
-                    Name.MISSING, aType, intermediate, converter,
-                    reflector.newReflector(), _nested, false);
-            }
-        };
+        return new UnNamedObject.Impl<R>(aType);
     }
 
     @Override
@@ -281,7 +179,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
     @Override
     public <R> NamedArray<R> array(final Name aName, final Class<? extends R> aType) {
-        return new NamedArray.Impl<R>(new Array<R>(aName, aType)) {
+        return new NamedArray.Impl<R>(aName, aType) {
             @Override
             public NamedArray<R> of(Class<?> aConvertableType) {
                 return of(property(aConvertableType));
@@ -296,7 +194,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
     @Override
     public <R> UnNamedArray<R> array(final Class<? extends R> aType) {
-        return new UnNamedArray.Impl<R>(new Array<R>(Name.MISSING, aType)) {
+        return new UnNamedArray.Impl<R>(aType) {
             @Override
             public UnNamedArray<R> of(Class<?> aConvertableType) {
                 return of(property(aConvertableType));
@@ -346,7 +244,7 @@ public class JsonDocumentDefinition<T> implements DocumentDefinition<T>, Convert
 
             @Override
             public Name getName() {
-                return aName;  // TODO
+                return aName;
             }
 
             @Override

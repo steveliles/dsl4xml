@@ -2,11 +2,7 @@ package com.sjl.dsl4xml.json;
 
 import com.sjl.dsl4xml.*;
 import com.sjl.dsl4xml.support.Builder;
-import com.sjl.dsl4xml.support.ReflectiveBuilder;
 import com.sjl.dsl4xml.support.ReflectorFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public interface UnNamedArray<T> extends Content<T>, Definition<T> {
 
@@ -27,44 +23,44 @@ public interface UnNamedArray<T> extends Content<T>, Definition<T> {
 
     public abstract class Impl<R> implements UnNamedArray<R>{
 
-        private Array<R> impl;
+        private Array<R> delegate;
 
-        public Impl(Array<R> anImpl) {
-            impl = anImpl;
+        public Impl(Class<? extends R> aType) {
+            delegate = new Array<R>(Name.MISSING, aType);
         }
 
         @Override
         public UnNamedArray<R> of(UnNamedProperty<?,?> aContent) {
-            impl.of(aContent);
+            delegate.of(aContent);
             return this;
         }
 
         @Override
         public UnNamedArray<R> of(UnNamedObject<?> aContent) {
-            impl.of(aContent);
+            delegate.of(aContent);
             return this;
         }
 
         @Override
         public UnNamedArray<R> of(UnNamedArray<?> aContent) {
-            impl.of(aContent);
+            delegate.of(aContent);
             return this;
         }
 
         @Override
         public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
-            impl.onAttach(aContainerType, aReflector, aConverters);
+            delegate.onAttach(aContainerType, aReflector, aConverters);
         }
 
         @Override
         public Name getName() {
-            return impl.getName();
+            return delegate.getName();
         }
 
         @Override
         @SuppressWarnings("rawtypes")
         public Builder<R> newBuilder() {
-            return impl.newBuilder();
+            return delegate.newBuilder();
         }
     };
 }

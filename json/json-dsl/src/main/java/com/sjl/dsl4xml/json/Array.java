@@ -62,7 +62,7 @@ public class Array<R> {
     public Builder<R> newBuilder() {
         Definition<?> _def = JsonDocumentDefinition.firstNonNull(obj, property, array);
         return new ReflectiveBuilder(
-                name, type, intermediate, converter,
-                reflector.newReflector(), Collections.singletonList(_def.newBuilder()), true);
+            name, type, intermediate, converter,
+            reflector.newReflector(), Collections.singletonList(_def.newBuilder()), true);
     }
 }

@@ -26,43 +26,43 @@ public interface NamedArray<T> extends Content<T>, Definition<T> {
 
     public abstract class Impl<R> implements NamedArray<R> {
 
-        private Array<R> impl;
+        private Array<R> delegate;
 
-        public Impl(Array<R> anImpl) {
-            impl = anImpl;
+        public Impl(Name aName, Class<? extends R> aType) {
+            delegate = new Array<R>(aName, aType);
         }
 
         @Override
         public NamedArray<R> of(UnNamedProperty<?,?> aContent) {
-            impl.of(aContent);
+            delegate.of(aContent);
             return this;
         }
 
         @Override
         public NamedArray<R> of(UnNamedObject<?> aContent) {
-            impl.of(aContent);
+            delegate.of(aContent);
             return this;
         }
 
         @Override
         public NamedArray<R> of(UnNamedArray<?> aContent) {
-            impl.of(aContent);
+            delegate.of(aContent);
             return this;
         }
 
         @Override
         public void onAttach(Class<?> aContainerType, ReflectorFactory aReflector, ConverterRegistry aConverters) {
-            impl.onAttach(aContainerType, aReflector, aConverters);
+            delegate.onAttach(aContainerType, aReflector, aConverters);
         }
 
         @Override
         public Name getName() {
-            return impl.getName();
+            return delegate.getName();
         }
 
         @Override
         public Builder<R> newBuilder() {
-            return impl.newBuilder();
+            return delegate.newBuilder();
         }
     };
 }
