@@ -495,3 +495,7 @@ Mapping:
 	);
 
 	Member _member = _reader.read(new InputStreamReader(...));
+
+## License
+
+BSD 3-clause "new" or "revised" license.
